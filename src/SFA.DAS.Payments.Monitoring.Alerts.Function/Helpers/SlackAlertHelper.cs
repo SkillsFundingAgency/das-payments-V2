@@ -61,8 +61,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.Helpers
             return blocks;
         }
 
-        private static Block AddOptionalBlockFields(string collectionPeriodPayments, string yearToDatePayments,
-            string numberOfLearners)
+        private static Block AddOptionalBlockFields(string collectionPeriodPayments, string yearToDatePayments, string numberOfLearners)
         {
             var optionalBlock = new Block
             {
@@ -90,12 +89,12 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.Helpers
                 var yearTodatePaymentsText = string.Empty;
                 try
                 {
-                    var yearToDatePaymentsValue = Convert.ToDecimal(yearToDatePayments);
+                    var yearToDatePaymentsValue = Convert.ToDecimal(RemoveInvalidCharacters(yearToDatePayments));
                     yearTodatePaymentsText = yearToDatePaymentsValue.ToString("N2");
                 }
                 catch (FormatException)
                 {
-                    yearTodatePaymentsText = yearToDatePayments;
+                    yearTodatePaymentsText = RemoveInvalidCharacters(yearToDatePayments);
                 }
                 optionalBlock.Fields.Add(new BlockData { Type = "plain_text", Text = $"£{yearTodatePaymentsText}" });
             }
@@ -105,12 +104,12 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.Helpers
                 var collectionPeriodPaymentsText = string.Empty;
                 try
                 {
-                    var collectionPeriodPaymentsValue = Convert.ToDecimal(collectionPeriodPayments);
+                    var collectionPeriodPaymentsValue = Convert.ToDecimal(RemoveInvalidCharacters(collectionPeriodPayments));
                     collectionPeriodPaymentsText = collectionPeriodPaymentsValue.ToString("N2");
                 }
                 catch (FormatException)
                 {
-                    collectionPeriodPaymentsText = collectionPeriodPayments;
+                    collectionPeriodPaymentsText = RemoveInvalidCharacters(collectionPeriodPayments);
                 }
                 optionalBlock.Fields.Add(new BlockData { Type = "plain_text", Text = $"£{collectionPeriodPaymentsText}" });
             }
@@ -119,7 +118,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.Helpers
             {
                 optionalBlock.Fields.Add(new BlockData { Type = "mrkdwn", Text = "*In Learning*" });
                 optionalBlock.Fields.Add(new BlockData { Type = "mrkdwn", Text = " " });
-                optionalBlock.Fields.Add(new BlockData { Type = "plain_text", Text = numberOfLearners });
+                optionalBlock.Fields.Add(new BlockData { Type = "plain_text", Text = RemoveInvalidCharacters(numberOfLearners) });
             }
 
             return optionalBlock;
@@ -134,6 +133,11 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.Helpers
                 "Sev3" => ":+1:",
                 _ => string.Empty,
             };
+        }
+
+        private static string RemoveInvalidCharacters(string text)
+        {
+            return text.Replace("\"", "");
         }
 
         public Dictionary<string, string> ExtractAlertVariables(dynamic customMeasurements, dynamic customDimensions, DateTime timestamp)

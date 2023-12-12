@@ -704,7 +704,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
                 _academicYear,
                 _collectionPeriod,
                 _collectionPeriodPayments,
-                _yearToDatePayments,
+                "nil",
                 _numberOfLearners,
                 _alertTitle,
                 _appInsightsSearchResultsUiLink);
@@ -718,6 +718,32 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
             jsonString.Should().NotContain("Type");
             jsonString.Should().NotContain("Text");
             jsonString.Should().NotContain("Fields");
+        }
+
+        [Test]
+        public void InvalidCharacterInMetricsFieldsAreReplaced()
+        {
+            //Arrange
+            var helper = new SlackAlertHelper();
+
+            //Act
+            var result = helper.BuildSlackPayload(_alertEmoji,
+                _timeStamp,
+                _jobId,
+                _academicYear,
+                _collectionPeriod,
+                "\"" + _collectionPeriodPayments,
+                _yearToDatePayments + "\"",
+                "\"" + _numberOfLearners + "\"",
+                _alertTitle,
+                _appInsightsSearchResultsUiLink);
+
+            //Assert
+            var decimalValue = Convert.ToDecimal(_collectionPeriodPayments);
+            result[2].Fields[3].Text.Should().Be($"£{decimalValue.ToString("N2")}");
+            decimalValue = Convert.ToDecimal(_yearToDatePayments);
+            result[2].Fields[2].Text.Should().Be($"£{decimalValue.ToString("N2")}");
+            result[2].Fields[6].Text.Should().Be($"{_numberOfLearners}");
         }
     }
 }
