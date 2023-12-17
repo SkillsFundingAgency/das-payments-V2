@@ -327,8 +327,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.FundingSou
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Audit.EarningEventsService", "SFA.DAS.Payments.Audit.EarningEventsService\SFA.DAS.Payments.Audit.EarningEventsService.csproj", "{BA205339-8296-496F-A815-894B2BF93E24}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Messaging", "SFA.DAS.Payments.Messaging\SFA.DAS.Payments.Messaging.csproj", "{4CB6D298-9AEC-4EFC-81E1-8EA4840872AB}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.ScheduledJobs", "SFA.DAS.Payments.ScheduledJobs\SFA.DAS.Payments.ScheduledJobs.csproj", "{38655219-BDDB-4F2A-8B8C-B30D1434A762}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ScheduledJobs", "ScheduledJobs", "{F2AA36D4-90C5-4850-9AA2-29AFAFACD785}"
@@ -1389,14 +1387,6 @@ Global
 		{BA205339-8296-496F-A815-894B2BF93E24}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BA205339-8296-496F-A815-894B2BF93E24}.Release|x64.ActiveCfg = Release|Any CPU
 		{BA205339-8296-496F-A815-894B2BF93E24}.Release|x64.Build.0 = Release|Any CPU
-		{4CB6D298-9AEC-4EFC-81E1-8EA4840872AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4CB6D298-9AEC-4EFC-81E1-8EA4840872AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4CB6D298-9AEC-4EFC-81E1-8EA4840872AB}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{4CB6D298-9AEC-4EFC-81E1-8EA4840872AB}.Debug|x64.Build.0 = Debug|Any CPU
-		{4CB6D298-9AEC-4EFC-81E1-8EA4840872AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4CB6D298-9AEC-4EFC-81E1-8EA4840872AB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4CB6D298-9AEC-4EFC-81E1-8EA4840872AB}.Release|x64.ActiveCfg = Release|Any CPU
-		{4CB6D298-9AEC-4EFC-81E1-8EA4840872AB}.Release|x64.Build.0 = Release|Any CPU
 		{38655219-BDDB-4F2A-8B8C-B30D1434A762}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{38655219-BDDB-4F2A-8B8C-B30D1434A762}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{38655219-BDDB-4F2A-8B8C-B30D1434A762}.Debug|x64.ActiveCfg = Debug|Any CPU
