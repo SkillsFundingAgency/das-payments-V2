@@ -11,11 +11,11 @@
 
   <ItemGroup>
     <PackageReference Include="Castle.Core" Version="4.3.1" />
+    <PackageReference Include="SFA.DAS.Payments.Model.Core" Version="2.1.2-CI-20231215-143651" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Payments.Core\SFA.DAS.Payments.Core.csproj" />
-    <ProjectReference Include="..\SFA.DAS.Payments.Model.Core\SFA.DAS.Payments.Model.Core.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.RequiredPayments.Messages\SFA.DAS.Payments.RequiredPayments.Messages.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.RequiredPayments.Model\SFA.DAS.Payments.RequiredPayments.Model.csproj" />
   </ItemGroup>

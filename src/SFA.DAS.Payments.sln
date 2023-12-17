@@ -43,8 +43,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ProviderPayments", "Provide
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Application", "SFA.DAS.Payments.Application\SFA.DAS.Payments.Application.csproj", "{23551CD8-7554-4F2C-9B42-A67B9E0C261D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Model.Core", "SFA.DAS.Payments.Model.Core\SFA.DAS.Payments.Model.Core.csproj", "{FAFC16FB-316E-4C83-9F35-D0D36DDCCAF7}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FundingSource", "FundingSource", "{205CA299-AED1-4F0B-971A-15CCD398A597}"
 EndProject
 Project("{A07B5EB6-E848-4116-A8D0-A826331D98C6}") = "SFA.DAS.Payments.FundingSource.ServiceFabric", "SFA.DAS.Payments.FundingSource.ServiceFabric\SFA.DAS.Payments.FundingSource.ServiceFabric.sfproj", "{9D21C169-F999-45CD-B181-78437B2D01FD}"
@@ -176,8 +174,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.DataLocks.Messages", "SFA.DAS.Payments.DataLocks.Messages\SFA.DAS.Payments.DataLocks.Messages.csproj", "{8CCB04EB-09DC-4E49-810F-5313D6A666BA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.Tests.Core", "SFA.DAS.Payments.Tests.Core\SFA.DAS.Payments.Tests.Core.csproj", "{64B5C1EB-36A9-4A56-AD6B-B70C90FC23D7}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.Model.Core.UnitTests", "SFA.DAS.Payments.Model.Core.UnitTests\SFA.DAS.Payments.Model.Core.UnitTests.csproj", "{C5E94029-2E85-4443-9D8B-0D0268E001DA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.DataLocks.Application", "SFA.DAS.Payments.DataLocks.Application\SFA.DAS.Payments.DataLocks.Application.csproj", "{68CDCCB2-62D2-49F1-815B-0CBC62153EB9}"
 EndProject
@@ -519,14 +515,6 @@ Global
 		{23551CD8-7554-4F2C-9B42-A67B9E0C261D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{23551CD8-7554-4F2C-9B42-A67B9E0C261D}.Release|x64.ActiveCfg = Release|Any CPU
 		{23551CD8-7554-4F2C-9B42-A67B9E0C261D}.Release|x64.Build.0 = Release|Any CPU
-		{FAFC16FB-316E-4C83-9F35-D0D36DDCCAF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FAFC16FB-316E-4C83-9F35-D0D36DDCCAF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FAFC16FB-316E-4C83-9F35-D0D36DDCCAF7}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{FAFC16FB-316E-4C83-9F35-D0D36DDCCAF7}.Debug|x64.Build.0 = Debug|Any CPU
-		{FAFC16FB-316E-4C83-9F35-D0D36DDCCAF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FAFC16FB-316E-4C83-9F35-D0D36DDCCAF7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FAFC16FB-316E-4C83-9F35-D0D36DDCCAF7}.Release|x64.ActiveCfg = Release|Any CPU
-		{FAFC16FB-316E-4C83-9F35-D0D36DDCCAF7}.Release|x64.Build.0 = Release|Any CPU
 		{9D21C169-F999-45CD-B181-78437B2D01FD}.Debug|Any CPU.ActiveCfg = Debug|x64
 		{9D21C169-F999-45CD-B181-78437B2D01FD}.Debug|Any CPU.Build.0 = Debug|x64
 		{9D21C169-F999-45CD-B181-78437B2D01FD}.Debug|Any CPU.Deploy.0 = Debug|x64
@@ -999,14 +987,6 @@ Global
 		{64B5C1EB-36A9-4A56-AD6B-B70C90FC23D7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{64B5C1EB-36A9-4A56-AD6B-B70C90FC23D7}.Release|x64.ActiveCfg = Release|Any CPU
 		{64B5C1EB-36A9-4A56-AD6B-B70C90FC23D7}.Release|x64.Build.0 = Release|Any CPU
-		{C5E94029-2E85-4443-9D8B-0D0268E001DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C5E94029-2E85-4443-9D8B-0D0268E001DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C5E94029-2E85-4443-9D8B-0D0268E001DA}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{C5E94029-2E85-4443-9D8B-0D0268E001DA}.Debug|x64.Build.0 = Debug|Any CPU
-		{C5E94029-2E85-4443-9D8B-0D0268E001DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C5E94029-2E85-4443-9D8B-0D0268E001DA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C5E94029-2E85-4443-9D8B-0D0268E001DA}.Release|x64.ActiveCfg = Release|Any CPU
-		{C5E94029-2E85-4443-9D8B-0D0268E001DA}.Release|x64.Build.0 = Release|Any CPU
 		{68CDCCB2-62D2-49F1-815B-0CBC62153EB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{68CDCCB2-62D2-49F1-815B-0CBC62153EB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{68CDCCB2-62D2-49F1-815B-0CBC62153EB9}.Debug|x64.ActiveCfg = Debug|Any CPU
