@@ -20,6 +20,7 @@
     <PackageReference Include="NServiceBus.Newtonsoft.Json" Version="2.1.0" />
     <PackageReference Include="NServiceBus.Persistence.AzureStorage" Version="2.2.0" />
     <PackageReference Include="NServiceBus.Transport.AzureServiceBus" Version="1.0.0" />
+    <PackageReference Include="SFA.DAS.Payments.Application" Version="2.1.2-CI-20231215-143651" />
     <PackageReference Include="SFA.DAS.Payments.Core" Version="2.1.2-CI-20231215-143651" />
     <PackageReference Include="SFA.DAS.Payments.Messages.Common" Version="2.1.2-CI-20231215-143651" />
     <PackageReference Include="SFA.DAS.Payments.Model.Core" Version="2.1.2-CI-20231215-143651" />
@@ -27,7 +28,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SFA.DAS.Payments.Application\SFA.DAS.Payments.Application.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.Audit.Application.ServiceFabric\SFA.DAS.Payments.Audit.Application.ServiceFabric.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.Messages\SFA.DAS.Payments.EarningEvents.Messages.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Client\SFA.DAS.Payments.Monitoring.Jobs.Client.csproj" />
