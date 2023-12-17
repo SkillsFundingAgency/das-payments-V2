@@ -156,6 +156,9 @@
     <Reference Include="Remotion.Linq, Version=2.2.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
       <HintPath>..\packages\Remotion.Linq.2.2.0\lib\net45\Remotion.Linq.dll</HintPath>
     </Reference>
+    <Reference Include="SFA.DAS.Payments.Messages.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SFA.DAS.Payments.Messages.Common.2.1.2-CI-20231215-143651\lib\netstandard2.0\SFA.DAS.Payments.Messages.Common.dll</HintPath>
+    </Reference>
     <Reference Include="SFA.DAS.Payments.Model.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SFA.DAS.Payments.Model.Core.2.1.2-CI-20231215-143651\lib\netstandard2.0\SFA.DAS.Payments.Model.Core.dll</HintPath>
     </Reference>
@@ -307,10 +310,6 @@
     <ProjectReference Include="..\SFA.DAS.Payments.FundingSource.Messages\SFA.DAS.Payments.FundingSource.Messages.csproj">
       <Project>{43861469-71a2-4128-b35a-fb680f1e8bca}</Project>
       <Name>SFA.DAS.Payments.FundingSource.Messages</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SFA.DAS.Payments.Messages.Core\SFA.DAS.Payments.Messages.Core.csproj">
-      <Project>{678e5d09-c96d-49cc-811f-78ddcb37a474}</Project>
-      <Name>SFA.DAS.Payments.Messages.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Client\SFA.DAS.Payments.Monitoring.Jobs.Client.csproj">
       <Project>{66B42B94-B29B-48EA-9AB6-C96C11C1D9CE}</Project>

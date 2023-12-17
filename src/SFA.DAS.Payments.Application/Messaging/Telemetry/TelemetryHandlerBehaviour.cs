@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using NServiceBus.Pipeline;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
-using SFA.DAS.Payments.Messages.Core.Events;
+using SFA.DAS.Payments.Messages.Common.Events;
 
 namespace SFA.DAS.Payments.Application.Messaging.Telemetry
 {

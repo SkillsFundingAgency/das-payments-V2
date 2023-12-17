@@ -1,6 +1,6 @@
 ﻿using System;
-using SFA.DAS.Payments.Messages.Core;
-using SFA.DAS.Payments.Messages.Core.Events;
+using SFA.DAS.Payments.Messages.Common;
+using SFA.DAS.Payments.Messages.Common.Events;
 using SFA.DAS.Payments.Model.Core;
 
 namespace SFA.DAS.Payments.PeriodEnd.Messages.Events

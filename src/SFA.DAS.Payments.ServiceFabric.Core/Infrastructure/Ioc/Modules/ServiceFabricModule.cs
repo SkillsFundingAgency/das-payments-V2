@@ -4,7 +4,7 @@ using Microsoft.ServiceFabric.Actors.Client;
 using Microsoft.ServiceFabric.Services.Remoting.Client;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Core.Configuration;
-using SFA.DAS.Payments.Messages.Core.Events;
+using SFA.DAS.Payments.Messages.Common.Events;
 using SFA.DAS.Payments.ServiceFabric.Core.Batch;
 using SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Cache;
 using SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Configuration;

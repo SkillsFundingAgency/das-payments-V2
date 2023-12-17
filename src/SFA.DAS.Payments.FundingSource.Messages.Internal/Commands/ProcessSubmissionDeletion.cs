@@ -1,4 +1,4 @@
-﻿using SFA.DAS.Payments.Messages.Core.Commands;
+﻿using SFA.DAS.Payments.Messages.Common.Commands;
 using SFA.DAS.Payments.Model.Core;
 
 namespace SFA.DAS.Payments.FundingSource.Messages.Internal.Commands

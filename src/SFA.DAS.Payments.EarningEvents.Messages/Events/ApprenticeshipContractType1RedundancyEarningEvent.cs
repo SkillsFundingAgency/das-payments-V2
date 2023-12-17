@@ -1,5 +1,5 @@
-﻿using SFA.DAS.Payments.Messages.Core;
-using SFA.DAS.Payments.Messages.Core.Events;
+﻿using SFA.DAS.Payments.Messages.Common;
+using SFA.DAS.Payments.Messages.Common.Events;
 
 namespace SFA.DAS.Payments.EarningEvents.Messages.Events
 {

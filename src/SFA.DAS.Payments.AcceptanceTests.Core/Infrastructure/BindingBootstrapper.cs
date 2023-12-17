@@ -27,7 +27,7 @@ using SFA.DAS.Payments.AcceptanceTests.Services;
 using SFA.DAS.Payments.AcceptanceTests.Services.BespokeHttpClient;
 using SFA.DAS.Payments.AcceptanceTests.Services.Configuration;
 using SFA.DAS.Payments.AcceptanceTests.Services.Intefaces;
-using SFA.DAS.Payments.Messages.Core;
+using SFA.DAS.Payments.Messages.Common;
 using SFA.DAS.Payments.Monitoring.Jobs.Client;
 using TechTalk.SpecFlow;
 

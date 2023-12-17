@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Autofac;
 using NUnit.Framework;
 using SFA.DAS.Payments.Application.Repositories;
-using SFA.DAS.Payments.Messages.Core.Events;
+using SFA.DAS.Payments.Messages.Common.Events;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
