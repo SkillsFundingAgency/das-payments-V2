@@ -166,6 +166,9 @@
     <Reference Include="Serilog.Sinks.PeriodicBatching, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
       <HintPath>..\packages\Serilog.Sinks.PeriodicBatching.2.1.1\lib\net45\Serilog.Sinks.PeriodicBatching.dll</HintPath>
     </Reference>
+    <Reference Include="SFA.DAS.Payments.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SFA.DAS.Payments.Core.2.1.2-CI-20231215-143651\lib\netstandard2.0\SFA.DAS.Payments.Core.dll</HintPath>
+    </Reference>
     <Reference Include="SFA.DAS.Payments.Messages.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SFA.DAS.Payments.Messages.Common.2.1.2-CI-20231215-143651\lib\netstandard2.0\SFA.DAS.Payments.Messages.Common.dll</HintPath>
     </Reference>
@@ -270,10 +273,6 @@
     <ProjectReference Include="..\SFA.DAS.Payments.Application\SFA.DAS.Payments.Application.csproj">
       <Project>{23551cd8-7554-4f2c-9b42-a67b9e0c261d}</Project>
       <Name>SFA.DAS.Payments.Application</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SFA.DAS.Payments.Core\SFA.DAS.Payments.Core.csproj">
-      <Project>{F6E38368-C397-488B-B041-D3E8423C1CE1}</Project>
-      <Name>SFA.DAS.Payments.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.Messages\SFA.DAS.Payments.EarningEvents.Messages.csproj">
       <Project>{07A36781-D09B-4CF9-8D0B-80BB929FE535}</Project>

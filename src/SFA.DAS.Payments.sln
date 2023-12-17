@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33110.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Core", "SFA.DAS.Payments.Core\SFA.DAS.Payments.Core.csproj", "{F6E38368-C397-488B-B041-D3E8423C1CE1}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RequiredPayments", "RequiredPayments", "{0CA32AC5-24E0-4D96-9D31-AA51556A64D5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{FCAA3F86-D2C1-43B7-A048-5FE388E4AAA0}"
@@ -389,14 +387,6 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F6E38368-C397-488B-B041-D3E8423C1CE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F6E38368-C397-488B-B041-D3E8423C1CE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F6E38368-C397-488B-B041-D3E8423C1CE1}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{F6E38368-C397-488B-B041-D3E8423C1CE1}.Debug|x64.Build.0 = Debug|Any CPU
-		{F6E38368-C397-488B-B041-D3E8423C1CE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F6E38368-C397-488B-B041-D3E8423C1CE1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F6E38368-C397-488B-B041-D3E8423C1CE1}.Release|x64.ActiveCfg = Release|Any CPU
-		{F6E38368-C397-488B-B041-D3E8423C1CE1}.Release|x64.Build.0 = Release|Any CPU
 		{62B63149-AB8F-49AC-9764-168407963192}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{62B63149-AB8F-49AC-9764-168407963192}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{62B63149-AB8F-49AC-9764-168407963192}.Debug|x64.ActiveCfg = Debug|Any CPU
