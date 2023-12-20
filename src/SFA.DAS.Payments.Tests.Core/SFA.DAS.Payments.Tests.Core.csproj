@@ -32,7 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="SFA.DAS.Payments.Model.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SFA.DAS.Payments.Model.Core.2.1.2-CI-20231215-143651\lib\netstandard2.0\SFA.DAS.Payments.Model.Core.dll</HintPath>
+      <HintPath>..\packages\SFA.DAS.Payments.Model.Core.2.1.2-CI-20231220-111647\lib\netstandard2.0\SFA.DAS.Payments.Model.Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />

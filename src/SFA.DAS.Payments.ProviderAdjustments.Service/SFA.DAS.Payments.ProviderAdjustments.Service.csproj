@@ -15,7 +15,7 @@
     <PackageReference Include="ESFA.DC.Logging.Interfaces" Version="0.1.4-beta0001" />
     <PackageReference Include="Microsoft.ServiceFabric" Version="6.5.664" />
     <PackageReference Include="Microsoft.ServiceFabric.Services" Version="3.4.664" />
-    <PackageReference Include="SFA.DAS.Payments.Application" Version="2.1.2-CI-20231215-143651" />
+    <PackageReference Include="SFA.DAS.Payments.Application" Version="2.1.2-CI-20231220-111647" />
   </ItemGroup>
 
   <ItemGroup>

@@ -12,7 +12,7 @@
     <PackageReference Include="Autofac" Version="4.8.1" />
     <PackageReference Include="Microsoft.ServiceFabric.Services" Version="3.2.162" />
     <PackageReference Include="NServiceBus" Version="7.1.5" />
-    <PackageReference Include="SFA.DAS.Payments.Application" Version="2.1.2-CI-20231215-143651" />
+    <PackageReference Include="SFA.DAS.Payments.Application" Version="2.1.2-CI-20231220-111647" />
   </ItemGroup>
 
   <ItemGroup>

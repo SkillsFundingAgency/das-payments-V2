@@ -19,9 +19,9 @@
     <PackageReference Include="NServiceBus.Newtonsoft.Json" Version="2.1.0" />
     <PackageReference Include="NServiceBus.Transport.AzureServiceBus" Version="1.0.0" />
     <PackageReference Include="SFA.DAS.CommitmentsV2.Messages" Version="4.1.70" />
-    <PackageReference Include="SFA.DAS.Payments.Application" Version="2.1.2-CI-20231215-143651" />
-    <PackageReference Include="SFA.DAS.Payments.Core" Version="2.1.2-CI-20231215-143651" />
-    <PackageReference Include="SFA.DAS.Payments.Messages.Common" Version="2.1.2-CI-20231215-143651" />
+    <PackageReference Include="SFA.DAS.Payments.Application" Version="2.1.2-CI-20231220-111647" />
+    <PackageReference Include="SFA.DAS.Payments.Core" Version="2.1.2-CI-20231220-111647" />
+    <PackageReference Include="SFA.DAS.Payments.Messages.Common" Version="2.1.2-CI-20231220-111647" />
     <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
   </ItemGroup>
 

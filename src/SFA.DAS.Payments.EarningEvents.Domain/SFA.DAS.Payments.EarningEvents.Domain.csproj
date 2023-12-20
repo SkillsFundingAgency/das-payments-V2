@@ -6,9 +6,9 @@
 
   <ItemGroup>
     <PackageReference Include="ESFA.DC.ILR.2223.FundingService.FM36.FundingOutput.Model" Version="0.17.2" />
-    <PackageReference Include="SFA.DAS.Payments.Application" Version="2.1.2-CI-20231215-143651" />
-    <PackageReference Include="SFA.DAS.Payments.Core" Version="2.1.2-CI-20231215-143651" />
-    <PackageReference Include="SFA.DAS.Payments.Model.Core" Version="2.1.2-CI-20231215-143651" />
+    <PackageReference Include="SFA.DAS.Payments.Application" Version="2.1.2-CI-20231220-111647" />
+    <PackageReference Include="SFA.DAS.Payments.Core" Version="2.1.2-CI-20231220-111647" />
+    <PackageReference Include="SFA.DAS.Payments.Model.Core" Version="2.1.2-CI-20231220-111647" />
   </ItemGroup>
 
   <ItemGroup>

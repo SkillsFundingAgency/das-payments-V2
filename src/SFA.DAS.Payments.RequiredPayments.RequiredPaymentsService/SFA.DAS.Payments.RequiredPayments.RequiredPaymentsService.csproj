@@ -21,7 +21,7 @@
     <PackageReference Include="Microsoft.ServiceFabric.Data" Version="3.4.664" />
     <PackageReference Include="Microsoft.ServiceFabric.Services" Version="3.4.664" />
     <PackageReference Include="Microsoft.ServiceFabric.Services.Remoting" Version="3.4.664" />
-    <PackageReference Include="SFA.DAS.Payments.Core" Version="2.1.2-CI-20231215-143651" />
+    <PackageReference Include="SFA.DAS.Payments.Core" Version="2.1.2-CI-20231220-111647" />
   </ItemGroup>
 
   <ItemGroup>
