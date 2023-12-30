@@ -41,17 +41,11 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Ioc
                 })
                 .As<IJobServiceConfiguration>()
                 .SingleInstance();
-            builder.RegisterType<EarningsJobStatusManager>()
-                .As<IEarningsJobStatusManager>()
+            builder.RegisterType<JobStatusManager>()
+                .As<IJobStatusManager>()
                 .SingleInstance();
-            builder.RegisterType<PeriodEndJobStatusManager>()
-                .As<IPeriodEndJobStatusManager>()
-                .SingleInstance();
-            builder.RegisterType<PeriodEndJobIlrReprocessingStatusManager>()
-                .As<IPeriodEndJobIlrReprocessingStatusManager>()
-                .SingleInstance();
-            builder.RegisterType<PeriodEndStartJobStatusManager>()
-                .As<IPeriodEndStartJobStatusManager>()
+            builder.RegisterType<JobStatusServiceFactory>()
+                .As<IJobStatusServiceFactory>()
                 .SingleInstance();
             builder.RegisterType<JobService>()
                 .As<ICommonJobService>()
@@ -65,8 +59,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Ioc
             builder.RegisterType<JobMessageService>()
                 .As<IJobMessageService>()
                 .InstancePerLifetimeScope();
-            builder.RegisterType<PeriodEndJobIlrReprocessingStatusService>()
-                .As<IPeriodEndJobIlrReprocessingStatusService>()
+            builder.RegisterType<IlrReprocessingJobStatusService>()
+                .As<IIlrReprocessingJobStatusService>()
                 .InstancePerLifetimeScope();
             builder.RegisterType<EarningsJobStatusService>()
                 .As<IEarningsJobStatusService>()
@@ -77,7 +71,6 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Ioc
             builder.RegisterType<PeriodEndStartJobStatusService>()
                 .As<IPeriodEndStartJobStatusService>()
                 .InstancePerLifetimeScope();
-
 
             builder.Register((c, p) => new MemoryCache(new MemoryCacheOptions()))
                 .As<IMemoryCache>()
