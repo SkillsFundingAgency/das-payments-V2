@@ -101,6 +101,22 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application
             return await GetCurrentJobs(model => model.JobType == JobType.PeriodEndStartJob, cancellationToken);
         }
 
+        public async Task<Dictionary<long, JobType>> GetCurrentJobs(CancellationToken cancellationToken)
+        {
+            var collection = await GetJobCollection();
+            var jobs = new Dictionary<long, JobType>();
+            var enumerator = (await collection.CreateEnumerableAsync(reliableTransactionProvider.Current)).GetAsyncEnumerator();
+
+            while (await enumerator.MoveNextAsync(cancellationToken))
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                var job = enumerator.Current.Value;
+                if (job.Status == JobStatus.InProgress && job.DcJobId.HasValue)
+                    jobs.Add(job.DcJobId.Value, job.JobType);
+            }
+            return jobs;
+        }
+
         private async Task<List<long>> GetCurrentJobs(Func<JobModel, bool> filter, CancellationToken cancellationToken)
         {
             var collection = await GetJobCollection();

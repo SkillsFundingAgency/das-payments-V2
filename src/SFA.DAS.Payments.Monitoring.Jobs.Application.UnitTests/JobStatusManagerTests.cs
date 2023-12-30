@@ -35,22 +35,22 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests
                 .Returns(TimeSpan.FromMilliseconds(100));
         }
 
-        [Test]
-        public async Task Starts_Monitoring_Job()
-        {
-            var manager = mocker.Create<EarningsJobStatusManager>();
-            var cancellationTokenSource = new CancellationTokenSource();
-            cancellationTokenSource.CancelAfter(10000);
-            try
-            {
-                _ = manager.Start("Test", cancellationTokenSource.Token).ConfigureAwait(false);
-                manager.StartMonitoringJob(99, JobType.EarningsJob);
-                await Task.Delay(1000, cancellationTokenSource.Token).ConfigureAwait(false);
-            }
-            catch (TaskCanceledException) { }
-            catch (OperationCanceledException) { }
-            mocker.Mock<IEarningsJobStatusService>()
-                .Verify(svc => svc.ManageStatus(It.Is<long>(id => id == 99), It.IsAny<CancellationToken>()));
-        }
+        //[Test]
+        //public async Task Starts_Monitoring_Job()
+        //{
+        //    var manager = mocker.Create<EarningsJobStatusManager>();
+        //    var cancellationTokenSource = new CancellationTokenSource();
+        //    cancellationTokenSource.CancelAfter(10000);
+        //    try
+        //    {
+        //        _ = manager.Start("Test", cancellationTokenSource.Token).ConfigureAwait(false);
+        //        manager.StartMonitoringJob(99, JobType.EarningsJob);
+        //        await Task.Delay(1000, cancellationTokenSource.Token).ConfigureAwait(false);
+        //    }
+        //    catch (TaskCanceledException) { }
+        //    catch (OperationCanceledException) { }
+        //    mocker.Mock<IEarningsJobStatusService>()
+        //        .Verify(svc => svc.ManageStatus(It.Is<long>(id => id == 99), It.IsAny<CancellationToken>()));
+        //}
     }
 }

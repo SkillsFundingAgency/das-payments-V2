@@ -19,35 +19,21 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
     [StatePersistence(StatePersistence.Volatile)]
     public class JobService : StatefulService, IJobService
     {
-        private readonly IEarningsJobStatusManager earningsJobStatusManager;
+        private readonly IJobStatusManager jobStatusManager;
         private readonly ILifetimeScope lifetimeScope;
         private readonly IPaymentLogger logger;
-        private readonly IPeriodEndJobIlrReprocessingStatusManager periodEndJobIlrReprocessingStatusManager;
-        private readonly IPeriodEndJobStatusManager periodEndJobStatusManager;
-        private readonly IPeriodEndStartJobStatusManager periodEndStartJobStatusManager;
         private string partitionEndpointName;
 
-        public JobService(StatefulServiceContext context, IPaymentLogger logger,
-            IEarningsJobStatusManager earningsJobStatusManager,
-            IPeriodEndJobStatusManager periodEndJobStatusManager,
-            ILifetimeScope lifetimeScope,
-            IPeriodEndStartJobStatusManager periodEndStartJobStatusManager,
-            IPeriodEndJobIlrReprocessingStatusManager periodEndJobIlrReprocessingStatusManager
+        public JobService(StatefulServiceContext context, 
+            IPaymentLogger logger,
+            IJobStatusManager jobStatusManager,
+            ILifetimeScope lifetimeScope
         )
             : base(context)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            this.earningsJobStatusManager = earningsJobStatusManager ??
-                                            throw new ArgumentNullException(nameof(earningsJobStatusManager));
-            this.periodEndJobStatusManager = periodEndJobStatusManager ??
-                                             throw new ArgumentNullException(nameof(periodEndJobStatusManager));
+            this.jobStatusManager = jobStatusManager ?? throw new ArgumentNullException(nameof(jobStatusManager));
             this.lifetimeScope = lifetimeScope;
-            this.periodEndStartJobStatusManager = periodEndStartJobStatusManager ??
-                                                  throw new ArgumentNullException(
-                                                      nameof(periodEndStartJobStatusManager));
-            this.periodEndJobIlrReprocessingStatusManager = periodEndJobIlrReprocessingStatusManager ??
-                                                            throw new ArgumentNullException(
-                                                                nameof(periodEndJobIlrReprocessingStatusManager));
         }
 
         protected override IEnumerable<ServiceReplicaListener> CreateServiceReplicaListeners()
@@ -73,10 +59,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
         protected override Task RunAsync(CancellationToken cancellationToken)
         {
             return Task.WhenAll(RunSendOnlyEndpoint(),
-                earningsJobStatusManager.Start(partitionEndpointName, cancellationToken),
-                periodEndJobStatusManager.Start(partitionEndpointName, cancellationToken),
-                periodEndStartJobStatusManager.Start(partitionEndpointName, cancellationToken),
-                periodEndJobIlrReprocessingStatusManager.Start(partitionEndpointName, cancellationToken));
+                jobStatusManager.Start(partitionEndpointName, cancellationToken));
         }
 
         private async Task RunSendOnlyEndpoint()
