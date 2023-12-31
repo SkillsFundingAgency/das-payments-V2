@@ -59,9 +59,11 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
             get => Get<JobsCommand>(JobDetailsKey);
             set => Set(value, JobDetailsKey);
         }
-
+#if DEBUG
+        protected string PartitionEndpointName => $"sfa-das-payments-monitoring-jobs0";
+#else
         protected string PartitionEndpointName => $"sfa-das-payments-monitoring-jobs{JobDetails.JobId % 2}";
-
+#endif
         [AfterScenario]
         public async Task ClearTestData()
         {
@@ -71,6 +73,7 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
 
         private async Task ClearTestJobs()
         {
+            
             DataContext.Jobs.Remove(Job);
 
             if (jobIdToBeDeleted.Any())
