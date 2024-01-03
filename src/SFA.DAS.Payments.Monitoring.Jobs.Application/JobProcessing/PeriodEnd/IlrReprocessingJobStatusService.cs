@@ -103,9 +103,13 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
         protected async Task CompleteJob(JobModel job, JobStatus status, DateTimeOffset endTime,
             CancellationToken cancellationToken)
         {
-            logger.LogInfo($"Completing PeriodEndJob Job {job.DcJobId}.");
+            job.Status = status;
+            job.EndTime = endTime;
+            await dataContext.SaveJobStatus(job.DcJobId.Value, status, endTime, cancellationToken);
 
-            await eventPublisher.PeriodEndJobFinished(job, job.Status == JobStatus.Completed || job.Status == JobStatus.CompletedWithErrors);
+            logger.LogInfo($"Completed PeriodEnd ILR Reprocessing Job {job.DcJobId}.");
+
+            await eventPublisher.PeriodEndJobFinished(job,status == JobStatus.Completed || status == JobStatus.CompletedWithErrors);
         }
 
         protected bool IsJobTimedOut(JobModel job)
@@ -115,67 +119,76 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
 
         public async Task<bool> ManageStatus(long jobId, CancellationToken cancellationToken)
         {
-            var job = await dataContext.GetJob(jobId);
-            if (job == null)
+            try
             {
-                logger.LogWarning($"ILR Reprocessing job {jobId} not found.");
-                return false;
-            }
+                var job = await dataContext.GetJobByDcJobId(jobId);
+                if (job == null)
+                {
+                    logger.LogWarning($"ILR Reprocessing job {jobId} not found.");
+                    return false;
+                }
 
-            var outstandingJobs = await dataContext.GetOutstandingOrTimedOutJobs(job, cancellationToken);
+                var outstandingJobs = await dataContext.GetOutstandingOrTimedOutJobs(job, cancellationToken);
 
-            var timeoutsPresent = outstandingJobs.Where(x =>
-                (x.JobStatus == JobStatus.TimedOut ||
-                 x.JobStatus == JobStatus.DcTasksFailed) &&
-                x.EndTime > job.StartTime).ToList();
+                var timeoutsPresent = outstandingJobs.Where(x =>
+                    (x.JobStatus == JobStatus.TimedOut ||
+                     x.JobStatus == JobStatus.DcTasksFailed) &&
+                    x.EndTime > job.StartTime).ToList();
 
-            if (timeoutsPresent.Any()) //fail fast
-            {
-                logger.LogWarning(
-                    $"{timeoutsPresent.Count} File Processing jobs {string.Join(" ,", timeoutsPresent.Select(j => j.DcJobId))} with TimedOut or DcTasksFailed and job EndTime after Period-End-Start Job Present. " +
-                    $"now updating job status to CompletedWithErrors, Period End Start JobId {job.DcJobId}");
-                await CompleteJob(job, JobStatus.CompletedWithErrors, DateTimeOffset.UtcNow, cancellationToken);
-                return true; 
-            }
+                if (timeoutsPresent.Any()) //fail fast
+                {
+                    logger.LogWarning(
+                        $"{timeoutsPresent.Count} File Processing jobs {string.Join(" ,", timeoutsPresent.Select(j => j.DcJobId))} with TimedOut or DcTasksFailed and job EndTime after Period-End-Start Job Present. " +
+                        $"now updating job status to CompletedWithErrors, Period End Start JobId {job.DcJobId}");
+                    await CompleteJob(job, JobStatus.CompletedWithErrors, DateTimeOffset.UtcNow, cancellationToken);
+                    return true;
+                }
 
-            if (IsJobTimedOut(job))
-            {
-                await CompleteJob(job, JobStatus.TimedOut, DateTimeOffset.UtcNow, cancellationToken);
+                if (IsJobTimedOut(job))
+                {
+                    await CompleteJob(job, JobStatus.TimedOut, DateTimeOffset.UtcNow, cancellationToken);
+                    return true;
+                }
+
+                var processingJobsPresent = outstandingJobs
+                    .Where(x => x.JobStatus == JobStatus.InProgress || x.DcJobSucceeded == null).ToList();
+
+                if (processingJobsPresent.Any())
+                {
+                    SendTelemetry(job, processingJobsPresent);
+
+                    var completionTimesForInProgressJobs =
+                        await dataContext.GetAverageJobCompletionTimesForInProgressJobs(
+                            processingJobsPresent.Select(p => p.Ukprn).ToList(), cancellationToken);
+
+                    await CheckAndUpdateProcessingJobsIfRunningLongerThenAverageTime(processingJobsPresent,
+                        completionTimesForInProgressJobs, job.DcJobId, cancellationToken);
+                    return false;
+                }
+
+                var jobsWithoutSubmissionSummariesPresent = dataContext.DoSubmissionSummariesExistForJobs(outstandingJobs);
+
+                if (jobsWithoutSubmissionSummariesPresent.Any())
+                {
+                    logger.LogInfo(
+                        $"Still waiting for {jobsWithoutSubmissionSummariesPresent.Count} jobs to generate submission metrics. Period End ILR Reprocessing JobId {job.DcJobId}");
+                    //TODO: Figure out why are we sending telemetry here???
+                    SendTelemetry(job, null, jobsWithoutSubmissionSummariesPresent);
+
+                    return false;
+                }
+
+                logger.LogDebug(
+                    $"No Outstanding Jobs or jobs Without Submission Summaries during Period End ILR Reprocessing job, Now updating Period End Start job status to Completed, Period End Start JobId {job.DcJobId}");
+                await CompleteJob(job, JobStatus.Completed, DateTimeOffset.UtcNow, cancellationToken);
                 return true;
+
             }
-
-            var processingJobsPresent = outstandingJobs
-                .Where(x => x.JobStatus == JobStatus.InProgress || x.DcJobSucceeded == null).ToList();
-
-            if (processingJobsPresent.Any())
+            catch (Exception e)
             {
-                SendTelemetry(job, processingJobsPresent);
-
-                var completionTimesForInProgressJobs =
-                    await dataContext.GetAverageJobCompletionTimesForInProgressJobs(
-                        processingJobsPresent.Select(p => p.Ukprn).ToList(), cancellationToken);
-
-                await CheckAndUpdateProcessingJobsIfRunningLongerThenAverageTime(processingJobsPresent,
-                    completionTimesForInProgressJobs, job.DcJobId, cancellationToken);
-                return false;
+                logger.LogError($"Failed to manage status for ILR Reprocessing job. Error: {e.Message}",e);
+                throw;
             }
-
-            var jobsWithoutSubmissionSummariesPresent = dataContext.DoSubmissionSummariesExistForJobs(outstandingJobs);
-
-            if (jobsWithoutSubmissionSummariesPresent.Any())
-            {
-                logger.LogInfo(
-                    $"Still waiting for {jobsWithoutSubmissionSummariesPresent.Count} jobs to generate submission metrics. Period End ILR Reprocessing JobId {job.DcJobId}");
-                //TODO: Figure out why are we sending telemetry here???
-                SendTelemetry(job, null, jobsWithoutSubmissionSummariesPresent);
-
-                return false;
-            }
-
-            logger.LogDebug(
-                $"No Outstanding Jobs or jobs Without Submission Summaries during Period End ILR Reprocessing job, Now updating Period End Start job status to Completed, Period End Start JobId {job.DcJobId}");
-            await CompleteJob(job, JobStatus.Completed, DateTimeOffset.UtcNow, cancellationToken);
-            return true;
         }
     }
 }
