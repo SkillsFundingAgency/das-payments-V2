@@ -16,7 +16,6 @@ Scenario: Provider Period End Start Job Completed
 	Then the job monitoring service should update the status of the job to show that it has completed	
 	And the monitoring service should notify other services that the period end start job has completed successfully
 
-
 Scenario: Provider Period End Run  Job Completed
 	Given the period end service has received a period end run job
 	When the period end service notifies the job monitoring service to record run job
@@ -95,34 +94,6 @@ Scenario: Provider Period End Start Job Completes if latest submissions is takin
 	And when the final messages for the job are successfully processed for the submission job
 	And the job monitoring service should update the status of the job to show that it has completed
 	And the monitoring service should notify other services that the period end start job has completed successfully
-
-Scenario: ILR Reprocessing Job Started
-	Given the period end service has received a period end Ilr reprocessing job
-	When the period end service notifies the job monitoring service to record the Ilr reprocessing job
-	Then the job monitoring service should record the job
-
-Scenario: ILR Reprocessing Records Successful Completion of Earning Jobs
-	Given all earnings jobs have finished processing successfully
-	When the ILR Reprocessing job is initiated
-	Then the job monitoring service should update the status of the job to show that it has completed
-
-Scenario: ILR Reprocessing Notifies Other Services When Completed
-	Given all earnings jobs have finished processing successfully
-	When the ILR Reprocessing job is initiated
-	Then the job monitoring service should update the status of the job to show that it has completed
-	And the monitoring service should notify other services that the period end Ilr Reprocessing job has completed successfully
-
-Scenario: ILR Reprocessing Waits For Submissions to Complete
-	Given earnings jobs are still being processed
-	And the ILR Reprocessing Job has been initiated
-	When the earnings job completes processing
-	Then the job monitoring service should update the status of the job to show that it has completed
-
-Scenario: ILR Reprocessing Waits For Late Submissions to Complete
-	Given the ILR Reprocessing Job has been initiated
-	And earnings jobs are still being processed
-	When the earnings job completes processing
-	Then the job monitoring service should update the status of the job to show that it has completed
 
 #Scenario: ILR Reprocessing Job waits for in-progress submissions to complete
 #	Given the earnings event service has received and is processing a provider earnings job
