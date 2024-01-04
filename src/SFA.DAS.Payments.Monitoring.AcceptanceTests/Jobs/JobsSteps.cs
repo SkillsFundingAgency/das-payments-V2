@@ -649,7 +649,30 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
             }).ConfigureAwait(false);
         }
 
-        
+        [When(@"the earnings job times-out")]
+        public async Task WhenTheEarningsJobTimes_Out()
+        {
+            PeriodEndLargeSubmissionJobId = TestSession.GenerateId();
+
+            var jobModel = new JobModel
+            {
+                Ukprn = TestSession.Ukprn,
+                CollectionPeriod = CollectionPeriod,
+                AcademicYear = AcademicYear,
+                DcJobId = PeriodEndLargeSubmissionJobId,
+                JobType = JobType.EarningsJob,
+                IlrSubmissionTime = DateTime.UtcNow.AddSeconds(-20),
+                StartTime = DateTimeOffset.UtcNow.AddSeconds(-15),
+                DataLocksCompletionTime = DateTimeOffset.UtcNow.AddSeconds(-10),
+                EndTime = DateTime.UtcNow,
+                DcJobEndTime = DateTimeOffset.UtcNow.AddSeconds(-5),
+                DcJobSucceeded = true,
+                LearnerCount = 10,
+                Status = JobStatus.TimedOut
+            };
+            await DataContext.SaveNewJob(jobModel);
+        }
+
 
         [When(@"the earnings job completes processing")]
         public async Task WhenTheEarningsJobCompletesProcessing()
