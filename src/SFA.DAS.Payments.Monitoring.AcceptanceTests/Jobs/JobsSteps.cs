@@ -65,11 +65,13 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
 #else
         protected string PartitionEndpointName => $"sfa-das-payments-monitoring-jobs{JobDetails.JobId % 2}";
 #endif
-        [AfterScenario]
-        public async Task ClearTestData()
+        [AfterScenario(Order = 99)]
+        public async Task ClearTestData(FeatureContext featureContext)
         {
             await ClearTestJobs();
             ClearTestSubmissionMetrics();
+            if (featureContext.ContainsKey("FailedTests"))
+                featureContext.Remove("FailedTests");
         }
 
         private async Task ClearTestJobs()
@@ -177,9 +179,9 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
         }
 
         [Given(@"the earnings event service has received a provider earnings job")]
-        public void GivenTheEarningsEventServiceHasReceivedAProviderEarningsJob(long? earningsJobId = null)
+        public void GivenTheEarningsEventServiceHasReceivedAProviderEarningsJob()
         {
-            JobDetails = SetUpEarningsJob(earningsJobId);
+            JobDetails = SetUpEarningsJob();
         }
 
         [Given(@"the earnings event service has received a large provider earnings job")]
@@ -346,7 +348,7 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
             PeriodEndLargeSubmissionJobId = TestSession.GenerateId();
             var earningsJob = SetUpEarningsJob(PeriodEndLargeSubmissionJobId);
             Console.WriteLine($"Created earnings job: {earningsJob.JobId}");
-            await WhenTheEarningsEventServiceNotifiesTheJobMonitoringServiceToRecordTheJob(earningsJob);
+            await SimulateILRSubmissionProcessing(earningsJob);
             await MonitoringServiceShouldRecordTheJob(earningsJob.JobId).ConfigureAwait(false);
         }
 
@@ -495,7 +497,6 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
             await WhenTheSubmissionSummaryMetricsAreRecorded();
         }
 
-        [Given(@"the earnings event service has received and successfully processed a provider earnings job")]
         [Given(@"the earnings event service has received and successfully processed a (.*) provider earnings job")]
         public async Task GivenTheEarningsEventServiceHasReceivedAndSuccessfullyProcessedAProviderEarningsJob(
             string jobSize)
@@ -545,8 +546,7 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
                 Assert.Fail($"Period End Start Job finished before expected. Id: {TestSession.JobId}");
         }
 
-        [When(@"the earnings event service notifies the job monitoring service to record the job")]
-        public async Task WhenTheEarningsEventServiceNotifiesTheJobMonitoringServiceToRecordTheJob(RecordEarningsJob earningsJob = null)
+        public async Task SimulateILRSubmissionProcessing(RecordEarningsJob earningsJob = null)
         {
             var recordEarningsJob = earningsJob ?? JobDetails as RecordEarningsJob;
             if (recordEarningsJob != null) recordEarningsJob.GeneratedMessages = GeneratedMessages.Take(1000).ToList();
@@ -562,6 +562,13 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
                 }).ConfigureAwait(false);
                 skip += 1000;
             }
+
+        }
+
+        [When(@"the earnings event service notifies the job monitoring service to record the job")]
+        public async Task WhenTheEarningsEventServiceNotifiesTheJobMonitoringServiceToRecordTheJob()
+        {
+            await SimulateILRSubmissionProcessing();
         }
 
         [When(@"the period end service notifies the job monitoring service to record the start job")]
