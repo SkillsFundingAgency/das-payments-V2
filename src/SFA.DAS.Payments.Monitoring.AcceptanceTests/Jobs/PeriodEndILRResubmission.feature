@@ -4,6 +4,10 @@
 	have a mismatching success status or were not submitted at all during the collection window that has just closed 
 	So that it is safe to perform the calculation of the actual payments for all Apprenticeship training providers
 
+Background:
+	Given the payments are for the current collection year
+	And the current collection period is R01
+
 Scenario: ILR Reprocessing Job Started
 	Given the period end service has received a period end Ilr reprocessing job
 	When the period end service notifies the job monitoring service to record the Ilr reprocessing job
@@ -36,4 +40,3 @@ Scenario: Monitors Timed-out ILR submissions
 	Given the ILR Reprocessing Job has been initiated
 	When the earnings job times-out
 	Then the job monitoring service should update the status of the job to show that it has failed
-	And the monitoring service should notify other services that the period end start job has failed
