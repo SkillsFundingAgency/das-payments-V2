@@ -242,6 +242,7 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Jobs.feature.cs</LastGenOutput>
     </None>
+    <None Include="Jobs\PeriodEndSubmissionWindowValidation.feature" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
