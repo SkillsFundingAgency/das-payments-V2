@@ -232,6 +232,7 @@
       <DependentUpon>App.config</DependentUpon>
       <IsTransformFile>true</IsTransformFile>
     </None>
+    <None Include="Jobs\Period End Start Job.feature" />
     <None Include="Jobs\PeriodEndJobs.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PeriodEndJobs.feature.cs</LastGenOutput>
