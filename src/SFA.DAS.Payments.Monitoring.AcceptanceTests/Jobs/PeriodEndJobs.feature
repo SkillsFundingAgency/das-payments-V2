@@ -6,8 +6,6 @@ Background:
 	Given the payments are for the current collection year
 	And the current collection period is R01
 
-
-
 Scenario: Provider Validate Submission Window Job Completed
 	Given the period end service has received a Validate Submission Window Job
 	When the period end service notifies the job monitoring service to record the Validate Submission Window job
