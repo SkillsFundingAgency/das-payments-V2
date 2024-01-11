@@ -204,6 +204,11 @@
     <Compile Include="Handlers\SubmissionJobFailedHandler.cs" />
     <Compile Include="Handlers\SubmissionJobSucceededHandler.cs" />
     <Compile Include="Infrastructure\BindingBootstrapper.cs" />
+    <Compile Include="Jobs\Period End Start Job.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Period End Start Job.feature</DependentUpon>
+    </Compile>
     <Compile Include="Jobs\PeriodEndJobs.feature.cs">
       <DependentUpon>PeriodEndJobs.feature</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -232,7 +237,10 @@
       <DependentUpon>App.config</DependentUpon>
       <IsTransformFile>true</IsTransformFile>
     </None>
-    <None Include="Jobs\Period End Start Job.feature" />
+    <None Include="Jobs\Period End Start Job.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Period End Start Job.feature.cs</LastGenOutput>
+    </None>
     <None Include="Jobs\PeriodEndJobs.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>PeriodEndJobs.feature.cs</LastGenOutput>
