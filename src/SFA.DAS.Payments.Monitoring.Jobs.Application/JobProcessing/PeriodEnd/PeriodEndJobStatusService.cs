@@ -13,6 +13,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
 
     public class PeriodEndJobStatusService : JobStatusService, IPeriodEndJobStatusService
     {
+        protected override TimeSpan JobTimeoutPeriod { get => Config.PeriodEndRunJobTimeout; }
         public PeriodEndJobStatusService(IJobStorageService jobStorageService, IPaymentLogger logger, ITelemetry telemetry, IJobStatusEventPublisher eventPublisher, IJobServiceConfiguration config) : base(jobStorageService, logger, telemetry, eventPublisher, config)
         {
         }
@@ -24,25 +25,15 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
 
         protected override async Task<bool> CompleteJob(JobModel job, JobStatus status, DateTimeOffset endTime, CancellationToken cancellationToken)
         {
-            Logger.LogInfo($"Completing PeriodEndJob Job {job.DcJobId}.");
+            Logger.LogDebug($"Completing PeriodEndJob Job {job.DcJobId}.");
 
-            var isComplete = await base.CompleteJob(job, status, endTime, cancellationToken);
+            if (!await base.CompleteJob(job, status, endTime, cancellationToken))
+                return false;
 
-            if (isComplete && job.Status != JobStatus.TimedOut)
-                await EventPublisher.PeriodEndJobFinished(job, job.Status == JobStatus.Completed);
+            await EventPublisher.PeriodEndJobFinished(job, job.Status == JobStatus.Completed);
+            Logger.LogInfo($"Completed PeriodEndJob Job {job.DcJobId}.");
 
-            return isComplete;
-        }
-
-        protected override async Task<bool> IsJobTimedOut(JobModel job, CancellationToken cancellationToken)
-        {
-            var isJobTimedOut = await base.IsJobTimedOut(job, cancellationToken);
-            if (isJobTimedOut)
-            {
-                await EventPublisher.PeriodEndJobFinished(job, false);
-            }
-
-            return isJobTimedOut;
+            return true;
         }
     }
 }

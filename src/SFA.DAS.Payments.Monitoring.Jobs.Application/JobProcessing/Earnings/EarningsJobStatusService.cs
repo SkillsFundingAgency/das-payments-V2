@@ -18,6 +18,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.Earnings
 
     public class EarningsJobStatusService : JobStatusService, IEarningsJobStatusService
     {
+        protected override TimeSpan JobTimeoutPeriod => Config.EarningsJobTimeout;
+
         public EarningsJobStatusService(IJobStorageService jobStorageService, IPaymentLogger logger, ITelemetry telemetry, IJobStatusEventPublisher eventPublisher, IJobServiceConfiguration config)
             : base(jobStorageService, logger, telemetry, eventPublisher, config)
         {
@@ -60,6 +62,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.Earnings
 
             await base.ManageMessageStatus(jobId, completedMessages, inProgressMessages, cancellationToken);
         }
+
+        
 
         protected override async Task<bool> CompleteJob(JobModel job, JobStatus status, DateTimeOffset endTime, CancellationToken cancellationToken)
         {
