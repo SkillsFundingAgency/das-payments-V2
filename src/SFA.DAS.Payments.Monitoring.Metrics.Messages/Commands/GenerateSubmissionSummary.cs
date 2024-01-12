@@ -1,5 +1,5 @@
 ﻿using System;
-using SFA.DAS.Payments.Messages.Core.Commands;
+using SFA.DAS.Payments.Messages.Common.Commands;
 
 namespace SFA.DAS.Payments.Monitoring.Metrics.Messages.Commands
 {

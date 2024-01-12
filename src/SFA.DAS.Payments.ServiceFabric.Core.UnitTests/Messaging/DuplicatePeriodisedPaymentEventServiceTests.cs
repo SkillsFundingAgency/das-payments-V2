@@ -8,7 +8,7 @@ using NUnit.Framework;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
-using SFA.DAS.Payments.Messages.Core.Events;
+using SFA.DAS.Payments.Messages.Common.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.ServiceFabric.Core.Messaging;
 

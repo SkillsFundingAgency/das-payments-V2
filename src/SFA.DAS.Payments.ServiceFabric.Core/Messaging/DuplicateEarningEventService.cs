@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Application.Repositories;
-using SFA.DAS.Payments.Messages.Core.Events;
+using SFA.DAS.Payments.Messages.Common.Events;
 
 namespace SFA.DAS.Payments.ServiceFabric.Core.Messaging
 {

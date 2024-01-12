@@ -19,7 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SFA.DAS.Payments.Application\SFA.DAS.Payments.Application.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.DataLocks.Messages\SFA.DAS.Payments.DataLocks.Messages.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.FundingSource.Domain\SFA.DAS.Payments.FundingSource.Domain.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.FundingSource.Messages.Internal\SFA.DAS.Payments.FundingSource.Messages.Internal.csproj" />

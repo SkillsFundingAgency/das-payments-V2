@@ -9,7 +9,7 @@ using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
-using SFA.DAS.Payments.Messages.Core;
+using SFA.DAS.Payments.Messages.Common;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Events;
 using SFA.DAS.Payments.PeriodEnd.Messages.Events;
 using SFA.DAS.Payments.ProviderPayments.Messages;

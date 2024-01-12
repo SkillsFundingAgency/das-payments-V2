@@ -36,14 +36,9 @@
     <PackageReference Include="NServiceBus.Azure.Transports.WindowsAzureStorageQueues" Version="8.1.0" />
     <PackageReference Include="NServiceBus.Newtonsoft.Json" Version="2.1.0" />
     <PackageReference Include="NServiceBus.Transport.AzureServiceBus" Version="1.0.0" />
+    <PackageReference Include="SFA.DAS.Payments.Application" Version="0.1.129" />
+    <PackageReference Include="SFA.DAS.Payments.Messaging" Version="0.1.129" />
     <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\SFA.DAS.Payments.Application\SFA.DAS.Payments.Application.csproj" />
-    <ProjectReference Include="..\SFA.DAS.Payments.Core\SFA.DAS.Payments.Core.csproj" />
-    <ProjectReference Include="..\SFA.DAS.Payments.Messages.Core\SFA.DAS.Payments.Messages.Core.csproj" />
-    <ProjectReference Include="..\SFA.DAS.Payments.Messaging\SFA.DAS.Payments.Messaging.csproj" />
   </ItemGroup>
 
   <ItemGroup>

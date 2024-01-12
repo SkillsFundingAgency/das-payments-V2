@@ -13,7 +13,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
-using SFA.DAS.Payments.Messages.Core.Events;
+using SFA.DAS.Payments.Messages.Common.Events;
 using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handlers

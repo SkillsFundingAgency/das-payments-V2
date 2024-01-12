@@ -16,7 +16,7 @@ using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data.Approvals;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Extensions;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Infrastructure;
 using SFA.DAS.Payments.Core;
-using SFA.DAS.Payments.Messages.Core;
+using SFA.DAS.Payments.Messages.Common;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Tests.Core;
 using TechTalk.SpecFlow;

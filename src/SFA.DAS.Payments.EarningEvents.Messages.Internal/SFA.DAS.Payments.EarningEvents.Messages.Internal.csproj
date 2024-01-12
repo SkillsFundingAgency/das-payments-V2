@@ -6,10 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="ESFA.DC.ILR.2223.FundingService.FM36.FundingOutput.Model" Version="0.17.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\SFA.DAS.Payments.Messages.Core\SFA.DAS.Payments.Messages.Core.csproj" />
+    <PackageReference Include="SFA.DAS.Payments.Messages.Common" Version="0.1.129" />
   </ItemGroup>
 
 </Project>

@@ -5,15 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SFA.DAS.Payments.Messages.Core\SFA.DAS.Payments.Messages.Core.csproj">
-      <PrivateAssets>all</PrivateAssets>
-    </ProjectReference>
-    <ProjectReference Include="..\SFA.DAS.Payments.Model.Core\SFA.DAS.Payments.Model.Core.csproj">
-      <PrivateAssets>all</PrivateAssets>
-    </ProjectReference>
-  </ItemGroup>
-
-  <ItemGroup>
+    <PackageReference Include="SFA.DAS.Payments.Messages.Common" Version="0.1.129" />
     <PackageReference Include="Teronis.MSBuild.Packaging.ProjectBuildInPackage" Version="0.1.1" />
   </ItemGroup>
 </Project>

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using SFA.DAS.Payments.Messages.Core.Events;
+using SFA.DAS.Payments.Messages.Common.Events;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 

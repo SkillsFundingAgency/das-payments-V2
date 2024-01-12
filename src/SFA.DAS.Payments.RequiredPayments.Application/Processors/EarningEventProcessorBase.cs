@@ -10,7 +10,7 @@ using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Application.Repositories;
-using SFA.DAS.Payments.Messages.Core.Events;
+using SFA.DAS.Payments.Messages.Common.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;

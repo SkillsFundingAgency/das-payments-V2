@@ -6,7 +6,7 @@ using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using SFA.DAS.Payments.Messages.Core.Events;
+using SFA.DAS.Payments.Messages.Common.Events;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Factories;
 using SFA.DAS.Payments.Model.Core.Incentives;

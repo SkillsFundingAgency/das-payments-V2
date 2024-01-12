@@ -10,7 +10,6 @@
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.9" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SFA.DAS.Payments.Application\SFA.DAS.Payments.Application.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Metrics.Application\SFA.DAS.Payments.Monitoring.Metrics.Application.csproj" />
   </ItemGroup>
   <ItemGroup>

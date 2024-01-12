@@ -25,7 +25,6 @@
 
  
   <ItemGroup>
-    <ProjectReference Include="..\SFA.DAS.Payments.Application\SFA.DAS.Payments.Application.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.Audit.Application.ServiceFabric\SFA.DAS.Payments.Audit.Application.ServiceFabric.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.Audit.Application\SFA.DAS.Payments.Audit.Application.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.PeriodEnd.Messages\SFA.DAS.Payments.PeriodEnd.Messages.csproj" />

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Runtime.Serialization;
-using SFA.DAS.Payments.Messages.Core.Events;
+using SFA.DAS.Payments.Messages.Common.Events;
 using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.ProviderPayments.Messages

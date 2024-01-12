@@ -1,4 +1,4 @@
-﻿using SFA.DAS.Payments.Messages.Core;
+﻿using SFA.DAS.Payments.Messages.Common;
 using System;
 
 namespace SFA.DAS.Payments.DataLocks.Messages.Events

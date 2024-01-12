@@ -2,7 +2,7 @@
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Payments.Audit.Model;
-using SFA.DAS.Payments.Messages.Core.Events;
+using SFA.DAS.Payments.Messages.Common.Events;
 
 namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping
 {

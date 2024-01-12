@@ -1,7 +1,7 @@
 ﻿using System;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
-using SFA.DAS.Payments.Messages.Core;
-using SFA.DAS.Payments.Messages.Core.Commands;
+using SFA.DAS.Payments.Messages.Common;
+using SFA.DAS.Payments.Messages.Common.Commands;
 
 namespace SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands
 {

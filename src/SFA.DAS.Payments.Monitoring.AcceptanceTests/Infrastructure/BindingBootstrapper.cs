@@ -3,7 +3,7 @@ using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.Core;
 using SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
-using SFA.DAS.Payments.Messages.Core;
+using SFA.DAS.Payments.Messages.Common;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;

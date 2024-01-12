@@ -7,10 +7,11 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="7.0.1" />
     <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="4.5.1" />
+    <PackageReference Include="SFA.DAS.Payments.Application" Version="0.1.129" />
+    <PackageReference Include="SFA.DAS.Payments.Model.Core" Version="0.1.129" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SFA.DAS.Payments.Application\SFA.DAS.Payments.Application.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.ProviderAdjustments.Domain\SFA.DAS.Payments.ProviderAdjustments.Domain.csproj" />
   </ItemGroup>
 

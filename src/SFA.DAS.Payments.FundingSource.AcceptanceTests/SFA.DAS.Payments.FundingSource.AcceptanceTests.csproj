@@ -194,6 +194,15 @@
     <Reference Include="Remotion.Linq, Version=2.2.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
       <HintPath>..\packages\Remotion.Linq.2.2.0\lib\net45\Remotion.Linq.dll</HintPath>
     </Reference>
+    <Reference Include="SFA.DAS.Payments.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SFA.DAS.Payments.Core.0.1.129\lib\netstandard2.0\SFA.DAS.Payments.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="SFA.DAS.Payments.Messages.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SFA.DAS.Payments.Messages.Common.0.1.129\lib\netstandard2.0\SFA.DAS.Payments.Messages.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="SFA.DAS.Payments.Model.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SFA.DAS.Payments.Model.Core.0.1.129\lib\netstandard2.0\SFA.DAS.Payments.Model.Core.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.4.0\lib\netstandard2.0\System.Buffers.dll</HintPath>
@@ -427,10 +436,6 @@
       <Project>{0f0beb68-7f9f-4d39-b85a-3fe7701bb6cc}</Project>
       <Name>SFA.DAS.Payments.AcceptanceTests.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SFA.DAS.Payments.Core\SFA.DAS.Payments.Core.csproj">
-      <Project>{f6e38368-c397-488b-b041-d3e8423c1ce1}</Project>
-      <Name>SFA.DAS.Payments.Core</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.FundingSource.Messages\SFA.DAS.Payments.FundingSource.Messages.csproj">
       <Project>{43861469-71a2-4128-b35a-fb680f1e8bca}</Project>
       <Name>SFA.DAS.Payments.FundingSource.Messages</Name>
@@ -438,14 +443,6 @@
     <ProjectReference Include="..\SFA.DAS.Payments.FundingSource.Model\SFA.DAS.Payments.FundingSource.Model.csproj">
       <Project>{906d925f-eda0-44a6-b276-e32e87230f69}</Project>
       <Name>SFA.DAS.Payments.FundingSource.Model</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SFA.DAS.Payments.Messages.Core\SFA.DAS.Payments.Messages.Core.csproj">
-      <Project>{678e5d09-c96d-49cc-811f-78ddcb37a474}</Project>
-      <Name>SFA.DAS.Payments.Messages.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SFA.DAS.Payments.Model.Core\SFA.DAS.Payments.Model.Core.csproj">
-      <Project>{fafc16fb-316e-4c83-9f35-d0d36ddccaf7}</Project>
-      <Name>SFA.DAS.Payments.Model.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Data\SFA.DAS.Payments.Monitoring.Jobs.Data.csproj">
       <Project>{D9849B05-C642-48F7-AA6D-FA917257AE45}</Project>

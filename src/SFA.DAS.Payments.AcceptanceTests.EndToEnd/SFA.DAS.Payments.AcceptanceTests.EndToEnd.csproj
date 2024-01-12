@@ -101,6 +101,9 @@
     <Reference Include="Fare, Version=2.1.0.0, Culture=neutral, PublicKeyToken=ea68d375bf33a7c8, processorArchitecture=MSIL">
       <HintPath>..\packages\Fare.2.1.1\lib\net35\Fare.dll</HintPath>
     </Reference>
+    <Reference Include="FastMember, Version=1.4.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\FastMember.1.4.1\lib\net461\FastMember.dll</HintPath>
+    </Reference>
     <Reference Include="FluentAssertions, Version=5.9.0.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
       <HintPath>..\packages\FluentAssertions.5.9.0\lib\net47\FluentAssertions.dll</HintPath>
     </Reference>
@@ -230,6 +233,9 @@
     <Reference Include="Serilog.Enrichers.Thread, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
       <HintPath>..\packages\Serilog.Enrichers.Thread.3.0.0\lib\net45\Serilog.Enrichers.Thread.dll</HintPath>
     </Reference>
+    <Reference Include="Serilog.Sinks.ApplicationInsights, Version=2.6.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.Sinks.ApplicationInsights.2.6.0\lib\net45\Serilog.Sinks.ApplicationInsights.dll</HintPath>
+    </Reference>
     <Reference Include="Serilog.Sinks.Console, Version=3.1.1.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
       <HintPath>..\packages\Serilog.Sinks.Console.3.1.1\lib\net45\Serilog.Sinks.Console.dll</HintPath>
     </Reference>
@@ -244,6 +250,18 @@
     </Reference>
     <Reference Include="SFA.DAS.CommitmentsV2.Types, Version=4.1.70.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SFA.DAS.CommitmentsV2.Types.4.1.70\lib\netstandard2.0\SFA.DAS.CommitmentsV2.Types.dll</HintPath>
+    </Reference>
+    <Reference Include="SFA.DAS.Payments.Application, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SFA.DAS.Payments.Application.0.1.129\lib\netstandard2.0\SFA.DAS.Payments.Application.dll</HintPath>
+    </Reference>
+    <Reference Include="SFA.DAS.Payments.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SFA.DAS.Payments.Core.0.1.129\lib\netstandard2.0\SFA.DAS.Payments.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="SFA.DAS.Payments.Messages.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SFA.DAS.Payments.Messages.Common.0.1.129\lib\netstandard2.0\SFA.DAS.Payments.Messages.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="SFA.DAS.Payments.Model.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SFA.DAS.Payments.Model.Core.0.1.129\lib\netstandard2.0\SFA.DAS.Payments.Model.Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -2934,17 +2952,9 @@
       <Project>{C367DA42-6ED6-4028-B754-F39148F5D2C8}</Project>
       <Name>SFA.DAS.Payments.AcceptanceTests.Services</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SFA.DAS.Payments.Application\SFA.DAS.Payments.Application.csproj">
-      <Project>{23551cd8-7554-4f2c-9b42-a67b9e0c261d}</Project>
-      <Name>SFA.DAS.Payments.Application</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.Audit.AcceptanceTests\SFA.DAS.Payments.Audit.AcceptanceTests.csproj">
       <Project>{1ED3DE66-AF18-497A-AFA1-7073AF785E9B}</Project>
       <Name>SFA.DAS.Payments.Audit.AcceptanceTests</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SFA.DAS.Payments.Core\SFA.DAS.Payments.Core.csproj">
-      <Project>{F6E38368-C397-488B-B041-D3E8423C1CE1}</Project>
-      <Name>SFA.DAS.Payments.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.DataLocks.Domain\SFA.DAS.Payments.DataLocks.Domain.csproj">
       <Project>{88F8C227-EFFC-47C7-80A4-EC7854EC813E}</Project>
@@ -2969,14 +2979,6 @@
     <ProjectReference Include="..\SFA.DAS.Payments.FundingSource.Messages\SFA.DAS.Payments.FundingSource.Messages.csproj">
       <Project>{43861469-71A2-4128-B35A-FB680F1E8BCA}</Project>
       <Name>SFA.DAS.Payments.FundingSource.Messages</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SFA.DAS.Payments.Messages.Core\SFA.DAS.Payments.Messages.Core.csproj">
-      <Project>{678e5d09-c96d-49cc-811f-78ddcb37a474}</Project>
-      <Name>SFA.DAS.Payments.Messages.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SFA.DAS.Payments.Model.Core\SFA.DAS.Payments.Model.Core.csproj">
-      <Project>{fafc16fb-316e-4c83-9f35-d0d36ddccaf7}</Project>
-      <Name>SFA.DAS.Payments.Model.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Client\SFA.DAS.Payments.Monitoring.Jobs.Client.csproj">
       <Project>{66b42b94-b29b-48ea-9ab6-c96c11c1d9ce}</Project>

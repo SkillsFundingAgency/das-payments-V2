@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.Core.Data;
 using SFA.DAS.Payments.EarningEvents.Messages.Events;
-using SFA.DAS.Payments.Messages.Core.Events;
+using SFA.DAS.Payments.Messages.Common.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Factories;
