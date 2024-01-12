@@ -6,8 +6,8 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-    <PackageReference Include="SFA.DAS.Payments.Core" Version="2.1.2-CI-20231220-111647" />
-    <PackageReference Include="SFA.DAS.Payments.Model.Core" Version="2.1.2-CI-20231220-111647" />
+    <PackageReference Include="SFA.DAS.Payments.Core" Version="0.1.129" />
+    <PackageReference Include="SFA.DAS.Payments.Model.Core" Version="0.1.129" />
   </ItemGroup>
 
   <ItemGroup>

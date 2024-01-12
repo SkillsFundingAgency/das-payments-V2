@@ -16,8 +16,6 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.4" />
     <PackageReference Include="Polly" Version="6.1.2" />
-    <PackageReference Include="SFA.DAS.Payments.Application" Version="2.1.2-CI-20231220-111647" />
-    <PackageReference Include="SFA.DAS.Payments.Core" Version="2.1.2-CI-20231220-111647" />
     <PackageReference Include="System.Data.SqlClient" Version="4.6.0" />
   </ItemGroup>
 

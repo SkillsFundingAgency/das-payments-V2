@@ -16,7 +16,6 @@
     <PackageReference Include="NServiceBus.Newtonsoft.Json" Version="2.1.0" />
  <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="5.0.5" />
    <PackageReference Include="Microsoft.ServiceFabric.Services" Version="3.4.664" />
-   <PackageReference Include="SFA.DAS.Payments.Application" Version="2.1.2-CI-20231220-111647" />
   </ItemGroup>
 
   <ItemGroup>

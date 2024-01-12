@@ -15,7 +15,8 @@
     <PackageReference Include="NServiceBus.Newtonsoft.Json" Version="2.1.0" />
     <PackageReference Include="NServiceBus.Transport.AzureServiceBus" Version="1.5.0" />
     <PackageReference Include="SFA.DAS.Account.Api.Client" Version="1.6.1469" />
-    <PackageReference Include="SFA.DAS.Payments.Application" Version="2.1.2-CI-20231220-111647" />
+    <PackageReference Include="SFA.DAS.Payments.Application" Version="0.1.129" />
+    <PackageReference Include="SFA.DAS.Payments.Core" Version="0.1.129" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Payments.FundingSource.Messages\SFA.DAS.Payments.FundingSource.Messages.csproj" />
