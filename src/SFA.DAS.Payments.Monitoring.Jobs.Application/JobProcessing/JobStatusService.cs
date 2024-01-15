@@ -17,13 +17,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
 
     public abstract class JobStatusService : BaseJobStatusService, IJobStatusService
     {
-        public IJobServiceConfiguration Config { get; }
-        protected IJobStorageService JobStorageService { get; }
-        protected IPaymentLogger Logger { get; }
-        protected ITelemetry Telemetry { get; }
-        protected IJobStatusEventPublisher EventPublisher { get; }
-
-        protected JobStatusService(IJobStorageService jobStorageService, IPaymentLogger logger, ITelemetry telemetry, IJobStatusEventPublisher eventPublisher, IJobServiceConfiguration config): base(jobStorageService, logger, telemetry, eventPublisher, config)
+        protected JobStatusService(IJobStorageService jobStorageService, IPaymentLogger logger, ITelemetry telemetry, IJobStatusEventPublisher eventPublisher, IJobServiceConfiguration config)
+            : base(jobStorageService, logger, telemetry, eventPublisher, config)
         {
         }
 
