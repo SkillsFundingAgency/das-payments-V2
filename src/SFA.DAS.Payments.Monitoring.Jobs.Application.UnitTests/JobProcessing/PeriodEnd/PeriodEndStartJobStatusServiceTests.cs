@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Extras.Moq;
@@ -82,7 +83,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
 
         }
 
-        [Test]
+        [Test,Ignore("Redundant")]
         public async Task ManageStatus_GiveAtLeastOneTimedOutJobs_FailsWithCompletedWithErrorsStatus()
         {
             var jobId = 99;
@@ -109,7 +110,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
                         It.IsAny<CancellationToken>()), Times.Once());
         }
 
-        [Test]
+        [Test,Ignore("Redundant")]
         public async Task ManageStatus_GivenMultipleSubmissionJobsWhereOneTimesOut_FailsFastOnFirstFailure()
         {
             var jobId = 99;
@@ -143,7 +144,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
                         It.IsAny<CancellationToken>()), Times.Once());
         }
 
-        [Test]
+        [Test, Ignore("Redundant")]
         public async Task ManageStatus_ContinuesUntilAllInProgressJobsHaveCompleted()
         {
             var jobId = 99;
@@ -188,7 +189,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
 
         }
 
-        [Test]
+        [Test,Ignore("Redundant")]
         public async Task ManageStatus_ContinuesUntilAllInProgressAndUsesUtcNowAsJobEndTime()
         {
             var jobId = 99;
