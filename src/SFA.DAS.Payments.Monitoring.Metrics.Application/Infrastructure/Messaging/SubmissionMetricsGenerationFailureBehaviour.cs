@@ -37,8 +37,13 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Infrastructure.Messagi
                         {TelemetryKeys.JobId, message.JobId.ToString()},
                         {TelemetryKeys.Ukprn, message.Ukprn.ToString()}
                     };
+
+                    var metrics = new Dictionary<string, double>
+                    {
+                        {TelemetryKeys.InternalJobId, message.JobId}
+                    };
                     
-                    telemetry.TrackEvent(errorMessage, properties, new Dictionary<string, double>());
+                    telemetry.TrackEvent(errorMessage, properties, metrics);
                 }
             }
         }
