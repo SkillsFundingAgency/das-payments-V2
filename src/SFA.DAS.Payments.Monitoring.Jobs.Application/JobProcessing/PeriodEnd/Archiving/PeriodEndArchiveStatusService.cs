@@ -74,9 +74,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd.A
                 case "Failed":
                 {
                     telemetry.TrackEvent(
-                        $"ManageJobStatus JobId : {job.DcJobId}, JobType: {job.JobType} jobStatus: {JobStatus.DcTasksFailed}. Archiving Job Failed.");
+                        $"ManageJobStatus JobId : {job.DcJobId}, JobType: {job.JobType} jobStatus: {JobStatus.PaymentsTaskFailed}. Archiving Job Failed.");
 
-                    await CompleteJob(jobId, JobStatus.DcTasksFailed, DateTimeOffset.Now, cancellationToken);
+                    await CompleteJob(jobId, JobStatus.PaymentsTaskFailed, DateTimeOffset.Now, cancellationToken);
                     return true;
                 }
             }
@@ -88,7 +88,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd.A
             {
                 case JobStatus.InProgress: return Task.FromResult(false);
                 case JobStatus.Completed: return Task.FromResult(true);
-                case JobStatus.DcTasksFailed: return Task.FromResult(false);
+                case JobStatus.PaymentsTaskFailed: return Task.FromResult(false);
                 case JobStatus.TimedOut: return Task.FromResult(false);
                 case JobStatus.CompletedWithErrors:
                 default:
@@ -107,7 +107,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd.A
 
             var status = JobStatus.TimedOut;
             if (job.DcJobSucceeded.HasValue)
-                status = job.DcJobSucceeded.Value ? JobStatus.CompletedWithErrors : JobStatus.DcTasksFailed;
+                status = job.DcJobSucceeded.Value ? JobStatus.CompletedWithErrors : JobStatus.PaymentsTaskFailed;
 
             logger.LogWarning(
                 $"Job {job.DcJobId} has timed out. {(status != JobStatus.TimedOut ? $"but because DcJobSucceeded is {job.DcJobSucceeded}, " : "")}Setting JobStatus as {status}");
@@ -146,7 +146,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd.A
 
             SendTelemetry(job);
 
-            if (job.Status == JobStatus.DcTasksFailed || job.Status == JobStatus.TimedOut)
+            if (job.Status == JobStatus.PaymentsTaskFailed || job.Status == JobStatus.TimedOut)
                 logger.LogWarning(
                     $"Finished recording completion status of job. Job: {job.DcJobId}, status: {job.Status}, end time: {job.EndTime}");
             else
