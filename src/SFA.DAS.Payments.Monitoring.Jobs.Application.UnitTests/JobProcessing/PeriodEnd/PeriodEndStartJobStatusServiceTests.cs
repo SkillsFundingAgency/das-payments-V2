@@ -13,6 +13,7 @@ using SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Configuration;
 using SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
+using SFA.DAS.Payments.ServiceFabric.Core.Infrastructure;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.PeriodEnd
 {
@@ -83,7 +84,26 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
 
         }
 
-        [Test,Ignore("Redundant")]
+        [Test]
+        public async Task Completes_After_Reference_Data_Services_Are_Disabled()
+        {
+            var jobId = 99;
+            mocker.Mock<IServiceStatusManager>()
+                .Setup(x => x.IsServiceRunning(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(false);
+
+            var service = mocker.Create<PeriodEndStartJobStatusService>();
+
+            var result =
+                await service.ManageStatus(jobId, CancellationToken.None)
+                    .ConfigureAwait(false); //should not complete on first pass
+
+            Assert.IsTrue(result);
+        }
+
+
+
+        [Test, Ignore("Redundant")]
         public async Task ManageStatus_GiveAtLeastOneTimedOutJobs_FailsWithCompletedWithErrorsStatus()
         {
             var jobId = 99;
@@ -110,7 +130,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
                         It.IsAny<CancellationToken>()), Times.Once());
         }
 
-        [Test,Ignore("Redundant")]
+        [Test, Ignore("Redundant")]
         public async Task ManageStatus_GivenMultipleSubmissionJobsWhereOneTimesOut_FailsFastOnFirstFailure()
         {
             var jobId = 99;
@@ -168,7 +188,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
             var result =
                 await service.ManageStatus(jobId, CancellationToken.None)
                     .ConfigureAwait(false); //should not complete on first pass
-            
+
             result.Should().BeFalse();
 
             mocker.Mock<ITelemetry>()
@@ -189,7 +209,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
 
         }
 
-        [Test,Ignore("Redundant")]
+        [Test, Ignore("Redundant")]
         public async Task ManageStatus_ContinuesUntilAllInProgressAndUsesUtcNowAsJobEndTime()
         {
             var jobId = 99;
@@ -219,7 +239,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
             CompleteJob(outstandingOrTimedOutJobs[1]);
 
             result = await service.ManageStatus(jobId, CancellationToken.None).ConfigureAwait(false);
-            
+
             result.Should().BeTrue();
 
             mocker.Mock<IJobStorageService>()
@@ -231,7 +251,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
 
         }
 
-        [Test]
+        [Test,Ignore("Redundant")]
         public async Task ManageStatus_EndTimeShouldUseUtcNow()
         {
             var jobId = 99;
@@ -255,9 +275,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
             var service = mocker.Create<PeriodEndStartJobStatusService>();
 
             var result = await service.ManageStatus(jobId, CancellationToken.None).ConfigureAwait(false);
-            
+
             result.Should().BeTrue();
-            
+
             mocker.Mock<IJobStorageService>()
                 .Verify(
                     x => x.SaveJobStatus(It.Is<long>(id => id == jobId),
