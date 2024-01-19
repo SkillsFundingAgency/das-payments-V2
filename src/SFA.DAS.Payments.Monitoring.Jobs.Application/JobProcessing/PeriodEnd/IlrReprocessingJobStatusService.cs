@@ -18,6 +18,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
 
     public class IlrReprocessingJobStatusService : IJobStatusService, IIlrReprocessingJobStatusService
     {
+        private readonly IJobStorageService jobStorageService;
         private readonly IPaymentLogger logger;
         private readonly ITelemetry telemetry;
         private readonly IJobStatusEventPublisher eventPublisher;
@@ -26,13 +27,14 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
 
         public IlrReprocessingJobStatusService(IJobStorageService jobStorageService, IPaymentLogger logger,
             ITelemetry telemetry, IJobStatusEventPublisher eventPublisher, IJobServiceConfiguration config,
-            IJobsDataContext context)
+            IJobsDataContext dataContext)
         {
+            this.jobStorageService = jobStorageService ?? throw new ArgumentNullException(nameof(jobStorageService));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
             this.eventPublisher = eventPublisher ?? throw new ArgumentNullException(nameof(eventPublisher));
             this.config = config ?? throw new ArgumentNullException(nameof(config));
-            this.dataContext = context ?? throw new ArgumentNullException(nameof(context));
+            this.dataContext = dataContext ?? throw new ArgumentNullException(nameof(dataContext));
         }
 
         private void SendTelemetry(JobModel job, List<OutstandingJobResult> processingJobsPresent = null,
@@ -87,8 +89,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
                         $"it has been running for {inProgressJob.JobRunTimeDurationInMillisecond} Millisecond which is longer then its average duration of {providerJobTimings.AverageJobCompletionTime} Millisecond, " +
                         $"now updating job status to TimedOut, Period End Start JobId {dcJobId}");
                     //TODO: Really not sure this job should be performing this update
-                    await dataContext.SaveJobStatus(inProgressJob.DcJobId.Value, JobStatus.TimedOut, DateTimeOffset.UtcNow,
-                        cancellationToken);
+                    //await dataContext.SaveJobStatus(inProgressJob.DcJobId.Value, JobStatus.TimedOut, DateTimeOffset.UtcNow,
+                    //    cancellationToken);
                 }
                 else
                 {
@@ -105,11 +107,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
         {
             job.Status = status;
             job.EndTime = endTime;
-            await dataContext.SaveJobStatus(job.DcJobId.Value, status, endTime, cancellationToken);
-
-            logger.LogInfo($"Completed PeriodEnd ILR Reprocessing Job {job.DcJobId}.");
-
+            await jobStorageService.SaveJobStatus(job.DcJobId.Value, status, endTime, cancellationToken);
             await eventPublisher.PeriodEndJobFinished(job,status == JobStatus.Completed || status == JobStatus.CompletedWithErrors);
+            logger.LogInfo($"Completed PeriodEnd ILR Reprocessing Job {job.DcJobId}.");
         }
 
         protected bool IsJobTimedOut(JobModel job)
@@ -121,7 +121,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
         {
             try
             {
-                var job = await dataContext.GetJobByDcJobId(jobId);
+                
+                var job = await jobStorageService.GetJob(jobId, cancellationToken);
                 if (job == null)
                 {
                     logger.LogWarning($"ILR Reprocessing job {jobId} not found.");
@@ -130,16 +131,15 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
 
                 var outstandingJobs = await dataContext.GetOutstandingOrTimedOutJobs(job, cancellationToken);
 
-                var timeoutsPresent = outstandingJobs.Where(x =>
+                var timedOutJobs = outstandingJobs.Where(x =>
                     (x.JobStatus == JobStatus.TimedOut ||
                      x.JobStatus == JobStatus.DcTasksFailed) &&
                     x.EndTime > job.StartTime).ToList();
 
-                if (timeoutsPresent.Any()) //fail fast
+                if (timedOutJobs.Any()) //fail fast
                 {
                     logger.LogWarning(
-                        $"{timeoutsPresent.Count} File Processing jobs {string.Join(" ,", timeoutsPresent.Select(j => j.DcJobId))} with TimedOut or DcTasksFailed and job EndTime after Period-End-Start Job Present. " +
-                        $"now updating job status to CompletedWithErrors, Period End Start JobId {job.DcJobId}");
+                        $"Found timed out job: {timedOutJobs.FirstOrDefault().DcJobId}.");
                     await CompleteJob(job, JobStatus.CompletedWithErrors, DateTimeOffset.UtcNow, cancellationToken);
                     return true;
                 }

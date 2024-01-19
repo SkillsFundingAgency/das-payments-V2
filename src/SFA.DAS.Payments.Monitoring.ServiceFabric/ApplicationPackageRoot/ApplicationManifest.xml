@@ -34,6 +34,7 @@
     <Parameter Name="JobStatusCheck_Interval" DefaultValue="00:00:10" />
     <Parameter Name="TimeToWaitForJobToComplete" DefaultValue="01:00:00" />
     <Parameter Name="TimeToWaitForPeriodEndRunJobToComplete" DefaultValue="01:00:00" />
+    <Parameter Name="TimeToWaitToReceivePeriodEndILRSubmissions" DefaultValue="00:10:00" />
     <Parameter Name="DasNServiceBusLicenseKey" DefaultValue="" />
     <Parameter Name="ImmediateMessageRetries" DefaultValue="1" />
     <Parameter Name="DelayedMessageRetries" DefaultValue="3" />
