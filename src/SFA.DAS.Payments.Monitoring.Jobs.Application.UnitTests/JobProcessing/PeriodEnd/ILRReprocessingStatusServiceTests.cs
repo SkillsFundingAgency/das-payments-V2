@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Extras.Moq;
@@ -103,6 +104,26 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
                         It.Is<JobStatus>(status => status == JobStatus.CompletedWithErrors),
                         It.Is<DateTimeOffset>(time => EndTimeIsNearUtcNow(time)),
                         It.IsAny<CancellationToken>()), Times.Once());
+        }
+
+        [Test]
+        public async Task Waits_For_Jobs_To_Be_Received_If_Non_InProgress()
+        {
+            mocker.Mock<IJobServiceConfiguration>()
+                .Setup(x => x.TimeToWaitToReceivePeriodEndILRSubmissions)
+                .Returns(TimeSpan.FromMilliseconds(500));
+            mocker.Mock<IJobsDataContext>()
+                .Setup(x => x.DoSubmissionSummariesExistForJobs(It.IsAny<List<OutstandingJobResult>>()))
+                .Returns(new List<long?>());
+
+
+            var startTime = DateTimeOffset.UtcNow;
+            var service = mocker.Create<IlrReprocessingJobStatusService>();
+            var result = await service.ManageStatus(job.DcJobId.Value, CancellationToken.None).ConfigureAwait(false);
+            result.Should().BeFalse("The service didn't wait for jobs to be recieved!!");
+            Thread.Sleep(500);
+            result = await service.ManageStatus(job.DcJobId.Value, CancellationToken.None).ConfigureAwait(false);
+            result.Should().BeTrue();
         }
 
         [Test]
@@ -233,7 +254,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
             var service = mocker.Create<IlrReprocessingJobStatusService>();
             var result =
                 await service.ManageStatus(jobId, CancellationToken.None)
-                    .ConfigureAwait(false); //should not complete on first pass
+                    .ConfigureAwait(false); 
 
             result.Should().BeTrue();
 
