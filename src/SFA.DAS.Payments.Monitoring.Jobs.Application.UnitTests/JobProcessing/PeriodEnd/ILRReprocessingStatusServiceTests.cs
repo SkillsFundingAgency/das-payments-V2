@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Extras.Moq;
@@ -34,7 +32,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
             completedMessages = new List<CompletedMessage>();
             outstandingOrTimedOutJobs = new List<OutstandingJobResult>();
             mocker = AutoMock.GetLoose();
-
+            
             job = new JobModel
             {
                 Id = 1,
@@ -115,12 +113,12 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
             mocker.Mock<IJobsDataContext>()
                 .Setup(x => x.DoSubmissionSummariesExistForJobs(It.IsAny<List<OutstandingJobResult>>()))
                 .Returns(new List<long?>());
-
-
-            var startTime = DateTimeOffset.UtcNow;
+            job.StartTime = DateTimeOffset.UtcNow;
+            
+            
             var service = mocker.Create<IlrReprocessingJobStatusService>();
             var result = await service.ManageStatus(job.DcJobId.Value, CancellationToken.None).ConfigureAwait(false);
-            result.Should().BeFalse("The service didn't wait for jobs to be recieved!!");
+            result.Should().BeFalse("The service didn't wait for jobs to be received!!");
             Thread.Sleep(500);
             result = await service.ManageStatus(job.DcJobId.Value, CancellationToken.None).ConfigureAwait(false);
             result.Should().BeTrue();

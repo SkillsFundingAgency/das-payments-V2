@@ -166,6 +166,12 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
                     return false;
                 }
 
+                if (DateTimeOffset.UtcNow < job.StartTime.Add(config.TimeToWaitToReceivePeriodEndILRSubmissions))
+                {
+                    logger.LogDebug($"Waiting for jobs to be received.  Will wait until {job.StartTime.Add(config.TimeToWaitToReceivePeriodEndILRSubmissions)}, Job start time is: {job.StartTime}, Configured time to wait is {config.TimeToWaitToReceivePeriodEndILRSubmissions}");
+                    return false;
+                }
+
                 var jobsWithoutSubmissionSummariesPresent = dataContext.DoSubmissionSummariesExistForJobs(outstandingJobs);
 
                 if (jobsWithoutSubmissionSummariesPresent.Any())
