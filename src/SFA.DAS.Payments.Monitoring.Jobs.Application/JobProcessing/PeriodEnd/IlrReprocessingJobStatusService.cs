@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Serilog.Core;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Core;
@@ -79,8 +80,12 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
                 var providerJobTimings = averageJobCompletionTimes.SingleOrDefault(a => a.Ukprn == inProgressJob.Ukprn);
 
                 if (providerJobTimings == null)
-                    throw new InvalidOperationException(
+                {
+                    logger.LogWarning(
                         $"Unable to find Average Job Completion Times For {inProgressJob.Ukprn}, Period End Start JobId {dcJobId}");
+
+
+                }
 
                 if (inProgressJob.JobRunTimeDurationInMillisecond > (providerJobTimings.AverageJobCompletionTime ?? 0))
                 {
@@ -157,12 +162,12 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
                 {
                     SendTelemetry(job, processingJobsPresent);
 
-                    var completionTimesForInProgressJobs =
-                        await dataContext.GetAverageJobCompletionTimesForInProgressJobs(
-                            processingJobsPresent.Select(p => p.Ukprn).ToList(), cancellationToken);
+                    //var completionTimesForInProgressJobs =
+                    //    await dataContext.GetAverageJobCompletionTimesForInProgressJobs(
+                    //        processingJobsPresent.Select(p => p.Ukprn).ToList(), cancellationToken);
 
-                    await CheckAndUpdateProcessingJobsIfRunningLongerThenAverageTime(processingJobsPresent,
-                        completionTimesForInProgressJobs, job.DcJobId, cancellationToken);
+                    //await CheckAndUpdateProcessingJobsIfRunningLongerThenAverageTime(processingJobsPresent,
+                    //    completionTimesForInProgressJobs, job.DcJobId, cancellationToken);
                     return false;
                 }
 

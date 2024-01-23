@@ -495,6 +495,7 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
             };
             await DataContext.SaveNewJob(jobModel);
             await WhenTheSubmissionSummaryMetricsAreRecorded();
+            Console.Write($"Earnings dc job id: {PeriodEndLargeSubmissionJobId}");
         }
 
         [Given(@"the earnings event service has received and successfully processed a (.*) provider earnings job")]
