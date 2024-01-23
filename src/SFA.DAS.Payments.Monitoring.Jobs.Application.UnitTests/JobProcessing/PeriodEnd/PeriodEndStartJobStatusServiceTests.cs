@@ -10,6 +10,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Configuration;
+using SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing;
 using SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
@@ -85,9 +86,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
         }
 
         [Test]
-        public async Task Completes_After_Reference_Data_Services_Are_Disabled()
+        public async Task Uses_Correct_ApplicationName()
         {
-            var jobId = 99;
             mocker.Mock<IServiceStatusManager>()
                 .Setup(x => x.IsServiceRunning(It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(true);
@@ -95,16 +95,33 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
             var service = mocker.Create<PeriodEndStartJobStatusService>();
 
             var result =
-                await service.ManageStatus(jobId, CancellationToken.None)
+                await service.ManageStatus(job.DcJobId.Value, CancellationToken.None)
                     .ConfigureAwait(false);
 
-            result.Should().BeTrue();
+            mocker.Mock<IServiceStatusManager>()
+                .Verify(x => x.IsServiceRunning(It.Is<string>(name => name.Equals("SFA.DAS.Payments.DataLocks.ServiceFabric")),It.IsAny<string>()));
         }
 
         [Test]
-        public async Task Does_Not_Complete_If_Services_Are_Still_Running()
+        public async Task Uses_Correct_ServiceName()
         {
-            var jobId = 99;
+            mocker.Mock<IServiceStatusManager>()
+                .Setup(x => x.IsServiceRunning(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(true);
+
+            var service = mocker.Create<PeriodEndStartJobStatusService>();
+
+            var result =
+                await service.ManageStatus(job.DcJobId.Value, CancellationToken.None)
+                    .ConfigureAwait(false);
+
+            mocker.Mock<IServiceStatusManager>()
+                .Verify(x => x.IsServiceRunning(It.IsAny<string>(),It.Is<string>(name => name.Equals("SFA.DAS.Payments.DataLocks.ApprovalsService"))));
+        }
+
+        [Test]
+        public async Task Completes_After_Reference_Data_Services_Are_Disabled()
+        {
             mocker.Mock<IServiceStatusManager>()
                 .Setup(x => x.IsServiceRunning(It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(false);
@@ -112,10 +129,81 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
             var service = mocker.Create<PeriodEndStartJobStatusService>();
 
             var result =
-                await service.ManageStatus(jobId, CancellationToken.None)
+                await service.ManageStatus(job.DcJobId.Value, CancellationToken.None)
+                    .ConfigureAwait(false);
+
+            result.Should().BeTrue();
+        }
+
+        [Test]
+        public async Task Saves_Status_After_Reference_Data_Services_Are_Disabled()
+        {
+            mocker.Mock<IServiceStatusManager>()
+                .Setup(x => x.IsServiceRunning(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(false);
+
+            var service = mocker.Create<PeriodEndStartJobStatusService>();
+
+            await service.ManageStatus(job.DcJobId.Value, CancellationToken.None)
+                    .ConfigureAwait(false);
+            
+            mocker.Mock<IJobStorageService>()
+                .Verify(x => x.SaveJobStatus(It.Is<long>(id => id == job.DcJobId.Value),It.Is<JobStatus>(status => status == JobStatus.Completed),It.IsAny<DateTimeOffset>(), It.IsAny<CancellationToken>()),Times.Once);
+        }
+
+        [Test]
+        public async Task Publishes_Completed_Event_After_Reference_Data_Services_Are_Disabled()
+        {
+            mocker.Mock<IServiceStatusManager>()
+                .Setup(x => x.IsServiceRunning(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(false);
+
+            var service = mocker.Create<PeriodEndStartJobStatusService>();
+
+            await service.ManageStatus(job.DcJobId.Value, CancellationToken.None)
+                .ConfigureAwait(false);
+
+            mocker.Mock<IJobStatusEventPublisher>()
+                .Verify(x => x.PeriodEndJobFinished(It.IsAny<JobModel>(), It.Is<bool>(status => status )), Times.Once);
+        }
+
+        [Test]
+        public async Task Does_Not_Complete_If_Services_Are_Still_Running()
+        {
+            mocker.Mock<IServiceStatusManager>()
+                .Setup(x => x.IsServiceRunning(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(true);
+
+            var service = mocker.Create<PeriodEndStartJobStatusService>();
+
+            var result =
+                await service.ManageStatus(job.DcJobId.Value, CancellationToken.None)
                     .ConfigureAwait(false);
 
             result.Should().BeFalse();
+        }
+
+        [Test]
+        public async Task Times_Out_If_Services_Not_Disabled()
+        {
+            job.StartTime = DateTimeOffset.UtcNow;
+            mocker.Mock<IJobServiceConfiguration>()
+                .Setup(x => x.PeriodEndStartJobTimeout)
+                .Returns(TimeSpan.FromMilliseconds(500));
+            mocker.Mock<IServiceStatusManager>()
+                .Setup(x => x.IsServiceRunning(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(true);
+
+            var service = mocker.Create<PeriodEndStartJobStatusService>();
+            Thread.Sleep(500);
+            var result =
+                await service.ManageStatus(job.DcJobId.Value, CancellationToken.None)
+                    .ConfigureAwait(false);
+
+            result.Should().BeTrue();
+
+            mocker.Mock<IJobStorageService>()
+                .Verify(x => x.SaveJobStatus(It.Is<long>(id => id == job.DcJobId.Value), It.Is<JobStatus>(status => status == JobStatus.TimedOut), It.IsAny<DateTimeOffset>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Test, Ignore("Redundant")]

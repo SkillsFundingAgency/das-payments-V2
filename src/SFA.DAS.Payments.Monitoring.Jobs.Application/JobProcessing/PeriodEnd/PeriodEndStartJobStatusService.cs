@@ -34,7 +34,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
             this.serviceStatusManager = serviceStatusManager ?? throw new ArgumentNullException(nameof(serviceStatusManager));
         }
 
-        private void SendTelemetry(JobModel job, List<OutstandingJobResult> processingJobsPresent = null, List<long?> jobsWithoutSubmissionSummariesPresent = null)
+        private void SendTelemetry(JobModel job)
         {
             var properties = new Dictionary<string, string>
             {
@@ -47,26 +47,34 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
                 { TelemetryKeys.Status, job.Status.ToString("G")}
             };
 
-            if (processingJobsPresent != null)
-            {
-                properties.Add("InProgressJobsCount", processingJobsPresent.Count.ToString());
-                properties.Add("InProgressJobsList", string.Join(", ", processingJobsPresent.Select(j => j.ToJson())));
-            }
-
-
-            if (jobsWithoutSubmissionSummariesPresent != null)
-            {
-                properties.Add("jobsWithoutSubmissionSummariesCount", jobsWithoutSubmissionSummariesPresent.Count.ToString());
-                properties.Add("jobsWithoutSubmissionSummaries", string.Join(", ", jobsWithoutSubmissionSummariesPresent.Select(j => j.ToJson())));
-            }
-
             Telemetry.TrackEvent("PeriodEndStart Job Status Update", properties, new Dictionary<string, double>());
         }
 
 
-        public Task<bool> ManageStatus(long jobId, CancellationToken cancellationToken)
+        public async Task<bool> ManageStatus(long jobId, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var job = await JobStorageService.GetJob(jobId, cancellationToken);
+            if (job == null)
+            {
+                Logger.LogWarning($"Job not found: {jobId}");
+                return false;
+            }
+
+            Logger.LogDebug($"checking if the DataLocks Approvals service is disabled.");
+            if (await serviceStatusManager.IsServiceRunning("SFA.DAS.Payments.DataLocks.ServiceFabric",
+                    "SFA.DAS.Payments.DataLocks.ApprovalsService"))
+            {
+                Logger.LogWarning($"The DataLocks Approvals service is still running.");
+                return false;
+            }
+
+            Logger.LogDebug($"Data Locks service is not running. Now completing job: {jobId}.");
+            await JobStorageService.SaveJobStatus(jobId, JobStatus.Completed, DateTimeOffset.UtcNow, cancellationToken);
+
+            await EventPublisher.PeriodEndJobFinished(job, true);
+
+            SendTelemetry(job);
+            return true;
         }
     }
 }
