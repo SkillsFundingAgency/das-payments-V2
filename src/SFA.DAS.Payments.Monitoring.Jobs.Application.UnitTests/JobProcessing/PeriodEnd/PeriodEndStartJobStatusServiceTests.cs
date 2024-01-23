@@ -42,6 +42,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
                 Id = 1,
                 DcJobId = 99,
                 StartTime = DateTimeOffset.UtcNow.AddSeconds(-1),
+                EndTime = DateTimeOffset.UtcNow,
                 Status = JobStatus.InProgress,
                 LearnerCount = null,
                 JobType = JobType.PeriodEndStartJob,
@@ -82,6 +83,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
             mocker.Mock<IJobsDataContext>()
                 .Setup(x => x.GetOutstandingOrTimedOutJobs(It.IsAny<JobModel>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(outstandingOrTimedOutJobs);
+            mocker.Mock<IJobServiceConfiguration>()
+                .Setup(x => x.PeriodEndStartJobTimeout)
+                .Returns(TimeSpan.FromMilliseconds(2000));
 
         }
 

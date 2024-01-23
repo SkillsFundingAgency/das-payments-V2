@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
@@ -34,7 +35,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
             this.serviceStatusManager = serviceStatusManager ?? throw new ArgumentNullException(nameof(serviceStatusManager));
         }
 
-        private void SendTelemetry(JobModel job)
+        private void SendTelemetry(JobModel job, JobStatus status)
         {
             var properties = new Dictionary<string, string>
             {
@@ -47,7 +48,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
                 { TelemetryKeys.Status, job.Status.ToString("G")}
             };
 
-            Telemetry.TrackEvent("PeriodEndStart Job Status Update", properties, new Dictionary<string, double>());
+            Telemetry.TrackEvent($"PeriodEndStart Job Completed, Status: {status}", properties, new Dictionary<string, double>());
         }
 
 
@@ -61,20 +62,38 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
             }
 
             Logger.LogDebug($"checking if the DataLocks Approvals service is disabled.");
-            if (await serviceStatusManager.IsServiceRunning("SFA.DAS.Payments.DataLocks.ServiceFabric",
+            if (!await serviceStatusManager.IsServiceRunning("SFA.DAS.Payments.DataLocks.ServiceFabric",
                     "SFA.DAS.Payments.DataLocks.ApprovalsService"))
             {
-                Logger.LogWarning($"The DataLocks Approvals service is still running.");
-                return false;
+                await CompleteJob(job, JobStatus.Completed, cancellationToken);
+                Logger.LogInfo($"Data Locks Approvals Reference data service has now been stopped. Completed period end start job: {jobId}.");
+                return true;
             }
 
-            Logger.LogDebug($"Data Locks service is not running. Now completing job: {jobId}.");
-            await JobStorageService.SaveJobStatus(jobId, JobStatus.Completed, DateTimeOffset.UtcNow, cancellationToken);
+            if (IsTimedOut(job))
+            {
+                Logger.LogWarning($"Period end start job {jobId} has timed out.");
+                await CompleteJob(job, JobStatus.TimedOut, cancellationToken);
+                return true;
+            }
+
+            Logger.LogWarning($"The DataLocks Approvals reference data service is still running.");
+            return false;
+        }
+
+        public bool IsTimedOut(JobModel job)
+        {
+            return job.StartTime.Add(Config.PeriodEndStartJobTimeout) < DateTimeOffset.UtcNow;
+        }
+
+        public async Task CompleteJob(JobModel job, JobStatus status, CancellationToken cancellationToken)
+        {
+            await JobStorageService.SaveJobStatus(job.DcJobId.Value, status, DateTimeOffset.UtcNow, cancellationToken);
 
             await EventPublisher.PeriodEndJobFinished(job, true);
 
             SendTelemetry(job);
-            return true;
+
         }
     }
 }
