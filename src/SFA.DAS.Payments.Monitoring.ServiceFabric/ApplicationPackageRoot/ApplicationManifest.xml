@@ -117,12 +117,12 @@
     </ConfigOverrides>
   </ServiceManifestImport>
   <DefaultServices>
-    <!--<Service Name="SFA.DAS.Payments.Monitoring.Metrics.SubmissionService" ServicePackageActivationMode="ExclusiveProcess">
+    <Service Name="SFA.DAS.Payments.Monitoring.Metrics.SubmissionService" ServicePackageActivationMode="ExclusiveProcess">
       <StatelessService ServiceTypeName="SFA.DAS.Payments.Monitoring.Metrics.SubmissionServiceType" InstanceCount="[Monitoring_Metrics_SubmissionService_InstanceCount]">
         <SingletonPartition />
         <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
       </StatelessService>
-    </Service>-->
+    </Service>
     <Service Name="SFA.DAS.Payments.Monitoring.Jobs.JobService" ServicePackageActivationMode="ExclusiveProcess">
       <StatefulService ServiceTypeName="SFA.DAS.Payments.Monitoring.Jobs.JobServiceType" TargetReplicaSetSize="[JobService_TargetReplicaSetSize]" MinReplicaSetSize="[JobService_MinReplicaSetSize]">
         <NamedPartition>
