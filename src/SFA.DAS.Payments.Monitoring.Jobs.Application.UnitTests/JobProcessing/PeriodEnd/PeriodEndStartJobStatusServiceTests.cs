@@ -90,18 +90,33 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
             var jobId = 99;
             mocker.Mock<IServiceStatusManager>()
                 .Setup(x => x.IsServiceRunning(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(true);
+
+            var service = mocker.Create<PeriodEndStartJobStatusService>();
+
+            var result =
+                await service.ManageStatus(jobId, CancellationToken.None)
+                    .ConfigureAwait(false);
+
+            result.Should().BeTrue();
+        }
+
+        [Test]
+        public async Task Does_Not_Complete_If_Services_Are_Still_Running()
+        {
+            var jobId = 99;
+            mocker.Mock<IServiceStatusManager>()
+                .Setup(x => x.IsServiceRunning(It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(false);
 
             var service = mocker.Create<PeriodEndStartJobStatusService>();
 
             var result =
                 await service.ManageStatus(jobId, CancellationToken.None)
-                    .ConfigureAwait(false); //should not complete on first pass
+                    .ConfigureAwait(false);
 
-            Assert.IsTrue(result);
+            result.Should().BeFalse();
         }
-
-
 
         [Test, Ignore("Redundant")]
         public async Task ManageStatus_GiveAtLeastOneTimedOutJobs_FailsWithCompletedWithErrorsStatus()
