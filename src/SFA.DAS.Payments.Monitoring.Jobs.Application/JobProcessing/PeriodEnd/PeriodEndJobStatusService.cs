@@ -13,7 +13,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
 
     public class PeriodEndJobStatusService : JobStatusService, IPeriodEndJobStatusService
     {
-        protected override TimeSpan JobTimeoutPeriod { get => Config.PeriodEndRunJobTimeout; }
+        protected override TimeSpan JobTimeoutPeriod => Config.PeriodEndRunJobTimeout;
+
         public PeriodEndJobStatusService(IJobStorageService jobStorageService, IPaymentLogger logger, ITelemetry telemetry, IJobStatusEventPublisher eventPublisher, IJobServiceConfiguration config) : base(jobStorageService, logger, telemetry, eventPublisher, config)
         {
         }

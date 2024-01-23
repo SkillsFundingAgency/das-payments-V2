@@ -19,7 +19,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
     {
         private readonly IJobsDataContext context;
         private readonly IServiceStatusManager serviceStatusManager;
-        protected override TimeSpan JobTimeoutPeriod => Config.PeriodEndRunJobTimeout;
+        protected override TimeSpan JobTimeoutPeriod => Config.PeriodEndStartJobTimeout;
 
         public PeriodEndStartJobStatusService(
             IJobStorageService jobStorageService,
@@ -70,7 +70,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
                 return true;
             }
 
-            if (IsTimedOut(job))
+            if (base.IsJobTimedOut(job,cancellationToken))
             {
                 Logger.LogWarning($"Period end start job {jobId} has timed out.");
                 await CompleteJob(job, JobStatus.TimedOut, cancellationToken);
@@ -79,11 +79,6 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
 
             Logger.LogWarning($"The DataLocks Approvals reference data service is still running.");
             return false;
-        }
-
-        public bool IsTimedOut(JobModel job)
-        {
-            return job.StartTime.Add(Config.PeriodEndStartJobTimeout) < DateTimeOffset.UtcNow;
         }
 
         public async Task CompleteJob(JobModel job, JobStatus status, CancellationToken cancellationToken)

@@ -40,7 +40,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
 
                 if (IsJobTimedOut(job, cancellationToken))
                 {
-                    await CompleteJob(job, job.DcJobSucceeded.HasValue && !job.DcJobSucceeded.Value ? JobStatus.DcTasksFailed : JobStatus.TimedOut, DateTimeOffset.UtcNow, cancellationToken);
+                    await CompleteJob(job, JobStatus.TimedOut, DateTimeOffset.UtcNow, cancellationToken);
                     return true;
                 }
             }

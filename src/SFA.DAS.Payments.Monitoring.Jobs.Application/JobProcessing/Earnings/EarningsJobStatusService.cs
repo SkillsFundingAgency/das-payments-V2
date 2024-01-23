@@ -67,9 +67,13 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.Earnings
 
         protected override async Task<bool> CompleteJob(JobModel job, JobStatus status, DateTimeOffset endTime, CancellationToken cancellationToken)
         {
-            status = job.DcJobSucceeded.HasValue && !job.DcJobSucceeded.Value
-                ? JobStatus.DcTasksFailed
-                : status;
+            if (job.DcJobSucceeded.HasValue)
+            {
+                if (!job.DcJobSucceeded.Value)
+                    status = JobStatus.DcTasksFailed;
+                else if (status == JobStatus.TimedOut)
+                    status = JobStatus.CompletedWithErrors;  //Work around - at this point it is too late to rollback the job as we've already told DC the job has finished (after datalocks completed).
+            }
 
             Logger.LogInfo($"Completing Earnings Job {job.DcJobId}. JobStatus: {status}");
 

@@ -68,7 +68,6 @@
             <Parameter Name="JobStatusCheck_Interval" Value="[JobStatusCheck_Interval]" />
             <Parameter Name="TimeToWaitForJobToComplete" Value="[TimeToWaitForJobToComplete]" />
             <Parameter Name="TimeToWaitForPeriodEndRunJobToComplete" Value="[TimeToWaitForPeriodEndRunJobToComplete]" />
-            <Parameter Name="TimeToWaitForPeriodEndStartJobToComplete" Value="[TimeToWaitForPeriodEndStartJobToComplete]" />
             <Parameter Name="NumberOfNServiceBusThreads" Value="[NumberOfNServiceBusThreads]" />
             <Parameter Name="DasNServiceBusLicenseKey" Value="[DasNServiceBusLicenseKey]" />
             <Parameter Name="ImmediateMessageRetries" Value="[ImmediateMessageRetries]" />
@@ -102,6 +101,7 @@
             <Parameter Name="JobStatusCheck_Interval" Value="[JobStatusCheck_Interval]" />
             <Parameter Name="TimeToWaitForJobToComplete" Value="[TimeToWaitForJobToComplete]" />
             <Parameter Name="TimeToWaitForPeriodEndRunJobToComplete" Value="[TimeToWaitForPeriodEndRunJobToComplete]" />
+            <Parameter Name="TimeToWaitForPeriodEndStartJobToComplete" Value="[TimeToWaitForPeriodEndStartJobToComplete]" />
             <Parameter Name="NumberOfNServiceBusThreads" Value="[NumberOfNServiceBusThreads]" />
             <Parameter Name="DasNServiceBusLicenseKey" Value="[DasNServiceBusLicenseKey]" />
             <Parameter Name="ImmediateMessageRetries" Value="[ImmediateMessageRetries]" />
