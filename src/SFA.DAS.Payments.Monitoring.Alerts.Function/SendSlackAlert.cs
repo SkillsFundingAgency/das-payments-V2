@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -31,7 +30,7 @@ namespace SFA.DAS.Monitoring.Alerts.Function
 
             log.LogInformation($"Request: {requestBody}.");
 
-            await _slackService.PostSlackAlert(requestBody, slackChannelUri);
+            await _slackService.PostSlackAlert(log, requestBody, slackChannelUri);
 
             return new OkObjectResult("");
         }
@@ -47,7 +46,7 @@ namespace SFA.DAS.Monitoring.Alerts.Function
 
             log.LogInformation($"Request: {requestBody}.");
 
-            await _slackService.PostSlackAlert(requestBody, slackChannelUri);
+            await _slackService.PostSlackAlert(log, requestBody, slackChannelUri);
 
             return new OkObjectResult("");
         }
