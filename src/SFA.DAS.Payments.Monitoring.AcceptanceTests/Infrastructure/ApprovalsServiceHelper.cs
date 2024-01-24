@@ -11,8 +11,6 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Infrastructure
 {
     public class ApprovalsServiceHelper
     {
-//        private static readonly string ServiceName =
-  //          "fabric:/SFA.DAS.Payments.DataLocks.ServiceFabric/SFA.DAS.Payments.DataLocks.ApprovalsService";
         public static async Task<bool> IsApprovalsServiceRunning()
         {
             var client = new FabricClient();
