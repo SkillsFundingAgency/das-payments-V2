@@ -62,8 +62,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
             }
 
             Logger.LogDebug($"checking if the DataLocks Approvals service is disabled.");
-            if (!await serviceStatusManager.IsServiceRunning("SFA.DAS.Payments.DataLocks.ServiceFabric",
-                    "SFA.DAS.Payments.DataLocks.ApprovalsService"))
+            if (!await serviceStatusManager.IsServiceRunning(ServiceNames.DataLocksApprovals.ApplicationName,
+                    ServiceNames.DataLocksApprovals.ServiceName))
             {
                 await CompleteJob(job, JobStatus.Completed, cancellationToken);
                 Logger.LogInfo($"Data Locks Approvals Reference data service has now been stopped. Completed period end start job: {jobId}.");

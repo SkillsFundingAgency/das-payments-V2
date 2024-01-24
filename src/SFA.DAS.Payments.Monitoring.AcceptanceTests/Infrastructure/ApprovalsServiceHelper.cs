@@ -5,20 +5,21 @@ using System.Fabric.Health;
 using System.Linq;
 using System.ServiceModel.Channels;
 using System.Threading.Tasks;
+using SFA.DAS.Payments.Monitoring.Jobs.Model;
 
 namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Infrastructure
 {
     public class ApprovalsServiceHelper
     {
-        private static readonly string ServiceName =
-            "fabric:/SFA.DAS.Payments.DataLocks.ServiceFabric/SFA.DAS.Payments.DataLocks.ApprovalsService";
+//        private static readonly string ServiceName =
+  //          "fabric:/SFA.DAS.Payments.DataLocks.ServiceFabric/SFA.DAS.Payments.DataLocks.ApprovalsService";
         public static async Task<bool> IsApprovalsServiceRunning()
         {
             var client = new FabricClient();
             var result = await client.HealthManager.GetApplicationHealthAsync(
-                new Uri("fabric:/SFA.DAS.Payments.DataLocks.ServiceFabric"));
+                new Uri(ServiceNames.DataLocksApprovals.ApplicationUri));
             var service = result.ServiceHealthStates.FirstOrDefault(x =>
-                x.ServiceName.AbsoluteUri.Equals(ServiceName));
+                x.ServiceName.AbsoluteUri.Equals(ServiceNames.DataLocksApprovals.ServiceUri));
 
             return service?.AggregatedHealthState == HealthState.Ok;
         }
@@ -27,7 +28,7 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Infrastructure
         {
 
             var fabricClient = new FabricClient();
-            var serviceDescription = new DeleteServiceDescription(new Uri(ServiceName))
+            var serviceDescription = new DeleteServiceDescription(new Uri(ServiceNames.DataLocksApprovals.ServiceUri))
             {
                 ForceDelete = true,
             };
@@ -40,10 +41,10 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Infrastructure
             var fabricClient = new FabricClient();
             var serviceDescription = new StatelessServiceDescription
             {
-                ApplicationName = new Uri("fabric:/SFA.DAS.Payments.DataLocks.ServiceFabric"),
+                ApplicationName = new Uri(ServiceNames.DataLocksApprovals.ApplicationUri),
                 PartitionSchemeDescription = new SingletonPartitionSchemeDescription(),
-                ServiceName = new Uri(ServiceName),
-                ServiceTypeName = "SFA.DAS.Payments.DataLocks.ApprovalsServiceType",
+                ServiceName = new Uri(ServiceNames.DataLocksApprovals.ServiceUri),
+                ServiceTypeName = ServiceNames.DataLocksApprovals.ServiceTypeName,
                 InstanceCount = -1,
             };
 
