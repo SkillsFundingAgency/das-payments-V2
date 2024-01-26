@@ -69,7 +69,6 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.Services
             
             var slackPayload = new SlackPayload
             {
-                Text = alertTitle,
                 Blocks = _slackAlertHelper.BuildSlackPayload(alertEmoji,
                                        timestamp,
                                        alertVariables["JobId"],
