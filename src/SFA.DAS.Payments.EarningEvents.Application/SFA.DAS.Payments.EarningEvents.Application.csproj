@@ -30,6 +30,7 @@
     <PackageReference Include="Microsoft.Azure.Services.AppAuthentication" Version="1.0.3" />
     <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="3.19.8" />
     <PackageReference Include="NServiceBus" Version="7.1.5" />
+    <PackageReference Include="SFA.DAS.Payments.ServiceFabric.Core" Version="1.1.0" />
     <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
   </ItemGroup>
 
@@ -41,7 +42,6 @@
     <ProjectReference Include="..\SFA.DAS.Payments.JobContextMessageHandling\SFA.DAS.Payments.JobContextMessageHandling.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Client\SFA.DAS.Payments.Monitoring.Jobs.Client.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Messages\SFA.DAS.Payments.Monitoring.Jobs.Messages.csproj" />
-    <ProjectReference Include="..\SFA.DAS.Payments.ServiceFabric.Core\SFA.DAS.Payments.ServiceFabric.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

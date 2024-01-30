@@ -8,19 +8,21 @@ using Microsoft.ServiceFabric.Services.Communication.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Audit.Application.PaymentsEventProcessing;
-using SFA.DAS.Payments.Audit.Model;
 using SFA.DAS.Payments.Model.Core.Audit;
 using SFA.DAS.Payments.ServiceFabric.Core;
 
 namespace SFA.DAS.Payments.Audit.Application.ServiceFabric.Infrastructure
 {
-    public abstract class AuditStatefulService<TPaymentEventModel> : StatefulService where TPaymentEventModel : PaymentsEventModel
+    public abstract class AuditStatefulService<TPaymentEventModel> : StatefulService
+        where TPaymentEventModel : PaymentsEventModel
     {
-        private readonly IPaymentLogger logger;
-        private readonly ILifetimeScope lifetimeScope;
         private readonly IPaymentsEventModelBatchService<TPaymentEventModel> batchService;
+        private readonly ILifetimeScope lifetimeScope;
+        private readonly IPaymentLogger logger;
         private IStatefulEndpointCommunicationListener listener;
-        protected AuditStatefulService(StatefulServiceContext context, IPaymentLogger logger, ILifetimeScope lifetimeScope, IPaymentsEventModelBatchService<TPaymentEventModel> batchService)
+
+        protected AuditStatefulService(StatefulServiceContext context, IPaymentLogger logger,
+            ILifetimeScope lifetimeScope, IPaymentsEventModelBatchService<TPaymentEventModel> batchService)
             : base(context)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -36,7 +38,7 @@ namespace SFA.DAS.Payments.Audit.Application.ServiceFabric.Infrastructure
 
             return new List<ServiceReplicaListener>
             {
-                serviceListener,
+                serviceListener
             };
         }
 

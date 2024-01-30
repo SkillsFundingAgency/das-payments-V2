@@ -28,6 +28,7 @@
     <PackageReference Include="Microsoft.ServiceFabric.Services" Version="3.4.664" />
     <PackageReference Include="Microsoft.ServiceFabric.Services.Remoting" Version="3.4.664" />
     <PackageReference Include="NServiceBus" Version="7.1.5" />
+    <PackageReference Include="SFA.DAS.Payments.ServiceFabric.Core" Version="1.1.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -42,7 +43,6 @@
     <ProjectReference Include="..\SFA.DAS.Payments.ProviderPayments.Application\SFA.DAS.Payments.ProviderPayments.Application.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.ProviderPayments.Domain\SFA.DAS.Payments.ProviderPayments.Domain.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.ProviderPayments.Messages.Internal\SFA.DAS.Payments.ProviderPayments.Messages.Internal.csproj" />
-    <ProjectReference Include="..\SFA.DAS.Payments.ServiceFabric.Core\SFA.DAS.Payments.ServiceFabric.Core.csproj" />
   </ItemGroup>
 
 </Project>

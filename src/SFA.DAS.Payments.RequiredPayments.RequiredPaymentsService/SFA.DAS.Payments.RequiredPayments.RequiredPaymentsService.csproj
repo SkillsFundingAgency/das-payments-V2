@@ -21,13 +21,13 @@
     <PackageReference Include="Microsoft.ServiceFabric.Data" Version="3.4.664" />
     <PackageReference Include="Microsoft.ServiceFabric.Services" Version="3.4.664" />
     <PackageReference Include="Microsoft.ServiceFabric.Services.Remoting" Version="3.4.664" />
+    <PackageReference Include="SFA.DAS.Payments.ServiceFabric.Core" Version="1.1.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Payments.Core\SFA.DAS.Payments.Core.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.RequiredPayments.Application\SFA.DAS.Payments.RequiredPayments.Application.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService.Interfaces\SFA.DAS.Payments.RequiredPayments.RequiredPaymentsService.Interfaces.csproj" />
-    <ProjectReference Include="..\SFA.DAS.Payments.ServiceFabric.Core\SFA.DAS.Payments.ServiceFabric.Core.csproj" />
   </ItemGroup>
 
 </Project>

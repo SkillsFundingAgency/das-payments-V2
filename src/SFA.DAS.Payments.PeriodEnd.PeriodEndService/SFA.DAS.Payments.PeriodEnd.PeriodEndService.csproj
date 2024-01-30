@@ -21,13 +21,13 @@
     <PackageReference Include="NServiceBus.Azure.Transports.WindowsAzureStorageQueues" Version="8.1.0" />
     <PackageReference Include="NServiceBus.Newtonsoft.Json" Version="2.1.0" />
     <PackageReference Include="NServiceBus.Transport.AzureServiceBus" Version="1.0.0" />
+    <PackageReference Include="SFA.DAS.Payments.ServiceFabric.Core" Version="1.1.0" />
     <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Payments.JobContextMessageHandling\SFA.DAS.Payments.JobContextMessageHandling.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.PeriodEnd.Application\SFA.DAS.Payments.PeriodEnd.Application.csproj" />
-    <ProjectReference Include="..\SFA.DAS.Payments.ServiceFabric.Core\SFA.DAS.Payments.ServiceFabric.Core.csproj" />
   </ItemGroup>
 
 </Project>
