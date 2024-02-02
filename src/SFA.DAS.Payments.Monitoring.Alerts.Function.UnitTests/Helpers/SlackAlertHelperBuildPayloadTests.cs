@@ -22,6 +22,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
         private string _collectionPeriodPayments;
         private string _yearToDatePayments;
         private string _numberOfLearners;
+        private string _accountedForPayments;
 
         [SetUp]
         public void Setup()
@@ -36,6 +37,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
             _collectionPeriodPayments = "1000";
             _yearToDatePayments = "22222";
             _numberOfLearners = "6789";
+            _accountedForPayments = "23222";
         }
 
 
@@ -56,6 +58,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
                                                   _collectionPeriodPayments,
                                                   _yearToDatePayments,
                                                   _numberOfLearners,
+                                                  _accountedForPayments,
                                                   _alertTitle,
                                                   _appInsightsSearchResultsUiLink);
 
@@ -79,6 +82,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
                 _collectionPeriodPayments,
                 _yearToDatePayments,
                 _numberOfLearners,
+                _accountedForPayments,
                 _alertTitle,
                 _appInsightsSearchResultsUiLink);
 
@@ -101,6 +105,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
                 _collectionPeriodPayments,
                 _yearToDatePayments,
                 _numberOfLearners,
+                _accountedForPayments,
                 _alertTitle,
                 _appInsightsSearchResultsUiLink);
 
@@ -123,6 +128,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
                 _collectionPeriodPayments,
                 _yearToDatePayments,
                 _numberOfLearners,
+                _accountedForPayments,
                 _alertTitle,
                 _appInsightsSearchResultsUiLink);
 
@@ -145,6 +151,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
                 _collectionPeriodPayments,
                 _yearToDatePayments,
                 _numberOfLearners,
+                _accountedForPayments,
                 _alertTitle,
                 _appInsightsSearchResultsUiLink);
 
@@ -167,6 +174,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
                 _collectionPeriodPayments,
                 _yearToDatePayments,
                 _numberOfLearners,
+                _accountedForPayments,
                 _alertTitle,
                 _appInsightsSearchResultsUiLink);
 
@@ -189,6 +197,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
                 _collectionPeriodPayments,
                 _yearToDatePayments,
                 _numberOfLearners,
+                _accountedForPayments,
                 _alertTitle,
                 _appInsightsSearchResultsUiLink);
 
@@ -211,6 +220,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
                 _collectionPeriodPayments,
                 _yearToDatePayments,
                 _numberOfLearners,
+                _accountedForPayments,
                 _alertTitle,
                 _appInsightsSearchResultsUiLink);
 
@@ -234,6 +244,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
                 _collectionPeriodPayments,
                 _yearToDatePayments,
                 _numberOfLearners,
+                _accountedForPayments,
                 _alertTitle,
                 _appInsightsSearchResultsUiLink);
 
@@ -257,6 +268,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
                 _collectionPeriodPayments,
                 _yearToDatePayments,
                 _numberOfLearners,
+                _accountedForPayments,
                 _alertTitle,
                 _appInsightsSearchResultsUiLink);
 
@@ -280,6 +292,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
                 _collectionPeriodPayments,
                 _yearToDatePayments,
                 _numberOfLearners,
+                _accountedForPayments,
                 _alertTitle,
                 _appInsightsSearchResultsUiLink);
 
@@ -303,6 +316,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
                 _collectionPeriodPayments,
                 _yearToDatePayments,
                 _numberOfLearners,
+                _accountedForPayments,
                 _alertTitle,
                 _appInsightsSearchResultsUiLink);
 
@@ -326,6 +340,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
                 _collectionPeriodPayments,
                 _yearToDatePayments,
                 _numberOfLearners,
+                _accountedForPayments,
                 _alertTitle,
                 _appInsightsSearchResultsUiLink);
 
@@ -349,6 +364,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
                 _collectionPeriodPayments,
                 _yearToDatePayments,
                 _numberOfLearners,
+                _accountedForPayments,
                 _alertTitle,
                 _appInsightsSearchResultsUiLink);
 
@@ -372,6 +388,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
                 _collectionPeriodPayments,
                 _yearToDatePayments,
                 _numberOfLearners,
+                _accountedForPayments,
                 _alertTitle,
                 _appInsightsSearchResultsUiLink);
 
@@ -395,6 +412,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
                 _collectionPeriodPayments,
                 _yearToDatePayments,
                 _numberOfLearners,
+                _accountedForPayments,
                 _alertTitle,
                 _appInsightsSearchResultsUiLink);
 
@@ -404,7 +422,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
         }
 
         [Test]
-        public void BuildSlackPayloadConstructsSectionObjectNumberOfLearnersSpacerMarkdownItem()
+        public void BuildSlackPayloadConstructsSectionObjectAccountedForPaymentsMarkdownItem()
         {
             //Arrange
             var helper = new SlackAlertHelper();
@@ -418,12 +436,13 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
                 _collectionPeriodPayments,
                 _yearToDatePayments,
                 _numberOfLearners,
+                _accountedForPayments,
                 _alertTitle,
                 _appInsightsSearchResultsUiLink);
 
             //Assert
             result[2].Fields[5].Type.Should().Be("mrkdwn");
-            result[2].Fields[5].Text.Should().Be(" ");
+            result[2].Fields[5].Text.Should().Be("*Accounted For Payments*");
         }
 
         [Test]
@@ -441,6 +460,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
                 _collectionPeriodPayments,
                 _yearToDatePayments,
                 _numberOfLearners,
+                _accountedForPayments,
                 _alertTitle,
                 _appInsightsSearchResultsUiLink);
 
@@ -464,6 +484,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
                 _collectionPeriodPayments,
                 _yearToDatePayments,
                 _numberOfLearners,
+                _accountedForPayments,
                 _alertTitle,
                 _appInsightsSearchResultsUiLink);
 
@@ -487,6 +508,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
                 _collectionPeriodPayments,
                 _yearToDatePayments,
                 _numberOfLearners,
+                _accountedForPayments,
                 _alertTitle,
                 _appInsightsSearchResultsUiLink);
 
@@ -511,6 +533,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
                 _collectionPeriodPayments,
                 "nil",
                 _numberOfLearners,
+                _accountedForPayments,
                 _alertTitle,
                 _appInsightsSearchResultsUiLink);
 
@@ -534,6 +557,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
                 _collectionPeriodPayments,
                 _yearToDatePayments,
                 _numberOfLearners,
+                _accountedForPayments,
                 _alertTitle,
                 _appInsightsSearchResultsUiLink);
 
@@ -558,6 +582,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
                 "nil",
                 _yearToDatePayments,
                 _numberOfLearners,
+                _accountedForPayments,
                 _alertTitle,
                 _appInsightsSearchResultsUiLink);
 
@@ -581,12 +606,62 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
                 _collectionPeriodPayments,
                 _yearToDatePayments,
                 _numberOfLearners,
+                _accountedForPayments,
                 _alertTitle,
                 _appInsightsSearchResultsUiLink);
 
             //Assert
             result[2].Fields[6].Type.Should().Be("plain_text");
             result[2].Fields[6].Text.Should().Be(_numberOfLearners);
+        }
+
+        [Test]
+        public void BuildSlackPayloadConstructsSectionObjectAccountedForPaymentsPlainTextItem()
+        {
+            //Arrange
+            var helper = new SlackAlertHelper();
+
+            //Act
+            var result = helper.BuildSlackPayload(_alertEmoji,
+                _timeStamp,
+                _jobId,
+                _academicYear,
+                _collectionPeriod,
+                _collectionPeriodPayments,
+                _yearToDatePayments,
+                _numberOfLearners,
+                _accountedForPayments,
+                _alertTitle,
+                _appInsightsSearchResultsUiLink);
+
+            //Assert
+            var decimalValue = Convert.ToDecimal(_accountedForPayments);
+            result[2].Fields[7].Type.Should().Be("plain_text");
+            result[2].Fields[7].Text.Should().Be($"£{decimalValue.ToString("N2")}");
+        }
+
+        [Test]
+        public void AccountedForPaymentsRenderedVerbatimIfCannotFormatAsCurrency()
+        {
+            //Arrange
+            var helper = new SlackAlertHelper();
+
+            //Act
+            var result = helper.BuildSlackPayload(_alertEmoji,
+                _timeStamp,
+                _jobId,
+                _academicYear,
+                _collectionPeriod,
+                _collectionPeriodPayments,
+                _yearToDatePayments,
+                _numberOfLearners,
+                "nil",
+                _alertTitle,
+                _appInsightsSearchResultsUiLink);
+
+            //Assert
+            result[2].Fields[7].Type.Should().Be("plain_text");
+            result[2].Fields[7].Text.Should().Be("£nil");
         }
 
         [Test]
@@ -601,6 +676,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
                 _jobId,
                 _academicYear,
                 _collectionPeriod,
+                string.Empty,
                 string.Empty,
                 string.Empty,
                 string.Empty,
@@ -626,12 +702,13 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
                 string.Empty,
                 _yearToDatePayments,
                 _numberOfLearners,
+                _accountedForPayments,
                 _alertTitle,
                 _appInsightsSearchResultsUiLink);
 
             //Assert
             result.Count.Should().Be(3);
-            result[2].Fields.Count.Should().Be(5);
+            result[2].Fields.Count.Should().Be(6);
             result[2].Fields[1].Type.Should().Be("plain_text");
             var decimalValue = Convert.ToDecimal(_yearToDatePayments);
             result[2].Fields[1].Text.Should().Be($"£{decimalValue.ToString("N2")}");
@@ -652,12 +729,13 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
                 _collectionPeriodPayments,
                 string.Empty,
                 _numberOfLearners,
+                _accountedForPayments,
                 _alertTitle,
                 _appInsightsSearchResultsUiLink);
 
             //Assert
             result.Count.Should().Be(3);
-            result[2].Fields.Count.Should().Be(5);
+            result[2].Fields.Count.Should().Be(6);
             result[2].Fields[1].Type.Should().Be("plain_text");
             var decimalValue = Convert.ToDecimal(_collectionPeriodPayments);
             result[2].Fields[1].Text.Should().Be($"£{decimalValue.ToString("N2")}");
@@ -678,12 +756,37 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
                 _collectionPeriodPayments,
                 _yearToDatePayments,
                 string.Empty,
+                _accountedForPayments,
                 _alertTitle,
                 _appInsightsSearchResultsUiLink);
 
             //Assert
             result.Count.Should().Be(3);
-            result[2].Fields.Count.Should().Be(4);
+            result[2].Fields.Count.Should().Be(6);
+        }
+
+        [Test]
+        public void AccountedForPaymentsIsNotRenderedIfNotPresent()
+        {
+            //Arrange
+            var helper = new SlackAlertHelper();
+
+            //Act
+            var result = helper.BuildSlackPayload(_alertEmoji,
+                _timeStamp,
+                _jobId,
+                _academicYear,
+                _collectionPeriod,
+                _collectionPeriodPayments,
+                _yearToDatePayments,
+                _numberOfLearners,
+                string.Empty,
+                _alertTitle,
+                _appInsightsSearchResultsUiLink);
+
+            //Assert
+            result.Count.Should().Be(3);
+            result[2].Fields.Count.Should().Be(6);
         }
 
         [Test]
@@ -706,6 +809,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
                 _collectionPeriodPayments,
                 "nil",
                 _numberOfLearners,
+                _accountedForPayments,
                 _alertTitle,
                 _appInsightsSearchResultsUiLink);
 
@@ -735,6 +839,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
                 "\"" + _collectionPeriodPayments,
                 _yearToDatePayments + "\"",
                 "\"" + _numberOfLearners + "\"",
+                _accountedForPayments,
                 _alertTitle,
                 _appInsightsSearchResultsUiLink);
 

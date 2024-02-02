@@ -16,6 +16,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.Helpers
                                               string collectionPeriodPayments,
                                               string yearToDatePayments,
                                               string numberOfLearners,
+                                              string accountedForPayments,
                                               string alertTitle,
                                               string appInsightsSearchResultsUiLink);
 

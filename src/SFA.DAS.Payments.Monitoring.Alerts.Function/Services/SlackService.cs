@@ -77,6 +77,7 @@ namespace SFA.DAS.Payments.Monitoring.Alerts.Function.Services
                                        alertVariables["CollectionPeriodPayments"],
                                        alertVariables["YearToDatePayments"],
                                        alertVariables["NumberOfLearners"],
+                                       alertVariables["AccountedForPayments"],
                                        alertTitle,
                                        appInsightsSearchResultsUiLink)
             };
