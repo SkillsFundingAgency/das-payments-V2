@@ -163,7 +163,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
                 throw new InvalidOperationException(
                     "Invalid period end message, cannot determine the type of message from the topics & tasks.");
 
-            if (!Enum.TryParse<PeriodEndTaskType>(taskName, out var taskType))
+            if (!Enum.TryParse<PeriodEndTaskType>(taskName, true, out var taskType))
                 throw new InvalidOperationException($"Invalid period end task type: '{taskName}'");
 
             logger.LogDebug($"Got task type: {taskType:G}");
