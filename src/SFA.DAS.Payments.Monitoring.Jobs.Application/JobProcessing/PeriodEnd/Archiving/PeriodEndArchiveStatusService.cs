@@ -38,7 +38,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd.A
 
         public async Task<bool> ManageStatus(long jobId, CancellationToken cancellationToken)
         {
-            logger.LogInfo($"Now determining if job {jobId} has finished. ");
+            telemetry.TrackEvent($"PeriodEndArchiveStatusService: Now determining if job {jobId} has finished. ");
 
             var job = await jobStorageService.GetJob(jobId, cancellationToken);
 
@@ -51,8 +51,10 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd.A
                     return true;
             }
 
-            var archiveStatus = await CheckArchiveStatus();
+            var archiveStatus = await CheckArchiveStatus(jobId);
 
+            telemetry.TrackEvent(
+                $"PeriodEndArchiveStatusService: Current status for jobId: ${jobId}, Status: ${archiveStatus}");
             switch (archiveStatus)
             {
                 case "Started":
@@ -156,15 +158,18 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd.A
             return true;
         }
 
-        private async Task<string> CheckArchiveStatus()
+        private async Task<string> CheckArchiveStatus(long jobId)
         {
+            telemetry.TrackEvent(
+                $"PeriodEndArchiveStatusService: Checking current archiving status for jobId ${jobId}");
             var result =
                 await new HttpClient { Timeout = TimeSpan.FromSeconds(archiveConfig.ArchiveTimeout) }.GetAsync(
                     $"{archiveConfig.ArchiveFunctionUrl}");
 
             if (!result.IsSuccessStatusCode)
             {
-                logger.LogError("Error in Period end archiving function", new Exception(result.ReasonPhrase));
+                telemetry.TrackEvent(
+                    $"Error in Period end archiving function for jobId ${jobId}, Reason: ${new Exception(result.ReasonPhrase)}, Content: ${result.Content}");
                 return "Failed";
             }
 

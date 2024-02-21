@@ -51,6 +51,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
         {
             try
             {
+                logger.LogInfo(
+                    $"Starting period end archive function. JobId: ${message.JobId}");
                 var messageContent = new StringContent(JsonConvert.SerializeObject(message), Encoding.UTF8,
                     "application/json");
                 var client = new HttpClient();
@@ -63,6 +65,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
                 if (!result.IsSuccessStatusCode)
                     logger.LogError(
                         $"{result.StatusCode}: HTTP error when starting period end archive function. Error: {result.Content}");
+                logger.LogInfo(
+                    $"Successfully called period end archive function. JobId: ${message.JobId}");
             }
 
             catch (Exception e)
