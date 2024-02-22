@@ -17,17 +17,18 @@ namespace SFA.DAS.Payments.Audit.ArchiveService.Orchestrators
             [OrchestrationTrigger] IDurableOrchestrationContext context,
             [Inject] IPaymentLogger log)
         {
+            var messageJson = context.GetInput<string>() ??
+                              throw new Exception(
+                                  "Error in PeriodEndArchiveOrchestrator. Message is null.");
             try
             {
                 log.LogInfo("Starting Period End Archive Orchestrator");
 
-                var messageJson = context.GetInput<string>() ??
-                                  throw new Exception(
-                                      "Error in PeriodEndArchiveOrchestrator. Message is null.");
                 return await context.CallActivityAsync<string>(nameof(StartPeriodEndArchiveActivity), messageJson);
             }
             catch (Exception ex)
             {
+                await context.CallActivityAsync<string>(nameof(ArchiveFailActivity), messageJson);
                 log.LogError("Error in PeriodEndArchiveOrchestrator", ex);
                 return null;
             }

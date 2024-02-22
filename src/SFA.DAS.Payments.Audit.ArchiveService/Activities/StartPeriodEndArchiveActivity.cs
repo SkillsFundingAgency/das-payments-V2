@@ -13,6 +13,7 @@ using Microsoft.Rest;
 using Newtonsoft.Json;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Audit.ArchiveService.Extensions;
+using SFA.DAS.Payments.Audit.ArchiveService.Helpers;
 using SFA.DAS.Payments.Audit.ArchiveService.Infrastructure.Configuration;
 using SFA.DAS.Payments.Audit.ArchiveService.Infrastructure.IoC;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
@@ -49,7 +50,7 @@ namespace SFA.DAS.Payments.Audit.ArchiveService.Activities
             [Inject] IPaymentLogger logger,
             [Inject] IPeriodEndArchiveConfiguration config)
         {
-            var currentRunInfo = await GetCurrentJobs(entityClient);
+            var currentRunInfo = await StatusHelper.GetCurrentJobs(entityClient);
             var currentJobId =
                 new EntityId(nameof(HandleCurrentJobId.Handle), HandleCurrentJobId.PeriodEndArchiveEntityName);
             try
@@ -88,7 +89,7 @@ namespace SFA.DAS.Payments.Audit.ArchiveService.Activities
                     JobId = runResponse.RunId,
                     Status = "Started"
                 };
-                await UpdateCurrentJobStatus(entityClient, currentJobId, currentRunInfo);
+                await StatusHelper.UpdateCurrentJobStatus(entityClient, currentJobId, currentRunInfo);
 
 
                 PipelineRun pipelineRun;
@@ -105,7 +106,7 @@ namespace SFA.DAS.Payments.Audit.ArchiveService.Activities
                             JobId = runResponse.RunId,
                             Status = pipelineRun.Status
                         };
-                        await UpdateCurrentJobStatus(entityClient, currentJobId, currentRunInfo);
+                        await StatusHelper.UpdateCurrentJobStatus(entityClient, currentJobId, currentRunInfo);
 
                         Thread.Sleep(config.SleepDelay);
                     }
@@ -133,28 +134,14 @@ namespace SFA.DAS.Payments.Audit.ArchiveService.Activities
                     JobId = runResponse.RunId,
                     Status = pipelineRun.Status
                 };
-                await UpdateCurrentJobStatus(entityClient, currentJobId, currentRunInfo);
+                await StatusHelper.UpdateCurrentJobStatus(entityClient, currentJobId, currentRunInfo);
             }
             catch (Exception ex)
             {
                 currentRunInfo.Status = "Failed";
-                await entityClient.SignalEntityAsync(currentJobId, "add", currentRunInfo);
+                await StatusHelper.UpdateCurrentJobStatus(entityClient, currentJobId, currentRunInfo);
                 throw new Exception(ex.Message);
             }
-        }
-
-        private static async Task UpdateCurrentJobStatus(IDurableEntityClient entityClient, EntityId entityId,
-            RunInformation runInformation)
-        {
-            await entityClient.SignalEntityAsync(entityId, "add", runInformation);
-        }
-
-        private static async Task<RunInformation> GetCurrentJobs(IDurableEntityClient entityClient)
-        {
-            var entityId = new EntityId(nameof(HandleCurrentJobId.Handle),
-                HandleCurrentJobId.PeriodEndArchiveEntityName);
-            var stateResponse = await entityClient.ReadEntityStateAsync<RunInformation>(entityId);
-            return stateResponse.EntityExists ? stateResponse.EntityState : null;
         }
     }
 }
