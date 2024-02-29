@@ -39,6 +39,7 @@
     <Parameter Name="DelayedMessageRetries" DefaultValue="3" />
     <Parameter Name="DelayedMessageRetryDelay" DefaultValue="00:00:10" />
     <Parameter Name="MetricsGenerationDelay" DefaultValue="00:05:00" />
+    <Parameter Name="MetricsGenerationWaitTime" DefaultValue="00:04:30" />
     <Parameter Name="MetricsFunctionApiKey" DefaultValue="" />
     <Parameter Name="MetricsFunctionBaseUrl" DefaultValue="" />
     <Parameter Name="ArchiveFunctionUrl" DefaultValue="" />
@@ -76,6 +77,7 @@
             <Parameter Name="DelayedMessageRetries" Value="[DelayedMessageRetries]" />
             <Parameter Name="DelayedMessageRetryDelay" Value="[DelayedMessageRetryDelay]" />
             <Parameter Name="MetricsGenerationDelay" Value="[MetricsGenerationDelay]" />
+            <Parameter Name="MetricsGenerationWaitTime" Value="[MetricsGenerationWaitTime]" />
           </Section>
         </Settings>
       </ConfigOverride>

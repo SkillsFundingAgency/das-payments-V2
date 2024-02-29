@@ -1,0 +1,174 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "metricAlerts_VM_CPU_Alert_name": {
+            "defaultValue": "VM-CPU-Alert",
+            "type": "String"
+        },
+        "virtualMachineScaleSets_monitor_externalid": {
+            "defaultValue": "/subscriptions/4ff47917-ac4e-432a-b314-a6525434afcb/resourceGroups/DCOL-SDW-ServiceFabricDas-WEU/providers/Microsoft.Compute/virtualMachineScaleSets/monitor",
+            "type": "String"
+        },
+        "actionGroups_dcol_dasalerts_actiongroup_externalid": {
+            "defaultValue": "/subscriptions/4FF47917-AC4E-432A-B314-A6525434AFCB/resourceGroups/dcol-sdw-ops-weu/providers/microsoft.insights/actionGroups/dcol-sdw-dasalerts-actiongroup",
+            "type": "String"
+        },
+         "metricAlerts_VM_Available_Memory_Alert_name": {
+            "defaultValue": "VM-Available-Memory-Alert",
+            "type": "String"
+        },
+        "actiongroups_dcol_dasalerts_actiongroup_weu_externalid": {
+            "defaultValue": "/subscriptions/4ff47917-ac4e-432a-b314-a6525434afcb/resourceGroups/dcol-sdw-servicefabricdas-weu/providers/microsoft.insights/actiongroups/dcol-sdw-dasalerts-actiongroup-weu",
+            "type": "String"
+        },
+        "metricAlerts_VM_Availability_Alert_name": {
+            "defaultValue": "VM-Availability-Alert",
+            "type": "String"
+        },
+        "actionGroups_SFCluster_VMAlerts_externalid": {
+            "defaultValue": "/subscriptions/4FF47917-AC4E-432A-B314-A6525434AFCB/resourceGroups/DCOL-SDW-ServiceFabricDas-WEU/providers/microsoft.insights/actionGroups/SFCluster-VMAlerts",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "microsoft.insights/metricAlerts",
+            "apiVersion": "2018-03-01",
+            "name": "[parameters('metricAlerts_VM_CPU_Alert_name')]",
+            "location": "global",
+            "tags": {
+                "Environment": "Dev/Test",
+                "Product": "Submit Learner Data",
+                "Service Offering": "Submit Learner Data"
+            },
+            "properties": {
+                "description": "This will alert us if the CPU is at 80% or above.",
+                "severity": 3,
+                "enabled": true,
+                "scopes": [
+                    "[parameters('virtualMachineScaleSets_monitor_externalid')]"
+                ],
+                "evaluationFrequency": "PT1M",
+                "windowSize": "PT5M",
+                "criteria": {
+                    "allOf": [
+                        {
+                            "threshold": 70,
+                            "name": "Metric1",
+                            "metricNamespace": "Microsoft.Compute/virtualMachineScaleSets",
+                            "metricName": "Percentage CPU",
+                            "operator": "GreaterThan",
+                            "timeAggregation": "Average",
+                            "skipMetricValidation": false,
+                            "criterionType": "StaticThresholdCriterion"
+                        }
+                    ],
+                    "odata.type": "Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria"
+                },
+                "autoMitigate": true,
+                "targetResourceType": "Microsoft.Compute/virtualMachineScaleSets",
+                "targetResourceRegion": "westeurope",
+                "actions": [
+                    {
+                        "actionGroupId": "[parameters('actionGroups_dcol_dasalerts_actiongroup_externalid')]",
+                        "webHookProperties": {}
+                    }
+                ]
+            }
+        },
+        {
+            "type": "microsoft.insights/metricAlerts",
+            "apiVersion": "2018-03-01",
+            "name": "[parameters('metricAlerts_VM_Available_Memory_Alert_name')]",
+            "location": "global",
+            "tags": {
+                "Environment": "Dev/Test",
+                "Product": "Submit Learner Data",
+                "Service Offering": "Submit Learner Data"
+            },
+            "properties": {
+                "severity": 3,
+                "enabled": true,
+                "scopes": [
+                    "[parameters('virtualMachineScaleSets_monitor_externalid')]"
+                ],
+                "evaluationFrequency": "PT1M",
+                "windowSize": "PT5M",
+                "criteria": {
+                    "allOf": [
+                        {
+                            "threshold": 1000000000,
+                            "name": "Metric1",
+                            "metricNamespace": "Microsoft.Compute/virtualMachineScaleSets",
+                            "metricName": "Available Memory Bytes",
+                            "operator": "LessThan",
+                            "timeAggregation": "Total",
+                            "skipMetricValidation": false,
+                            "criterionType": "StaticThresholdCriterion"
+                        }
+                    ],
+                    "odata.type": "Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria"
+                },
+                "autoMitigate": true,
+                "targetResourceType": "Microsoft.Compute/virtualMachineScaleSets",
+                "targetResourceRegion": "westeurope",
+                "actions": [
+                    {
+                        "actionGroupId": "[parameters('actiongroups_dcol_dasalerts_actiongroup_weu_externalid')]",
+                        "webHookProperties": {}
+                    }
+                ]
+            }
+        },
+        {
+            "type": "microsoft.insights/metricAlerts",
+            "apiVersion": "2018-03-01",
+            "name": "[parameters('metricAlerts_VM_Availability_Alert_name')]",
+            "location": "global",
+            "tags": {
+                "Environment": "Dev/Test",
+                "Product": "Submit Learner Data",
+                "Service Offering": "Submit Learner Data"
+            },
+            "properties": {
+                "severity": 3,
+                "enabled": true,
+                "scopes": [
+                    "[parameters('virtualMachineScaleSets_monitor_externalid')]"
+                ],
+                "evaluationFrequency": "PT1M",
+                "windowSize": "PT5M",
+                "criteria": {
+                    "allOf": [
+                        {
+                            "threshold": 1,
+                            "name": "Metric1",
+                            "metricNamespace": "Microsoft.Compute/virtualMachineScaleSets",
+                            "metricName": "VmAvailabilityMetric",
+                            "operator": "LessThan",
+                            "timeAggregation": "Average",
+                            "skipMetricValidation": false,
+                            "criterionType": "StaticThresholdCriterion"
+                        }
+                    ],
+                    "odata.type": "Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria"
+                },
+                "autoMitigate": true,
+                "targetResourceType": "Microsoft.Compute/virtualMachineScaleSets",
+                "targetResourceRegion": "westeurope",
+                "actions": [
+                    {
+                        "actionGroupId": "[parameters('actionGroups_DCOL_dasalerts_actiongroup_WEU_externalid')]",
+                        "webHookProperties": {}
+                    },
+                    {
+                        "actionGroupId": "[parameters('actionGroups_SFCluster_VMAlerts_externalid')]",
+                        "webHookProperties": {}
+                    }
+                ]
+            }
+        }
+    ]
+}

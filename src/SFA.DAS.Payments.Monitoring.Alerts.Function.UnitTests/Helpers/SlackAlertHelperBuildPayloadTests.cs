@@ -3,498 +3,852 @@ using NUnit.Framework;
 using SFA.DAS.Payments.Monitoring.Alerts.Function.Helpers;
 using System;
 using System.Collections.Generic;
+using SFA.DAS.Payments.Monitoring.Alerts.Function.Models;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace SFA.DAS.Payments.Monitoring.Alerts.Function.UnitTests.Helpers
 {
+    [TestFixture]
     public class SlackAlertHelperBuildPayloadTests
     {
+        private string _alertEmoji;
+        private string _alertTitle;
+        private string _appInsightsSearchResultsUiLink;
+        private DateTime _timeStamp;
+        private string _jobId;
+        private string _academicYear;
+        private string _collectionPeriod;
+        private string _collectionPeriodPayments;
+        private string _yearToDatePayments;
+        private string _numberOfLearners;
+        private string _accountedForPayments;
+
+        [SetUp]
+        public void Setup()
+        { 
+            _alertEmoji = "alert_emoji"; 
+            _alertTitle = "alertTitle";
+            _appInsightsSearchResultsUiLink = "linktoui";
+            _timeStamp = new DateTime(2003, 11, 11, 10, 10, 10);
+            _jobId = "jobid";
+            _academicYear = "2122";
+            _collectionPeriod = "3";
+            _collectionPeriodPayments = "1000";
+            _yearToDatePayments = "22222";
+            _numberOfLearners = "6789";
+            _accountedForPayments = "23222";
+        }
+
+
         [Test]
         public void BuildSlackPayloadConstructsObjectList()
         {
             //Arrange
-            var alertEmoji = "alert_emoji";
-            var alertTitle = "alertTitle";
-            var appInsightsSearchResultsUiLink = "linktoui";
-            var timeStamp = new DateTime(2003, 11, 11, 10, 10, 10);
-            var jobId = "jobid";
-            var academicYear = "academicYear";
-            var collectionPeriod = "collectionPeriod";
+      
 
             var helper = new SlackAlertHelper();
 
             //Act
-            var result = helper.BuildSlackPayload(alertEmoji,
-                                                  timeStamp,
-                                                  jobId,
-                                                  academicYear,
-                                                  collectionPeriod,
-                                                  alertTitle,
-                                                  appInsightsSearchResultsUiLink);
+            var result = helper.BuildSlackPayload(_alertEmoji,
+                                                  _timeStamp,
+                                                  _jobId,
+                                                  _academicYear,
+                                                  _collectionPeriod,
+                                                  _collectionPeriodPayments,
+                                                  _yearToDatePayments,
+                                                  _numberOfLearners,
+                                                  _accountedForPayments,
+                                                  _alertTitle,
+                                                  _appInsightsSearchResultsUiLink);
 
             //Assert
-            result.Should().BeOfType<List<object>>();
+            result.Should().BeOfType<List<Block>>();
+            result.Count.Should().Be(3);
         }
 
         [Test]
         public void BuildSlackPayloadConstructsHeaderObjectTypeProperty()
         {
             //Arrange
-            var alertEmoji = "alert_emoji";
-            var alertTitle = "alertTitle";
-            var appInsightsSearchResultsUiLink = "linktoui";
-            var timeStamp = new DateTime(2003, 11, 11, 10, 10, 10);
-            var jobId = "jobid";
-            var academicYear = "academicYear";
-            var collectionPeriod = "collectionPeriod";
-
             var helper = new SlackAlertHelper();
 
             //Act
-            var result = helper.BuildSlackPayload(alertEmoji,
-                                                  timeStamp,
-                                                  jobId,
-                                                  academicYear,
-                                                  collectionPeriod,
-                                                  alertTitle,
-                                                  appInsightsSearchResultsUiLink);
+            var result = helper.BuildSlackPayload(_alertEmoji,
+                _timeStamp,
+                _jobId,
+                _academicYear,
+                _collectionPeriod,
+                _collectionPeriodPayments,
+                _yearToDatePayments,
+                _numberOfLearners,
+                _accountedForPayments,
+                _alertTitle,
+                _appInsightsSearchResultsUiLink);
 
             //Assert
-            var typePropertyValue = result[0].GetType().GetProperty("type").GetValue(result[0], null);
-            
-            typePropertyValue
-                .Should().BeOfType(typeof(string))
-                .And.Be("header");
+            result[0].Type.Should().Be("header");
         }
 
         [Test]
         public void BuildSlackPayloadConstructsHeaderObjectPropertyType()
         {
             //Arrange
-            var alertEmoji = "alert_emoji";
-            var alertTitle = "alertTitle";
-            var appInsightsSearchResultsUiLink = "linktoui";
-            var timeStamp = new DateTime(2003, 11, 11, 10, 10, 10);
-            var jobId = "jobid";
-            var academicYear = "academicYear";
-            var collectionPeriod = "collectionPeriod";
-
             var helper = new SlackAlertHelper();
 
             //Act
-            var result = helper.BuildSlackPayload(alertEmoji,
-                                                  timeStamp,
-                                                  jobId,
-                                                  academicYear,
-                                                  collectionPeriod,
-                                                  alertTitle,
-                                                  appInsightsSearchResultsUiLink);
+            var result = helper.BuildSlackPayload(_alertEmoji,
+                _timeStamp,
+                _jobId,
+                _academicYear,
+                _collectionPeriod,
+                _collectionPeriodPayments,
+                _yearToDatePayments,
+                _numberOfLearners,
+                _accountedForPayments,
+                _alertTitle,
+                _appInsightsSearchResultsUiLink);
 
             //Assert
-            var textPropertyObject = result[0].GetType().GetProperty("text").GetValue(result[0], null);
-            var textObjectTypePropertyValue = textPropertyObject.GetType().GetProperty("type").GetValue(textPropertyObject, null);
-
-            textObjectTypePropertyValue
-                .Should().BeOfType(typeof(string))
-                .And.Be("plain_text");
+            result[0].Text.Type.Should().Be("plain_text");
         }
 
         [Test]
         public void BuildSlackPayloadConstructsHeaderObjectPropertyText()
         {
             //Arrange
-            var alertEmoji = "alert_emoji";
-            var alertTitle = "alertTitle";
-            var appInsightsSearchResultsUiLink = "linktoui";
-            var timeStamp = new DateTime(2003, 11, 11, 10, 10, 10);
-            var jobId = "jobid";
-            var academicYear = "academicYear";
-            var collectionPeriod = "collectionPeriod";
-
             var helper = new SlackAlertHelper();
 
             //Act
-            var result = helper.BuildSlackPayload(alertEmoji,
-                                                  timeStamp,
-                                                  jobId,
-                                                  academicYear,
-                                                  collectionPeriod,
-                                                  alertTitle,
-                                                  appInsightsSearchResultsUiLink);
+            var result = helper.BuildSlackPayload(_alertEmoji,
+                _timeStamp,
+                _jobId,
+                _academicYear,
+                _collectionPeriod,
+                _collectionPeriodPayments,
+                _yearToDatePayments,
+                _numberOfLearners,
+                _accountedForPayments,
+                _alertTitle,
+                _appInsightsSearchResultsUiLink);
 
             //Assert
-            var textPropertyObject = result[0].GetType().GetProperty("text").GetValue(result[0], null);
-            var textObjectTypePropertyValue = textPropertyObject.GetType().GetProperty("text").GetValue(textPropertyObject, null);
-
-            textObjectTypePropertyValue
-                .Should().BeOfType(typeof(string))
-                .And.Be("alert_emoji alertTitle.");
+            result[0].Text.Text.Should().Be("alert_emoji alertTitle.");
         }
 
         [Test]
         public void BuildSlackPayloadConstructsSectionObjectTypeProperty()
         {
             //Arrange
-            var alertEmoji = "alert_emoji";
-            var alertTitle = "alertTitle";
-            var appInsightsSearchResultsUiLink = "linktoui";
-            var timeStamp = new DateTime(2003, 11, 11, 10, 10, 10);
-            var jobId = "jobid";
-            var academicYear = "academicYear";
-            var collectionPeriod = "collectionPeriod";
-
             var helper = new SlackAlertHelper();
 
             //Act
-            var result = helper.BuildSlackPayload(alertEmoji,
-                                                  timeStamp,
-                                                  jobId,
-                                                  academicYear,
-                                                  collectionPeriod,
-                                                  alertTitle,
-                                                  appInsightsSearchResultsUiLink);
+            var result = helper.BuildSlackPayload(_alertEmoji,
+                _timeStamp,
+                _jobId,
+                _academicYear,
+                _collectionPeriod,
+                _collectionPeriodPayments,
+                _yearToDatePayments,
+                _numberOfLearners,
+                _accountedForPayments,
+                _alertTitle,
+                _appInsightsSearchResultsUiLink);
 
             //Assert
-            var typePropertyValue = result[1].GetType().GetProperty("type").GetValue(result[1], null);
-
-            typePropertyValue
-                .Should().BeOfType(typeof(string))
-                .And.Be("section");
+            result[1].Type.Should().Be("section");
         }
 
         [Test]
         public void BuildSlackPayloadConstructsSectionObjectTextObjectTextProperty()
         {
             //Arrange
-            var alertEmoji = "alert_emoji";
-            var alertTitle = "alertTitle";
-            var appInsightsSearchResultsUiLink = "linktoui";
-            var timeStamp = new DateTime(2003, 11, 11, 10, 10, 10);
-            var jobId = "jobid";
-            var academicYear = "academicYear";
-            var collectionPeriod = "collectionPeriod";
-
             var helper = new SlackAlertHelper();
 
             //Act
-            var result = helper.BuildSlackPayload(alertEmoji,
-                                                  timeStamp,
-                                                  jobId,
-                                                  academicYear,
-                                                  collectionPeriod,
-                                                  alertTitle,
-                                                  appInsightsSearchResultsUiLink);
+            var result = helper.BuildSlackPayload(_alertEmoji,
+                _timeStamp,
+                _jobId,
+                _academicYear,
+                _collectionPeriod,
+                _collectionPeriodPayments,
+                _yearToDatePayments,
+                _numberOfLearners,
+                _accountedForPayments,
+                _alertTitle,
+                _appInsightsSearchResultsUiLink);
 
             //Assert
-            var textObject = result[1].GetType().GetProperty("text").GetValue(result[1], null);
-            var textProperty = textObject.GetType().GetProperty("text").GetValue(textObject, null);
-
-            textProperty
-                .Should().BeOfType(typeof(string))
-                .And.Be("<linktoui|View in Azure App Insights>");
+            result[1].Text.Text.Should().Be($"<{_appInsightsSearchResultsUiLink}|View in Azure App Insights>");
         }
 
         [Test]
         public void BuildSlackPayloadConstructsSectionObjectTextObjectTypeProperty()
         {
             //Arrange
-            var alertEmoji = "alert_emoji";
-            var alertTitle = "alertTitle";
-            var appInsightsSearchResultsUiLink = "linktoui";
-            var timeStamp = new DateTime(2003, 11, 11, 10, 10, 10);
-            var jobId = "jobid";
-            var academicYear = "academicYear";
-            var collectionPeriod = "collectionPeriod";
-
             var helper = new SlackAlertHelper();
 
             //Act
-            var result = helper.BuildSlackPayload(alertEmoji,
-                                                  timeStamp,
-                                                  jobId,
-                                                  academicYear,
-                                                  collectionPeriod,
-                                                  alertTitle,
-                                                  appInsightsSearchResultsUiLink);
+            var result = helper.BuildSlackPayload(_alertEmoji,
+                _timeStamp,
+                _jobId,
+                _academicYear,
+                _collectionPeriod,
+                _collectionPeriodPayments,
+                _yearToDatePayments,
+                _numberOfLearners,
+                _accountedForPayments,
+                _alertTitle,
+                _appInsightsSearchResultsUiLink);
 
             //Assert
-            var textObject = result[1].GetType().GetProperty("text").GetValue(result[1], null);
-            var typeProperty = textObject.GetType().GetProperty("type").GetValue(textObject, null);
-
-            typeProperty
-                .Should().BeOfType(typeof(string))
-                .And.Be("mrkdwn");
+            result[1].Text.Type.Should().Be("mrkdwn");
         }
 
         [Test]
         public void BuildSlackPayloadConstructsSectionObjectTimeStampMarkdownItem()
         {
             //Arrange
-            var alertEmoji = "alert_emoji";
-            var alertTitle = "alertTitle";
-            var appInsightsSearchResultsUiLink = "linktoui";
-            var timeStamp = new DateTime(2003, 11, 11, 10, 10, 10);
-            var jobId = "jobid";
-            var academicYear = "academicYear";
-            var collectionPeriod = "collectionPeriod";
-
             var helper = new SlackAlertHelper();
 
             //Act
-            var result = helper.BuildSlackPayload(alertEmoji,
-                                                  timeStamp,
-                                                  jobId,
-                                                  academicYear,
-                                                  collectionPeriod,
-                                                  alertTitle,
-                                                  appInsightsSearchResultsUiLink);
+            var result = helper.BuildSlackPayload(_alertEmoji,
+                _timeStamp,
+                _jobId,
+                _academicYear,
+                _collectionPeriod,
+                _collectionPeriodPayments,
+                _yearToDatePayments,
+                _numberOfLearners,
+                _accountedForPayments,
+                _alertTitle,
+                _appInsightsSearchResultsUiLink);
 
             //Assert
-            var fieldsObject = result[1].GetType().GetProperty("fields").GetValue(result[1], null);
-            var castedFieldsObject = (List<object>)fieldsObject;
-
-            castedFieldsObject.Should().ContainEquivalentOf(new
-            {
-                type = "mrkdwn",
-                text = "*Timestamp*"
-            });
+            result[1].Fields.Count.Should().Be(8);
+            result[1].Fields[0].Type.Should().Be("mrkdwn");
+            result[1].Fields[0].Text.Should().Be("*Timestamp*");
         }
 
         [Test]
         public void BuildSlackPayloadConstructsSectionObjectJobMarkdownItem()
         {
             //Arrange
-            var alertEmoji = "alert_emoji";
-            var alertTitle = "alertTitle";
-            var appInsightsSearchResultsUiLink = "linktoui";
-            var timeStamp = new DateTime(2003, 11, 11, 10, 10, 10);
-            var jobId = "jobid";
-            var academicYear = "academicYear";
-            var collectionPeriod = "collectionPeriod";
-
             var helper = new SlackAlertHelper();
 
-            //Act
-            var result = helper.BuildSlackPayload(alertEmoji,
-                                                  timeStamp,
-                                                  jobId,
-                                                  academicYear,
-                                                  collectionPeriod,
-                                                  alertTitle,
-                                                  appInsightsSearchResultsUiLink);
+            var result = helper.BuildSlackPayload(_alertEmoji,
+                _timeStamp,
+                _jobId,
+                _academicYear,
+                _collectionPeriod,
+                _collectionPeriodPayments,
+                _yearToDatePayments,
+                _numberOfLearners,
+                _accountedForPayments,
+                _alertTitle,
+                _appInsightsSearchResultsUiLink);
 
             //Assert
-            var fieldsObject = result[1].GetType().GetProperty("fields").GetValue(result[1], null);
-            var castedFieldsObject = (List<object>)fieldsObject;
-
-            castedFieldsObject.Should().ContainEquivalentOf(new
-            {
-                type = "mrkdwn",
-                text = "*Job*"
-            });
+            result[1].Fields[1].Type.Should().Be("mrkdwn");
+            result[1].Fields[1].Text.Should().Be("*Job*");
         }
 
         [Test]
         public void BuildSlackPayloadConstructsSectionObjectTimestampPlainTextItem()
         {
             //Arrange
-            var alertEmoji = "alert_emoji";
-            var alertTitle = "alertTitle";
-            var appInsightsSearchResultsUiLink = "linktoui";
-            var timeStamp = new DateTime(2003, 11, 11, 10, 10, 10);
-            var jobId = "jobid";
-            var academicYear = "academicYear";
-            var collectionPeriod = "collectionPeriod";
-
             var helper = new SlackAlertHelper();
 
             //Act
-            var result = helper.BuildSlackPayload(alertEmoji,
-                                                  timeStamp,
-                                                  jobId,
-                                                  academicYear,
-                                                  collectionPeriod,
-                                                  alertTitle,
-                                                  appInsightsSearchResultsUiLink);
+            var result = helper.BuildSlackPayload(_alertEmoji,
+                _timeStamp,
+                _jobId,
+                _academicYear,
+                _collectionPeriod,
+                _collectionPeriodPayments,
+                _yearToDatePayments,
+                _numberOfLearners,
+                _accountedForPayments,
+                _alertTitle,
+                _appInsightsSearchResultsUiLink);
 
             //Assert
-            var fieldsObject = result[1].GetType().GetProperty("fields").GetValue(result[1], null);
-            var castedFieldsObject = (List<object>)fieldsObject;
-
-            castedFieldsObject.Should().ContainEquivalentOf(new
-            {
-                type = "plain_text",
-                text = "Tuesday, November 11, 2003 10:10 AM"
-            });
+            result[1].Fields[2].Type.Should().Be("plain_text");
+            result[1].Fields[2].Text.Should().Be(_timeStamp.ToString("f"));
         }
 
         [Test]
         public void BuildSlackPayloadConstructsSectionObjectJobIdPlainTextItem()
         {
             //Arrange
-            var alertEmoji = "alert_emoji";
-            var alertTitle = "alertTitle";
-            var appInsightsSearchResultsUiLink = "linktoui";
-            var timeStamp = new DateTime(2003, 11, 11, 10, 10, 10);
-            var jobId = "jobid";
-            var academicYear = "academicYear";
-            var collectionPeriod = "collectionPeriod";
-
             var helper = new SlackAlertHelper();
 
             //Act
-            var result = helper.BuildSlackPayload(alertEmoji,
-                                                  timeStamp,
-                                                  jobId,
-                                                  academicYear,
-                                                  collectionPeriod,
-                                                  alertTitle,
-                                                  appInsightsSearchResultsUiLink);
+            var result = helper.BuildSlackPayload(_alertEmoji,
+                _timeStamp,
+                _jobId,
+                _academicYear,
+                _collectionPeriod,
+                _collectionPeriodPayments,
+                _yearToDatePayments,
+                _numberOfLearners,
+                _accountedForPayments,
+                _alertTitle,
+                _appInsightsSearchResultsUiLink);
 
             //Assert
-            var fieldsObject = result[1].GetType().GetProperty("fields").GetValue(result[1], null);
-            var castedFieldsObject = (List<object>)fieldsObject;
-
-            castedFieldsObject.Should().ContainEquivalentOf(new
-            {
-                type = "plain_text",
-                text = "jobid"
-            });
+            result[1].Fields[3].Type.Should().Be("plain_text");
+            result[1].Fields[3].Text.Should().Be("jobid");
         }
 
         [Test]
         public void BuildSlackPayloadConstructsSectionObjectAcademicYearMarkdownItem()
         {
             //Arrange
-            var alertEmoji = "alert_emoji";
-            var alertTitle = "alertTitle";
-            var appInsightsSearchResultsUiLink = "linktoui";
-            var timeStamp = new DateTime(2003, 11, 11, 10, 10, 10);
-            var jobId = "jobid";
-            var academicYear = "academicYear";
-            var collectionPeriod = "collectionPeriod";
-
             var helper = new SlackAlertHelper();
 
             //Act
-            var result = helper.BuildSlackPayload(alertEmoji,
-                                                  timeStamp,
-                                                  jobId,
-                                                  academicYear,
-                                                  collectionPeriod,
-                                                  alertTitle,
-                                                  appInsightsSearchResultsUiLink);
+            var result = helper.BuildSlackPayload(_alertEmoji,
+                _timeStamp,
+                _jobId,
+                _academicYear,
+                _collectionPeriod,
+                _collectionPeriodPayments,
+                _yearToDatePayments,
+                _numberOfLearners,
+                _accountedForPayments,
+                _alertTitle,
+                _appInsightsSearchResultsUiLink);
 
             //Assert
-            var fieldsObject = result[1].GetType().GetProperty("fields").GetValue(result[1], null);
-            var castedFieldsObject = (List<object>)fieldsObject;
-
-            castedFieldsObject.Should().ContainEquivalentOf(new
-            {
-                type = "mrkdwn",
-                text = "*Academic Year*"
-            });
+            result[1].Fields[4].Type.Should().Be("mrkdwn");
+            result[1].Fields[4].Text.Should().Be("*Academic Year*");
         }
 
         [Test]
         public void BuildSlackPayloadConstructsSectionObjectCollectionPeriodMarkdownItem()
         {
             //Arrange
-            var alertEmoji = "alert_emoji";
-            var alertTitle = "alertTitle";
-            var appInsightsSearchResultsUiLink = "linktoui";
-            var timeStamp = new DateTime(2003, 11, 11, 10, 10, 10);
-            var jobId = "jobid";
-            var academicYear = "academicYear";
-            var collectionPeriod = "collectionPeriod";
-
             var helper = new SlackAlertHelper();
 
             //Act
-            var result = helper.BuildSlackPayload(alertEmoji,
-                                                  timeStamp,
-                                                  jobId,
-                                                  academicYear,
-                                                  collectionPeriod,
-                                                  alertTitle,
-                                                  appInsightsSearchResultsUiLink);
+            var result = helper.BuildSlackPayload(_alertEmoji,
+                _timeStamp,
+                _jobId,
+                _academicYear,
+                _collectionPeriod,
+                _collectionPeriodPayments,
+                _yearToDatePayments,
+                _numberOfLearners,
+                _accountedForPayments,
+                _alertTitle,
+                _appInsightsSearchResultsUiLink);
 
             //Assert
-            var fieldsObject = result[1].GetType().GetProperty("fields").GetValue(result[1], null);
-            var castedFieldsObject = (List<object>)fieldsObject;
+            result[1].Fields[5].Type.Should().Be("mrkdwn");
+            result[1].Fields[5].Text.Should().Be("*Collection Period*");
+        }
+        
+        [Test]
+        public void BuildSlackPayloadConstructsSectionObjectPaymentsYearToDateMarkdownItem()
+        {
+            //Arrange
+            var helper = new SlackAlertHelper();
 
-            castedFieldsObject.Should().ContainEquivalentOf(new
-            {
-                type = "mrkdwn",
-                text = "*Collection Period*"
-            });
+            //Act
+            var result = helper.BuildSlackPayload(_alertEmoji,
+                _timeStamp,
+                _jobId,
+                _academicYear,
+                _collectionPeriod,
+                _collectionPeriodPayments,
+                _yearToDatePayments,
+                _numberOfLearners,
+                _accountedForPayments,
+                _alertTitle,
+                _appInsightsSearchResultsUiLink);
+
+            //Assert
+            result[2].Fields[0].Type.Should().Be("mrkdwn");
+            result[2].Fields[0].Text.Should().Be("*Previous Payments Year To Date*");
+        }
+
+        [Test]
+        public void BuildSlackPayloadConstructsSectionObjectCollectionPeriodPaymentsMarkdownItem()
+        {
+            //Arrange
+            var helper = new SlackAlertHelper();
+
+            //Act
+            var result = helper.BuildSlackPayload(_alertEmoji,
+                _timeStamp,
+                _jobId,
+                _academicYear,
+                _collectionPeriod,
+                _collectionPeriodPayments,
+                _yearToDatePayments,
+                _numberOfLearners,
+                _accountedForPayments,
+                _alertTitle,
+                _appInsightsSearchResultsUiLink);
+
+            //Assert
+            result[2].Fields[1].Type.Should().Be("mrkdwn");
+            result[2].Fields[1].Text.Should().Be("*Collection Period Payments*");
+        }
+
+        [Test]
+        public void BuildSlackPayloadConstructsSectionObjectNumberOfLearnersMarkdownItem()
+        {
+            //Arrange
+            var helper = new SlackAlertHelper();
+
+            //Act
+            var result = helper.BuildSlackPayload(_alertEmoji,
+                _timeStamp,
+                _jobId,
+                _academicYear,
+                _collectionPeriod,
+                _collectionPeriodPayments,
+                _yearToDatePayments,
+                _numberOfLearners,
+                _accountedForPayments,
+                _alertTitle,
+                _appInsightsSearchResultsUiLink);
+
+            //Assert
+            result[2].Fields[4].Type.Should().Be("mrkdwn");
+            result[2].Fields[4].Text.Should().Be("*In Learning*");
+        }
+
+        [Test]
+        public void BuildSlackPayloadConstructsSectionObjectAccountedForPaymentsMarkdownItem()
+        {
+            //Arrange
+            var helper = new SlackAlertHelper();
+
+            //Act
+            var result = helper.BuildSlackPayload(_alertEmoji,
+                _timeStamp,
+                _jobId,
+                _academicYear,
+                _collectionPeriod,
+                _collectionPeriodPayments,
+                _yearToDatePayments,
+                _numberOfLearners,
+                _accountedForPayments,
+                _alertTitle,
+                _appInsightsSearchResultsUiLink);
+
+            //Assert
+            result[2].Fields[5].Type.Should().Be("mrkdwn");
+            result[2].Fields[5].Text.Should().Be("*Accounted For Payments*");
         }
 
         [Test]
         public void BuildSlackPayloadConstructsSectionObjectAcademicYearPlainTextItem()
         {
             //Arrange
-            var alertEmoji = "alert_emoji";
-            var alertTitle = "alertTitle";
-            var appInsightsSearchResultsUiLink = "linktoui";
-            var timeStamp = new DateTime(2003, 11, 11, 10, 10, 10);
-            var jobId = "jobid";
-            var academicYear = "academicYear";
-            var collectionPeriod = "collectionPeriod";
-
             var helper = new SlackAlertHelper();
 
             //Act
-            var result = helper.BuildSlackPayload(alertEmoji,
-                                                  timeStamp,
-                                                  jobId,
-                                                  academicYear,
-                                                  collectionPeriod,
-                                                  alertTitle,
-                                                  appInsightsSearchResultsUiLink);
+            var result = helper.BuildSlackPayload(_alertEmoji,
+                _timeStamp,
+                _jobId,
+                _academicYear,
+                _collectionPeriod,
+                _collectionPeriodPayments,
+                _yearToDatePayments,
+                _numberOfLearners,
+                _accountedForPayments,
+                _alertTitle,
+                _appInsightsSearchResultsUiLink);
 
             //Assert
-            var fieldsObject = result[1].GetType().GetProperty("fields").GetValue(result[1], null);
-            var castedFieldsObject = (List<object>)fieldsObject;
-
-            castedFieldsObject.Should().ContainEquivalentOf(new
-            {
-                type = "plain_text",
-                text = "academicYear"
-            });
+            result[1].Fields[6].Type.Should().Be("plain_text");
+            result[1].Fields[6].Text.Should().Be(_academicYear);
         }
 
         [Test]
         public void BuildSlackPayloadConstructsSectionObjectCollectionPeriodPlainTextItem()
         {
             //Arrange
-            var alertEmoji = "alert_emoji";
-            var alertTitle = "alertTitle";
-            var appInsightsSearchResultsUiLink = "linktoui";
-            var timeStamp = new DateTime(2003, 11, 11, 10, 10, 10);
-            var jobId = "jobid";
-            var academicYear = "academicYear";
-            var collectionPeriod = "collectionPeriod";
-
             var helper = new SlackAlertHelper();
 
             //Act
-            var result = helper.BuildSlackPayload(alertEmoji,
-                                                  timeStamp,
-                                                  jobId,
-                                                  academicYear,
-                                                  collectionPeriod,
-                                                  alertTitle,
-                                                  appInsightsSearchResultsUiLink);
+            var result = helper.BuildSlackPayload(_alertEmoji,
+                _timeStamp,
+                _jobId,
+                _academicYear,
+                _collectionPeriod,
+                _collectionPeriodPayments,
+                _yearToDatePayments,
+                _numberOfLearners,
+                _accountedForPayments,
+                _alertTitle,
+                _appInsightsSearchResultsUiLink);
 
             //Assert
-            var fieldsObject = result[1].GetType().GetProperty("fields").GetValue(result[1], null);
-            var castedFieldsObject = (List<object>)fieldsObject;
+            result[1].Fields[7].Type.Should().Be("plain_text");
+            result[1].Fields[7].Text.Should().Be(_collectionPeriod);
+        }
 
-            castedFieldsObject.Should().ContainEquivalentOf(new
+        [Test]
+        public void BuildSlackPayloadConstructsSectionObjectPaymentsYearToDatePlainTextItem()
+        {
+            //Arrange
+            var helper = new SlackAlertHelper();
+
+            //Act
+            var result = helper.BuildSlackPayload(_alertEmoji,
+                _timeStamp,
+                _jobId,
+                _academicYear,
+                _collectionPeriod,
+                _collectionPeriodPayments,
+                _yearToDatePayments,
+                _numberOfLearners,
+                _accountedForPayments,
+                _alertTitle,
+                _appInsightsSearchResultsUiLink);
+
+            //Assert
+            var decimalValue = Convert.ToDecimal(_yearToDatePayments);
+            result[2].Fields[2].Type.Should().Be("plain_text");
+            result[2].Fields[2].Text.Should().Be($"£{decimalValue.ToString("N2")}");
+        }
+
+        [Test]
+        public void PaymentsYearToDateIsRenderedVerbatimIfCannotFormatAsCurrency()
+        {
+            //Arrange
+            var helper = new SlackAlertHelper();
+
+            //Act
+            var result = helper.BuildSlackPayload(_alertEmoji,
+                _timeStamp,
+                _jobId,
+                _academicYear,
+                _collectionPeriod,
+                _collectionPeriodPayments,
+                "nil",
+                _numberOfLearners,
+                _accountedForPayments,
+                _alertTitle,
+                _appInsightsSearchResultsUiLink);
+
+            //Assert
+            result[2].Fields[2].Type.Should().Be("plain_text");
+            result[2].Fields[2].Text.Should().Be("£nil");
+        }
+
+        [Test]
+        public void BuildSlackPayloadConstructsSectionObjectCollectionPeriodPaymentsPlainTextItem()
+        {
+            //Arrange
+            var helper = new SlackAlertHelper();
+
+            //Act
+            var result = helper.BuildSlackPayload(_alertEmoji,
+                _timeStamp,
+                _jobId,
+                _academicYear,
+                _collectionPeriod,
+                _collectionPeriodPayments,
+                _yearToDatePayments,
+                _numberOfLearners,
+                _accountedForPayments,
+                _alertTitle,
+                _appInsightsSearchResultsUiLink);
+
+            //Assert
+            var decimalValue = Convert.ToDecimal(_collectionPeriodPayments);
+            result[2].Fields[3].Type.Should().Be("plain_text");
+            result[2].Fields[3].Text.Should().Be($"£{decimalValue.ToString("N2")}");
+        }
+
+        [Test]
+        public void CollectionPeriodPaymentsRenderedVerbatimIfCannotFormatAsCurrency()
+        {
+            //Arrange
+            var helper = new SlackAlertHelper();
+
+            //Act
+            var result = helper.BuildSlackPayload(_alertEmoji,
+                _timeStamp,
+                _jobId,
+                _academicYear,
+                _collectionPeriod,
+                "nil",
+                _yearToDatePayments,
+                _numberOfLearners,
+                _accountedForPayments,
+                _alertTitle,
+                _appInsightsSearchResultsUiLink);
+
+            //Assert
+            result[2].Fields[3].Type.Should().Be("plain_text");
+            result[2].Fields[3].Text.Should().Be("£nil");
+        }
+
+        [Test]
+        public void BuildSlackPayloadConstructsSectionObjectNumberOfLearnersPlainTextItem()
+        {
+            //Arrange
+            var helper = new SlackAlertHelper();
+
+            //Act
+            var result = helper.BuildSlackPayload(_alertEmoji,
+                _timeStamp,
+                _jobId,
+                _academicYear,
+                _collectionPeriod,
+                _collectionPeriodPayments,
+                _yearToDatePayments,
+                _numberOfLearners,
+                _accountedForPayments,
+                _alertTitle,
+                _appInsightsSearchResultsUiLink);
+
+            //Assert
+            result[2].Fields[6].Type.Should().Be("plain_text");
+            result[2].Fields[6].Text.Should().Be(_numberOfLearners);
+        }
+
+        [Test]
+        public void BuildSlackPayloadConstructsSectionObjectAccountedForPaymentsPlainTextItem()
+        {
+            //Arrange
+            var helper = new SlackAlertHelper();
+
+            //Act
+            var result = helper.BuildSlackPayload(_alertEmoji,
+                _timeStamp,
+                _jobId,
+                _academicYear,
+                _collectionPeriod,
+                _collectionPeriodPayments,
+                _yearToDatePayments,
+                _numberOfLearners,
+                _accountedForPayments,
+                _alertTitle,
+                _appInsightsSearchResultsUiLink);
+
+            //Assert
+            var decimalValue = Convert.ToDecimal(_accountedForPayments);
+            result[2].Fields[7].Type.Should().Be("plain_text");
+            result[2].Fields[7].Text.Should().Be($"£{decimalValue.ToString("N2")}");
+        }
+
+        [Test]
+        public void AccountedForPaymentsRenderedVerbatimIfCannotFormatAsCurrency()
+        {
+            //Arrange
+            var helper = new SlackAlertHelper();
+
+            //Act
+            var result = helper.BuildSlackPayload(_alertEmoji,
+                _timeStamp,
+                _jobId,
+                _academicYear,
+                _collectionPeriod,
+                _collectionPeriodPayments,
+                _yearToDatePayments,
+                _numberOfLearners,
+                "nil",
+                _alertTitle,
+                _appInsightsSearchResultsUiLink);
+
+            //Assert
+            result[2].Fields[7].Type.Should().Be("plain_text");
+            result[2].Fields[7].Text.Should().Be("£nil");
+        }
+
+        [Test]
+        public void OptionalBlockValuesAreNotRenderedIfNotPresent()
+        {
+            //Arrange
+            var helper = new SlackAlertHelper();
+
+            //Act
+            var result = helper.BuildSlackPayload(_alertEmoji,
+                _timeStamp,
+                _jobId,
+                _academicYear,
+                _collectionPeriod,
+                string.Empty,
+                string.Empty,
+                string.Empty,
+                string.Empty,
+                _alertTitle,
+                _appInsightsSearchResultsUiLink);
+
+            //Assert
+            result.Count.Should().Be(2);
+        }
+
+        [Test]
+        public void CollectionPeriodPaymentsIsNotRenderedIfNotPresent()
+        {
+            //Arrange
+            var helper = new SlackAlertHelper();
+
+            //Act
+            var result = helper.BuildSlackPayload(_alertEmoji,
+                _timeStamp,
+                _jobId,
+                _academicYear,
+                _collectionPeriod,
+                string.Empty,
+                _yearToDatePayments,
+                _numberOfLearners,
+                _accountedForPayments,
+                _alertTitle,
+                _appInsightsSearchResultsUiLink);
+
+            //Assert
+            result.Count.Should().Be(3);
+            result[2].Fields.Count.Should().Be(6);
+            result[2].Fields[1].Type.Should().Be("plain_text");
+            var decimalValue = Convert.ToDecimal(_yearToDatePayments);
+            result[2].Fields[1].Text.Should().Be($"£{decimalValue.ToString("N2")}");
+        }
+
+        [Test]
+        public void PreviousPaymentsYearToDateIsNotRenderedIfNotPresent()
+        {
+            //Arrange
+            var helper = new SlackAlertHelper();
+
+            //Act
+            var result = helper.BuildSlackPayload(_alertEmoji,
+                _timeStamp,
+                _jobId,
+                _academicYear,
+                _collectionPeriod,
+                _collectionPeriodPayments,
+                string.Empty,
+                _numberOfLearners,
+                _accountedForPayments,
+                _alertTitle,
+                _appInsightsSearchResultsUiLink);
+
+            //Assert
+            result.Count.Should().Be(3);
+            result[2].Fields.Count.Should().Be(6);
+            result[2].Fields[1].Type.Should().Be("plain_text");
+            var decimalValue = Convert.ToDecimal(_collectionPeriodPayments);
+            result[2].Fields[1].Text.Should().Be($"£{decimalValue.ToString("N2")}");
+        }
+
+        [Test]
+        public void NumberOfLearnersIsNotRenderedIfNotPresent()
+        {
+            //Arrange
+            var helper = new SlackAlertHelper();
+
+            //Act
+            var result = helper.BuildSlackPayload(_alertEmoji,
+                _timeStamp,
+                _jobId,
+                _academicYear,
+                _collectionPeriod,
+                _collectionPeriodPayments,
+                _yearToDatePayments,
+                string.Empty,
+                _accountedForPayments,
+                _alertTitle,
+                _appInsightsSearchResultsUiLink);
+
+            //Assert
+            result.Count.Should().Be(3);
+            result[2].Fields.Count.Should().Be(6);
+        }
+
+        [Test]
+        public void AccountedForPaymentsIsNotRenderedIfNotPresent()
+        {
+            //Arrange
+            var helper = new SlackAlertHelper();
+
+            //Act
+            var result = helper.BuildSlackPayload(_alertEmoji,
+                _timeStamp,
+                _jobId,
+                _academicYear,
+                _collectionPeriod,
+                _collectionPeriodPayments,
+                _yearToDatePayments,
+                _numberOfLearners,
+                string.Empty,
+                _alertTitle,
+                _appInsightsSearchResultsUiLink);
+
+            //Assert
+            result.Count.Should().Be(3);
+            result[2].Fields.Count.Should().Be(6);
+        }
+
+        [Test]
+        public void SlackPayloadSerializesInFormatExpectedByApi()
+        {
+            // Arrange
+            var serializeOptions = new JsonSerializerOptions
             {
-                type = "plain_text",
-                text = "collectionPeriod"
-            });
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+            };
+            var helper = new SlackAlertHelper();
+
+            //Act
+            var result = helper.BuildSlackPayload(_alertEmoji,
+                _timeStamp,
+                _jobId,
+                _academicYear,
+                _collectionPeriod,
+                _collectionPeriodPayments,
+                "nil",
+                _numberOfLearners,
+                _accountedForPayments,
+                _alertTitle,
+                _appInsightsSearchResultsUiLink);
+
+            var jsonString = JsonSerializer.Serialize(result, serializeOptions);
+
+            // Assert
+            jsonString.Should().Contain("type");
+            jsonString.Should().Contain("text");
+            jsonString.Should().Contain("fields");
+            jsonString.Should().NotContain("Type");
+            jsonString.Should().NotContain("Text");
+            jsonString.Should().NotContain("Fields");
+        }
+
+        [Test]
+        public void InvalidCharacterInMetricsFieldsAreReplaced()
+        {
+            //Arrange
+            var helper = new SlackAlertHelper();
+
+            //Act
+            var result = helper.BuildSlackPayload(_alertEmoji,
+                _timeStamp,
+                _jobId,
+                _academicYear,
+                _collectionPeriod,
+                "\"" + _collectionPeriodPayments,
+                _yearToDatePayments + "\"",
+                "\"" + _numberOfLearners + "\"",
+                _accountedForPayments,
+                _alertTitle,
+                _appInsightsSearchResultsUiLink);
+
+            //Assert
+            var decimalValue = Convert.ToDecimal(_collectionPeriodPayments);
+            result[2].Fields[3].Text.Should().Be($"£{decimalValue.ToString("N2")}");
+            decimalValue = Convert.ToDecimal(_yearToDatePayments);
+            result[2].Fields[2].Text.Should().Be($"£{decimalValue.ToString("N2")}");
+            result[2].Fields[6].Text.Should().Be($"{_numberOfLearners}");
         }
     }
 }

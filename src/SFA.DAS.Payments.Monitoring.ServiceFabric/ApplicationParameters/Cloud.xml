@@ -34,6 +34,7 @@
     <Parameter Name="MetricsGenerationDelay" Value="__MetricsGenerationDelay__" />
     <Parameter Name="MetricsFunctionApiKey" Value="__MetricsFunctionApiKey__" />
     <Parameter Name="MetricsFunctionBaseUrl" Value="__MetricsFunctionBaseUrl__" />
+    <Parameter Name="MetricsGenerationWaitTime" Value="__MetricsGenerationWaitTime__" />
     <Parameter Name="ArchiveFunctionUrl" Value="__ArchiveFunctionUrl__" />
     <Parameter Name="ArchiveTimeout" Value="__ArchiveTimeout__" />
     <Parameter Name="ArchiveApiKey" Value="__ArchiveApiKey__" />
