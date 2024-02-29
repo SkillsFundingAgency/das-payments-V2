@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
-using SFA.DAS.Payments.Audit.ArchiveService.Extensions;
 using SFA.DAS.Payments.Audit.ArchiveService.Orchestrators;
 using SFA.DAS.Payments.Audit.ArchiveService.Triggers;
 
@@ -38,13 +37,7 @@ namespace SFA.DAS.Payments.Audit.ArchiveService.Helpers
                 }
 
                 log.LogInfo($"Clearing down previous {orchestratorName} runs");
-                var entityId = new EntityId(nameof(HandleCurrentJobId.Handle),
-                    HandleCurrentJobId.PeriodEndArchiveEntityName);
-                await client.SignalEntityAsync(entityId, "add", new RunInformation
-                {
-                    JobId = string.Empty,
-                    Status = string.Empty
-                });
+                await StatusHelper.ClearCurrentStatus(client, log);
 
                 log.LogInfo($"Triggering {orchestratorName}");
                 var instanceId =

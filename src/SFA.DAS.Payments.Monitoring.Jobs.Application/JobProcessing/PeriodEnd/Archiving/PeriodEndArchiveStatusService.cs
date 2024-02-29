@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
@@ -162,9 +163,16 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd.A
         {
             telemetry.TrackEvent(
                 $"PeriodEndArchiveStatusService: Checking current archiving status for jobId ${jobId}");
+
+            var param = new Dictionary<string, string>
+            {
+                { "jobId", jobId.ToString() }
+            };
+            var uri = new Uri(QueryHelpers.AddQueryString(archiveConfig.ArchiveFunctionUrl, param));
+
             var result =
                 await new HttpClient { Timeout = TimeSpan.FromSeconds(archiveConfig.ArchiveTimeout) }.GetAsync(
-                    $"{archiveConfig.ArchiveFunctionUrl}");
+                    uri);
 
             if (!result.IsSuccessStatusCode)
             {

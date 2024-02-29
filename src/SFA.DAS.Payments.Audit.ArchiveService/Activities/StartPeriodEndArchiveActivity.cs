@@ -51,8 +51,6 @@ namespace SFA.DAS.Payments.Audit.ArchiveService.Activities
             [Inject] IPeriodEndArchiveConfiguration config)
         {
             var currentRunInfo = await StatusHelper.GetCurrentJobs(entityClient);
-            var currentJobId =
-                new EntityId(nameof(HandleCurrentJobId.Handle), HandleCurrentJobId.PeriodEndArchiveEntityName);
             try
             {
                 var message = JsonConvert.DeserializeObject<RecordPeriodEndFcsHandOverCompleteJob>(messageJson) ??
@@ -89,7 +87,7 @@ namespace SFA.DAS.Payments.Audit.ArchiveService.Activities
                     JobId = runResponse.RunId,
                     Status = "Started"
                 };
-                await StatusHelper.UpdateCurrentJobStatus(entityClient, currentJobId, currentRunInfo);
+                await StatusHelper.UpdateCurrentJobStatus(entityClient);
 
 
                 PipelineRun pipelineRun;
@@ -106,7 +104,7 @@ namespace SFA.DAS.Payments.Audit.ArchiveService.Activities
                             JobId = runResponse.RunId,
                             Status = pipelineRun.Status
                         };
-                        await StatusHelper.UpdateCurrentJobStatus(entityClient, currentJobId, currentRunInfo);
+                        await StatusHelper.UpdateCurrentJobStatus(entityClient);
 
                         Thread.Sleep(config.SleepDelay);
                     }
@@ -134,12 +132,12 @@ namespace SFA.DAS.Payments.Audit.ArchiveService.Activities
                     JobId = runResponse.RunId,
                     Status = pipelineRun.Status
                 };
-                await StatusHelper.UpdateCurrentJobStatus(entityClient, currentJobId, currentRunInfo);
+                await StatusHelper.UpdateCurrentJobStatus(entityClient);
             }
             catch (Exception ex)
             {
                 currentRunInfo.Status = "Failed";
-                await StatusHelper.UpdateCurrentJobStatus(entityClient, currentJobId, currentRunInfo);
+                await StatusHelper.UpdateCurrentJobStatus(entityClient);
                 throw new Exception(ex.Message);
             }
         }
