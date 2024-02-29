@@ -8,6 +8,7 @@
     <PackageReference Include="Autofac" Version="4.8.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.1" />
     <PackageReference Include="NServiceBus" Version="7.1.5" />
+    <PackageReference Include="SFA.DAS.Payments.ServiceFabric.Core" Version="1.1.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,7 +21,6 @@
     <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Messages\SFA.DAS.Payments.Monitoring.Jobs.Messages.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Model\SFA.DAS.Payments.Monitoring.Jobs.Model.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Metrics.Model\SFA.DAS.Payments.Monitoring.Metrics.Model.csproj" />
-    <ProjectReference Include="..\SFA.DAS.Payments.ServiceFabric.Core\SFA.DAS.Payments.ServiceFabric.Core.csproj" />
   </ItemGroup>
 
 </Project>

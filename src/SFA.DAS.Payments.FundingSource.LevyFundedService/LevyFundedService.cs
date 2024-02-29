@@ -10,7 +10,6 @@ using Microsoft.ServiceFabric.Actors;
 using Microsoft.ServiceFabric.Actors.Runtime;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
-using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Application.Repositories;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.FundingSource.Application.Data;
@@ -31,18 +30,18 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
     [StatePersistence(StatePersistence.Persisted)]
     public class LevyFundedService : Actor, ILevyFundedService
     {
-        private IActorDataCache<bool> actorCache;
-        private IFundingSourceEventGenerationService fundingSourceEventGenerationService;
-        private ITransferFundingSourceEventGenerationService transferFundingSourceEventGenerationService;
-
-        private IDataCache<bool> monthEndCache;
-        private IDataCache<LevyAccountModel> levyAccountCache;
+        private readonly IEmployerProviderPriorityStorageService employerProviderPriorityStorageService;
+        private readonly ILifetimeScope lifetimeScope;
 
         private readonly IPaymentLogger paymentLogger;
-        private readonly ITelemetry telemetry;
-        private readonly ILifetimeScope lifetimeScope;
         private readonly ISubmissionCleanUpService submissionCleanUpService;
-        private readonly IEmployerProviderPriorityStorageService employerProviderPriorityStorageService;
+        private readonly ITelemetry telemetry;
+        private IActorDataCache<bool> actorCache;
+        private IFundingSourceEventGenerationService fundingSourceEventGenerationService;
+        private IDataCache<LevyAccountModel> levyAccountCache;
+
+        private IDataCache<bool> monthEndCache;
+        private ITransferFundingSourceEventGenerationService transferFundingSourceEventGenerationService;
 
 
         public LevyFundedService(
@@ -67,8 +66,8 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
             try
             {
                 using (var operation =
-                    telemetry.StartOperation("LevyFundedService.HandleEmployerProviderPriorityChange",
-                        message.EventId.ToString()))
+                       telemetry.StartOperation("LevyFundedService.HandleEmployerProviderPriorityChange",
+                           message.EventId.ToString()))
                 {
                     var stopwatch = Stopwatch.StartNew();
                     paymentLogger.LogDebug(
@@ -96,15 +95,15 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
             try
             {
                 using (var operation = telemetry.StartOperation("LevyFundedService.UnableToFundTransfer",
-                    message.EventId.ToString()))
+                           message.EventId.ToString()))
                 {
                     var stopwatch = Stopwatch.StartNew();
                     paymentLogger.LogDebug(
                         $"Handling UnableToFundTransfer for {Id}, Job: {message.JobId}, UKPRN: {message.Ukprn}, Receiver Account: {message.AccountId}, Sender Account: {message.TransferSenderAccountId}");
                     var fundingSourcePayments = await transferFundingSourceEventGenerationService
                         .ProcessReceiverTransferPayment(message).ConfigureAwait(false);
-                    
-                   
+
+
                     paymentLogger.LogInfo(
                         $"Finished handling required payment for {Id}, Job: {message.JobId}, UKPRN: {message.Ukprn}, Account: {message.AccountId}");
                     telemetry.TrackDuration("LevyFundedService.UnableToFundTransfer", stopwatch, message);
@@ -127,15 +126,17 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
             try
             {
                 using (var operation =
-                    telemetry.StartOperation("LevyFundedService.HandleMonthEnd", command.CommandId.ToString()))
+                       telemetry.StartOperation("LevyFundedService.HandleMonthEnd", command.CommandId.ToString()))
                 {
                     var stopwatch = Stopwatch.StartNew();
 
 
                     var fundingSourceEvents =
-                        await fundingSourceEventGenerationService.HandleMonthEnd(command.AccountId, command.JobId, command.CollectionPeriod);
+                        await fundingSourceEventGenerationService.HandleMonthEnd(command.AccountId, command.JobId,
+                            command.CollectionPeriod);
 
-                    await monthEndCache.AddOrReplace(CacheKeys.MonthEndStartedForThisAccountCacheKey, true, CancellationToken.None);
+                    await monthEndCache.AddOrReplace(CacheKeys.MonthEndStartedForThisAccountCacheKey, true,
+                        CancellationToken.None);
 
                     telemetry.TrackDurationWithMetrics("LevyFundedService.HandleMonthEnd",
                         stopwatch,
@@ -143,7 +144,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
                         command.AccountId,
                         new Dictionary<string, double>
                         {
-                            {TelemetryKeys.Count, fundingSourceEvents.Count}
+                            { TelemetryKeys.Count, fundingSourceEvents.Count }
                         });
 
                     telemetry.StopOperation(operation);
@@ -202,12 +203,12 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
         protected override async Task OnActivateAsync()
         {
             using (var operation =
-                telemetry.StartOperation("LevyFundedService.OnActivateAsync", $"{Id}_{Guid.NewGuid():N}"))
+                   telemetry.StartOperation("LevyFundedService.OnActivateAsync", $"{Id}_{Guid.NewGuid():N}"))
             {
                 var stopwatch = Stopwatch.StartNew();
                 //TODO: Use DI
                 actorCache = new ActorReliableCollectionCache<bool>(StateManager);
-               
+
                 monthEndCache = new ReliableCollectionCache<bool>(StateManager);
                 levyAccountCache = new ReliableCollectionCache<LevyAccountModel>(StateManager);
 
@@ -271,12 +272,12 @@ namespace SFA.DAS.Payments.FundingSource.LevyFundedService
             telemetry.TrackEvent(eventName,
                 new Dictionary<string, string>
                 {
-                    {"ActorId", Id.ToString()},
-                    {"Employer", Id.ToString()}
+                    { "ActorId", Id.ToString() },
+                    { "Employer", Id.ToString() }
                 },
                 new Dictionary<string, double>
                 {
-                    {TelemetryKeys.Duration, stopwatch.ElapsedMilliseconds}
+                    { TelemetryKeys.Duration, stopwatch.ElapsedMilliseconds }
                 });
         }
     }
