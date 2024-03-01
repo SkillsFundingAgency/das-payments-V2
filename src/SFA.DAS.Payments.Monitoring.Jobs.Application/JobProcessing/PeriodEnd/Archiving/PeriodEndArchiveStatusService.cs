@@ -161,18 +161,17 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd.A
 
         private async Task<string> CheckArchiveStatus(long jobId)
         {
-            telemetry.TrackEvent(
-                $"PeriodEndArchiveStatusService: Checking current archiving status for jobId ${jobId}");
-
             var param = new Dictionary<string, string>
             {
                 { "jobId", jobId.ToString() }
             };
-            var uri = new Uri(QueryHelpers.AddQueryString(archiveConfig.ArchiveFunctionUrl, param));
+            var uri = new Uri(QueryHelpers.AddQueryString(archiveConfig.ArchiveFunctionUrl, param)).ToString();
 
+            telemetry.TrackEvent(
+                $"PeriodEndArchiveStatusService: Checking current archiving status for jobId ${jobId}, Url: {uri}");
             var result =
                 await new HttpClient { Timeout = TimeSpan.FromSeconds(archiveConfig.ArchiveTimeout) }.GetAsync(
-                    uri);
+                    $"{uri}");
 
             if (!result.IsSuccessStatusCode)
             {
