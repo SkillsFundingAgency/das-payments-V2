@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,61 +17,43 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
         void StartMonitoringJob(long jobId, JobType jobType);
     }
 
-    public class JobStatusManager : IJobStatusManager
+    public abstract class JobStatusManager : IJobStatusManager
     {
-        private readonly ConcurrentDictionary<long, (JobType JobType, bool IsFinished)> currentJobs;
-        private readonly TimeSpan interval;
         private readonly IPaymentLogger logger;
         private readonly IUnitOfWorkScopeFactory scopeFactory;
-        private readonly IJobStatusServiceFactory jobStatusServiceFactory;
+        private readonly ConcurrentDictionary<long, bool> currentJobs;
         protected CancellationToken cancellationToken;
-
-        public JobStatusManager(IPaymentLogger logger, IUnitOfWorkScopeFactory scopeFactory,
-            IJobServiceConfiguration configuration, IJobStatusServiceFactory jobStatusServiceFactory)
+        private readonly TimeSpan interval;
+        protected JobStatusManager(IPaymentLogger logger, IUnitOfWorkScopeFactory scopeFactory, IJobServiceConfiguration configuration)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.scopeFactory = scopeFactory ?? throw new ArgumentNullException(nameof(scopeFactory));
-            this.jobStatusServiceFactory = jobStatusServiceFactory ?? throw new ArgumentNullException(nameof(jobStatusServiceFactory));
             interval = configuration.JobStatusInterval;
-            currentJobs = new ConcurrentDictionary<long, (JobType JobType, bool IsFinished)>();
+            currentJobs = new ConcurrentDictionary<long, bool>();
         }
 
         public Task Start(string partitionEndpointName, CancellationToken suppliedCancellationToken)
         {
-            cancellationToken = suppliedCancellationToken;
+            this.cancellationToken = suppliedCancellationToken;
             return Run(partitionEndpointName);
-        }
-
-
-        public void StartMonitoringJob(long jobId, JobType jobType)
-        {
-            currentJobs.AddOrUpdate(jobId, (jobType, false), (key, status) => status);
         }
 
         private async Task Run(string partitionEndpointName)
         {
             await LoadExistingJobs();
             while (!cancellationToken.IsCancellationRequested)
-                try
+            {
+                var tasks = currentJobs.Select(job => CheckJobStatus(partitionEndpointName, job.Key)).ToList();
+                await Task.WhenAll(tasks);
+                var completedJobs = currentJobs.Where(item => item.Value).ToList();
+                foreach (var completedJob in completedJobs)
                 {
-                    var tasks = currentJobs.Select(job => CheckJobStatus(partitionEndpointName, job.Key, job.Value.JobType)).ToList();
-                    await Task.WhenAll(tasks);
-                    var completedJobs = currentJobs.Where(item => item.Value.IsFinished).ToList();
-                    foreach (var completedJob in completedJobs)
-                    {
-                        logger.LogInfo(
-                            $"Found completed job.  Will now stop monitoring job: {completedJob.Key}, ThreadId {Thread.CurrentThread.ManagedThreadId}, PartitionId {partitionEndpointName}");
-                        if (!currentJobs.TryRemove(completedJob.Key, out _))
-                            logger.LogWarning(
-                                $"Couldn't remove completed job from jobs list. ThreadId {Thread.CurrentThread.ManagedThreadId}, PartitionId {partitionEndpointName},  Job: {completedJob.Key}, status: {completedJob.Value}");
-                    }
-
-                    await Task.Delay(interval, cancellationToken);
+                    logger.LogInfo($"Found completed job.  Will now stop monitoring job: {completedJob.Key}, ThreadId {Thread.CurrentThread.ManagedThreadId}, PartitionId {partitionEndpointName}");
+                    if (!currentJobs.TryRemove(completedJob.Key, out _))
+                        logger.LogWarning($"Couldn't remove completed job from jobs list. ThreadId {Thread.CurrentThread.ManagedThreadId}, PartitionId {partitionEndpointName},  Job: {completedJob.Key}, status: {completedJob.Value}");
                 }
-                catch (Exception ex)
-                {
-                    logger.LogError($"Failed to check job status. Error: {ex.Message}", ex);
-                }
+                await Task.Delay(interval, cancellationToken);
+            }
         }
 
         private async Task LoadExistingJobs()
@@ -80,8 +63,11 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
                 using (var scope = scopeFactory.Create("LoadExistingJobs"))
                 {
                     var jobStorage = scope.Resolve<IJobStorageService>();
-                    var jobs = await jobStorage.GetCurrentJobs(cancellationToken);
-                    foreach (var job in jobs) StartMonitoringJob(job.Key, job.Value);
+                    var jobs = await GetCurrentJobs(jobStorage);
+                    foreach (var job in jobs)
+                    {
+                        StartMonitoringJob(job, JobType.EarningsJob);
+                    }
                 }
             }
             catch (Exception e)
@@ -90,38 +76,45 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             }
         }
 
+      
 
-        private async Task CheckJobStatus(string partitionEndpointName, long jobId, JobType jobType)
+        private async Task CheckJobStatus(string partitionEndpointName, long jobId)
         {
             try
             {
-                using (var scope =
-                       scopeFactory.Create(
-                           $"CheckJobStatus:{jobId}, ThreadId {Thread.CurrentThread.ManagedThreadId}, PartitionId {partitionEndpointName}"))
+                using (var scope = scopeFactory.Create($"CheckJobStatus:{jobId}, ThreadId {Thread.CurrentThread.ManagedThreadId}, PartitionId {partitionEndpointName}"))
                 {
                     try
                     {
-                        var jobStatusService = jobStatusServiceFactory.Create(scope, jobType);
+                        var jobStatusService = GetJobStatusService(scope);
                         var finished = await jobStatusService.ManageStatus(jobId, cancellationToken);
                         await scope.Commit();
-                        currentJobs[jobId] = (jobType,finished);
+                        currentJobs[jobId] = finished;
                         logger.LogInfo($"Job: {jobId},  finished: {finished}");
                     }
                     catch (Exception ex)
                     {
                         scope.Abort();
-                        logger.LogWarning(
-                            $"Failed to update job status for job: {jobId}, ThreadId {Thread.CurrentThread.ManagedThreadId}, PartitionId {partitionEndpointName} Error: {ex.Message}. {ex}");
+                        logger.LogWarning($"Failed to update job status for job: {jobId}, ThreadId {Thread.CurrentThread.ManagedThreadId}, PartitionId {partitionEndpointName} Error: {ex.Message}. {ex}");
                     }
                 }
             }
             catch (Exception e)
             {
-                logger.LogError(
-                    $"Failed to create or abort the scope of the state manager transaction for: {jobId}, ThreadId {Thread.CurrentThread.ManagedThreadId}, PartitionId {partitionEndpointName} Error: {e.Message}",
-                    e);
+                logger.LogError($"Failed to create or abort the scope of the state manager transaction for: {jobId}, ThreadId {Thread.CurrentThread.ManagedThreadId}, PartitionId {partitionEndpointName} Error: {e.Message}", e);
                 throw;
             }
+        }
+
+        public abstract IJobStatusService GetJobStatusService(IUnitOfWorkScope scope);
+
+        public abstract Task<List<long>> GetCurrentJobs(IJobStorageService jobStorage);
+        
+       
+
+        public void StartMonitoringJob(long jobId, JobType jobType)
+        {
+            currentJobs.AddOrUpdate(jobId, false, (key, status) => status);
         }
     }
 }

@@ -16,6 +16,13 @@ Scenario: Provider Period End Start Job Completed
 	Then the job monitoring service should update the status of the job to show that it has completed	
 	And the monitoring service should notify other services that the period end start job has completed successfully
 
+Scenario: Provider Validate Submission Window Job Completed
+	Given the period end service has received a Validate Submission Window Job
+	When the period end service notifies the job monitoring service to record the Validate Submission Window job
+	And the submission summary metrics are recorded
+	And the final messages for the job are successfully processed
+	Then the job monitoring service should update the status of the job to show that it has completed
+
 Scenario: Provider Period End Run  Job Completed
 	Given the period end service has received a period end run job
 	When the period end service notifies the job monitoring service to record run job
@@ -65,7 +72,7 @@ Scenario: Provider Period End Start Job fails if outstanding submissions time ou
 	And the monitoring service should notify other services that the period end start job has failed
 
 Scenario: Provider Period End Start Job times out if metrics are not complete
-	Given the earnings event service has received and successfully processed a small provider earnings job
+	Given the earnings event service has received and successfully processed a provider earnings job
 	And the period end service has received a period end start job
 	When the period end service notifies the job monitoring service to record the start job
 	And the final messages for the job are successfully processed
@@ -94,17 +101,3 @@ Scenario: Provider Period End Start Job Completes if latest submissions is takin
 	And when the final messages for the job are successfully processed for the submission job
 	And the job monitoring service should update the status of the job to show that it has completed
 	And the monitoring service should notify other services that the period end start job has completed successfully
-
-#Scenario: ILR Reprocessing Job waits for in-progress submissions to complete
-#	Given the earnings event service has received and is processing a provider earnings job
-#	And the period end service has received a period end Ilr reprocessing job
-#	And the period end service has notified the job monitoring service to record the Ilr reprocessing job
-#	When the provider earnings job completes
-#	
-#
-#	And the final messages for the job are successfully processed for the Period End Start job
-#	And the submission summary metrics are recorded
-#	Then the period end job should not complete
-#	And when the final messages for the job are successfully processed for the submission job
-#	Then the job monitoring service should update the status of the job to show that it has completed	
-#	And the monitoring service should notify other services that the period end start job has completed successfully

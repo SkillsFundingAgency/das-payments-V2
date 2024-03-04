@@ -34,7 +34,6 @@
     <Parameter Name="JobStatusCheck_Interval" DefaultValue="00:00:10" />
     <Parameter Name="TimeToWaitForJobToComplete" DefaultValue="01:00:00" />
     <Parameter Name="TimeToWaitForPeriodEndRunJobToComplete" DefaultValue="01:00:00" />
-    <Parameter Name="TimeToWaitToReceivePeriodEndILRSubmissions" DefaultValue="00:10:00" />
     <Parameter Name="DasNServiceBusLicenseKey" DefaultValue="" />
     <Parameter Name="ImmediateMessageRetries" DefaultValue="1" />
     <Parameter Name="DelayedMessageRetries" DefaultValue="3" />
@@ -101,7 +100,6 @@
             <Parameter Name="JobStatusCheck_Interval" Value="[JobStatusCheck_Interval]" />
             <Parameter Name="TimeToWaitForJobToComplete" Value="[TimeToWaitForJobToComplete]" />
             <Parameter Name="TimeToWaitForPeriodEndRunJobToComplete" Value="[TimeToWaitForPeriodEndRunJobToComplete]" />
-            <Parameter Name="TimeToWaitToReceivePeriodEndILRSubmissions" Value="[TimeToWaitToReceivePeriodEndILRSubmissions]" />
             <Parameter Name="NumberOfNServiceBusThreads" Value="[NumberOfNServiceBusThreads]" />
             <Parameter Name="DasNServiceBusLicenseKey" Value="[DasNServiceBusLicenseKey]" />
             <Parameter Name="ImmediateMessageRetries" Value="[ImmediateMessageRetries]" />
@@ -144,6 +142,11 @@
           <Partition Name="17" />
           <Partition Name="18" />
           <Partition Name="19" />
+          <!--<Partition Name="10003915" />
+          <Partition Name="10033440" />
+          <Partition Name="10003161" />
+          <Partition Name="10012467" />
+          <Partition Name="10000446" />-->
         </NamedPartition>
         <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
       </StatefulService>

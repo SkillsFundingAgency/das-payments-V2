@@ -16,12 +16,12 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers.PeriodEnd
         RecordPeriodEndIlrReprocessingStartedJobHandler : IHandleMessageBatches<
             RecordPeriodEndIlrReprocessingStartedJob>
     {
-        private readonly IJobStatusManager jobStatusManager;
+        private readonly IPeriodEndJobIlrReprocessingStatusManager jobStatusManager;
         private readonly IPaymentLogger logger;
         private readonly IPeriodEndJobService periodEndJobService;
 
         public RecordPeriodEndIlrReprocessingStartedJobHandler(IPaymentLogger logger,
-            IPeriodEndJobService periodEndJobService, IJobStatusManager jobStatusManager)
+            IPeriodEndJobService periodEndJobService, IPeriodEndJobIlrReprocessingStatusManager jobStatusManager)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.periodEndJobService =

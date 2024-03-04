@@ -16,9 +16,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers.PeriodEnd
     {
         private readonly IPaymentLogger logger;
         private readonly IPeriodEndJobService periodEndJobService;
-        private readonly IJobStatusManager jobStatusManager;
+        private readonly IPeriodEndStartJobStatusManager jobStatusManager;
 
-        public RecordPeriodEndStartJobHandler(IPaymentLogger logger, IPeriodEndJobService periodEndJobService, IJobStatusManager jobStatusManager)
+        public RecordPeriodEndStartJobHandler(IPaymentLogger logger, IPeriodEndJobService periodEndJobService, IPeriodEndStartJobStatusManager jobStatusManager)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.periodEndJobService = periodEndJobService ?? throw new ArgumentNullException(nameof(periodEndJobService));

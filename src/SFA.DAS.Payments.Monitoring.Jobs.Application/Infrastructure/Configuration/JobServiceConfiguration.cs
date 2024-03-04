@@ -7,7 +7,6 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Configurat
         TimeSpan JobStatusInterval { get; }
         TimeSpan EarningsJobTimeout { get; }
         TimeSpan PeriodEndRunJobTimeout { get; }
-        TimeSpan TimeToWaitToReceivePeriodEndILRSubmissions { get; }
     }
 
     public class JobServiceConfiguration: IJobServiceConfiguration
@@ -15,14 +14,12 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Configurat
         public TimeSpan JobStatusInterval { get; }
         public TimeSpan EarningsJobTimeout { get; }
         public TimeSpan PeriodEndRunJobTimeout { get; }
-        public TimeSpan TimeToWaitToReceivePeriodEndILRSubmissions { get; }
 
-        public JobServiceConfiguration(TimeSpan jobStatusInterval, TimeSpan earningsJobTimeout, TimeSpan periodEndRunJobTimeout, TimeSpan timeToWaitToReceivePeriodEndILRSubmissions)
+        public JobServiceConfiguration(TimeSpan jobStatusInterval, TimeSpan earningsJobTimeout, TimeSpan periodEndRunJobTimeout)
         {
             JobStatusInterval = jobStatusInterval;
             EarningsJobTimeout = earningsJobTimeout;
             PeriodEndRunJobTimeout = periodEndRunJobTimeout;
-            TimeToWaitToReceivePeriodEndILRSubmissions = timeToWaitToReceivePeriodEndILRSubmissions;
         }
     }
 }

@@ -30,7 +30,6 @@
     <Parameter Name="JobStatusCheck_Interval" Value="__Monitoring_JobStatusCheck_Interval__" />
     <Parameter Name="TimeToWaitForJobToComplete" Value="__TimeToWaitForJobToComplete__" />
     <Parameter Name="TimeToWaitForPeriodEndRunJobToComplete" Value="__TimeToWaitForPeriodEndRunJobToComplete__" />
-    <Parameter Name="TimeToWaitToReceivePeriodEndILRSubmissions" Value="__TimeToWaitToReceivePeriodEndILRSubmissions__" />
     <Parameter Name="DasNServiceBusLicenseKey" Value="__DasNServiceBusLicenseKey__" />
     <Parameter Name="MetricsGenerationDelay" Value="__MetricsGenerationDelay__" />
     <Parameter Name="MetricsFunctionApiKey" Value="__MetricsFunctionApiKey__" />
