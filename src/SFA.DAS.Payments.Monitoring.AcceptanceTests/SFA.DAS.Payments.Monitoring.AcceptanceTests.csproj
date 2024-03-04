@@ -195,6 +195,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EndpointNames.cs" />
+    <Compile Include="Handlers\PeriodEndIlrReprocessingFailedHandler.cs" />
+    <Compile Include="Handlers\PeriodEndIlrReprocessingSuccessHandler.cs" />
     <Compile Include="Handlers\PeriodEndRunFailedHandler.cs" />
     <Compile Include="Handlers\PeriodEndStopSuccessHandler.cs" />
     <Compile Include="Handlers\PeriodEndRunSuccessHandler.cs" />
@@ -204,6 +206,11 @@
     <Compile Include="Handlers\SubmissionJobFailedHandler.cs" />
     <Compile Include="Handlers\SubmissionJobSucceededHandler.cs" />
     <Compile Include="Infrastructure\BindingBootstrapper.cs" />
+    <Compile Include="Jobs\PeriodEndILRResubmission.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PeriodEndILRResubmission.feature</DependentUpon>
+    </Compile>
     <Compile Include="Jobs\PeriodEndJobs.feature.cs">
       <DependentUpon>PeriodEndJobs.feature</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -215,6 +222,11 @@
       <DependentUpon>Jobs.feature</DependentUpon>
     </Compile>
     <Compile Include="Jobs\JobsSteps.cs" />
+    <Compile Include="Jobs\PeriodEndSubmissionWindowValidation.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PeriodEndSubmissionWindowValidation.feature</DependentUpon>
+    </Compile>
     <Compile Include="Metrics\PeriodEndTests.cs" />
     <Compile Include="Metrics\SubmissionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -239,6 +251,14 @@
     <None Include="Jobs\Jobs.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Jobs.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Jobs\PeriodEndILRResubmission.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PeriodEndILRResubmission.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Jobs\PeriodEndSubmissionWindowValidation.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PeriodEndSubmissionWindowValidation.feature.cs</LastGenOutput>
     </None>
     <None Include="packages.config" />
   </ItemGroup>

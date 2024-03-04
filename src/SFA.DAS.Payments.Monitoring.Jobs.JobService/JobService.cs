@@ -19,33 +19,28 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
     [StatePersistence(StatePersistence.Volatile)]
     public class JobService : StatefulService, IJobService
     {
-        private readonly IPaymentLogger logger;
-        private readonly IEarningsJobStatusManager earningsJobStatusManager;
-        private readonly IPeriodEndJobStatusManager periodEndJobStatusManager;
-        private readonly IPeriodEndStartJobStatusManager periodEndStartJobStatusManager;
+        private readonly IJobStatusManager jobStatusManager;
         private readonly ILifetimeScope lifetimeScope;
+        private readonly IPaymentLogger logger;
         private string partitionEndpointName;
 
-        public JobService(StatefulServiceContext context, IPaymentLogger logger, 
-            IEarningsJobStatusManager earningsJobStatusManager,
-            IPeriodEndJobStatusManager periodEndJobStatusManager,
-            ILifetimeScope lifetimeScope,
-            IPeriodEndStartJobStatusManager periodEndStartJobStatusManager
+        public JobService(StatefulServiceContext context, 
+            IPaymentLogger logger,
+            IJobStatusManager jobStatusManager,
+            ILifetimeScope lifetimeScope
         )
             : base(context)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            this.earningsJobStatusManager = earningsJobStatusManager ?? throw new ArgumentNullException(nameof(earningsJobStatusManager));
-            this.periodEndJobStatusManager = periodEndJobStatusManager ?? throw new ArgumentNullException(nameof(periodEndJobStatusManager));
+            this.jobStatusManager = jobStatusManager ?? throw new ArgumentNullException(nameof(jobStatusManager));
             this.lifetimeScope = lifetimeScope;
-            this.periodEndStartJobStatusManager = periodEndStartJobStatusManager ?? throw new ArgumentNullException(nameof(periodEndStartJobStatusManager));
         }
 
         protected override IEnumerable<ServiceReplicaListener> CreateServiceReplicaListeners()
         {
             try
             {
-                partitionEndpointName = ((NamedPartitionInformation) Partition.PartitionInfo).Name;
+                partitionEndpointName = ((NamedPartitionInformation)Partition.PartitionInfo).Name;
                 var batchListener = lifetimeScope.Resolve<IServiceBusBatchCommunicationListener>();
                 batchListener.EndpointName += partitionEndpointName;
                 var serviceListener = new ServiceReplicaListener(context => batchListener);
@@ -56,7 +51,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
             }
             catch (Exception e)
             {
-                logger.LogError($"Error: {e.Message}",e);
+                logger.LogError($"Error: {e.Message}", e);
                 throw;
             }
         }
@@ -64,9 +59,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
         protected override Task RunAsync(CancellationToken cancellationToken)
         {
             return Task.WhenAll(RunSendOnlyEndpoint(),
-                earningsJobStatusManager.Start(partitionEndpointName, cancellationToken),
-                periodEndJobStatusManager.Start(partitionEndpointName, cancellationToken),
-                periodEndStartJobStatusManager.Start(partitionEndpointName, cancellationToken));
+                jobStatusManager.Start(partitionEndpointName, cancellationToken));
         }
 
         private async Task RunSendOnlyEndpoint()
