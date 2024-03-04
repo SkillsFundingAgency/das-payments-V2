@@ -6,7 +6,6 @@ using System.Threading;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
-using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Monitoring.Metrics.Data;
 using SFA.DAS.Payments.Monitoring.Metrics.Model.Submission;
@@ -27,9 +26,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
         private readonly ISubmissionMetricsRepository submissionRepository;
         private readonly ISubmissionJobsRepository submissionJobsRepository;
         private readonly ITelemetry telemetry;
-        private readonly IConfigurationHelper configurationHelper;
 
-        public SubmissionMetricsService(IPaymentLogger logger, ISubmissionSummaryFactory submissionSummaryFactory, IDcMetricsDataContextFactory dcMetricsDataContextFactory, ISubmissionMetricsRepository submissionRepository, ITelemetry telemetry, ISubmissionJobsRepository submissionJobsRepository, IConfigurationHelper configurationHelper)
+        public SubmissionMetricsService(IPaymentLogger logger, ISubmissionSummaryFactory submissionSummaryFactory, IDcMetricsDataContextFactory dcMetricsDataContextFactory, ISubmissionMetricsRepository submissionRepository, ITelemetry telemetry, ISubmissionJobsRepository submissionJobsRepository)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.submissionSummaryFactory = submissionSummaryFactory ?? throw new ArgumentNullException(nameof(submissionSummaryFactory));
@@ -37,7 +35,6 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
             this.submissionRepository = submissionRepository ?? throw new ArgumentNullException(nameof(submissionRepository));
             this.telemetry = telemetry ?? throw new ArgumentNullException(nameof(telemetry));
             this.submissionJobsRepository = submissionJobsRepository ?? throw new ArgumentNullException(nameof(submissionJobsRepository));
-            this.configurationHelper = configurationHelper ?? throw new ArgumentNullException(nameof(configurationHelper));
         }
 
         public async Task BuildMetrics(long ukprn, long jobId, short academicYear, byte collectionPeriod, CancellationToken cancellationToken)
@@ -66,22 +63,16 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                 var yearToDateAmountsTask = submissionRepository.GetYearToDatePaymentsTotal(ukprn, academicYear, collectionPeriod, cancellationToken);
                 
                 var dataTask = Task.WhenAll(dcEarningsTask, dasEarningsTask, dataLocksTask, dataLocksTotalTask, dataLocksAlreadyPaid, requiredPaymentsTask, heldBackCompletionAmountsTask, yearToDateAmountsTask);
-
-                var metricsGenerationWaitTime = TimeSpan.Parse(
-                    configurationHelper.GetSettingOrDefault("MetricsGenerationWaitTime", "00:04:30"));
-
-                var waitTask = Task.Delay(metricsGenerationWaitTime, cancellationToken);
+                
+                var waitTask = Task.Delay(TimeSpan.FromSeconds(270), cancellationToken);
 
                 Task.WaitAny(dataTask, waitTask);
 
                 cancellationToken.ThrowIfCancellationRequested();
 
                 if (!dataTask.IsCompleted)
-                {
-                    throw new SubmissionMetricsGenerationException(
-                        $"Took too long to get data for the submission metrics. Ukprn: {ukprn}, job: {jobId}, Collection period: {collectionPeriod}");
-                }
-
+                    throw new InvalidOperationException($"Took too long to get data for the submission metrics. Ukprn: {ukprn}, job: {jobId}, Collection period: {collectionPeriod}");
+                
                 var dataDuration = stopwatch.ElapsedMilliseconds;
 
                 logger.LogDebug($"finished getting data from databases for job: {jobId}, ukprn: {ukprn}. Took: {dataDuration}ms.");

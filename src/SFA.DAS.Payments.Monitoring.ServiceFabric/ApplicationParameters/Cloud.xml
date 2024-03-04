@@ -35,6 +35,5 @@
     <Parameter Name="MetricsGenerationDelay" Value="__MetricsGenerationDelay__" />
     <Parameter Name="MetricsFunctionApiKey" Value="__MetricsFunctionApiKey__" />
     <Parameter Name="MetricsFunctionBaseUrl" Value="__MetricsFunctionBaseUrl__" />
-    <Parameter Name="MetricsGenerationWaitTime" Value="__MetricsGenerationWaitTime__" />
   </Parameters>
 </Application>

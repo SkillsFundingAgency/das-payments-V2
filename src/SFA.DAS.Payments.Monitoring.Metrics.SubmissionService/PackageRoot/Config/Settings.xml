@@ -33,6 +33,5 @@
     <Parameter Name="NumberOfNServiceBusThreads" Value="4" />
     <Parameter Name="DasNServiceBusLicenseKey" Value=""/>
     <Parameter Name="MetricsGenerationDelay" Value="00:05:00"/>
-    <Parameter Name="MetricsGenerationWaitTime" Value="00:04:30" />
   </Section>
 </Settings>
