@@ -391,7 +391,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Monitoring
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Audit.ArchiveService", "SFA.DAS.Payments.Audit.ArchiveService\SFA.DAS.Payments.Audit.ArchiveService.csproj", "{31CB668D-D88F-4865-B2C3-3E14AF6042D6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Payments.Audit.ArchiveService.UnitTests", "SFA.DAS.Payments.Audit.ArchiveService.UnitTests\SFA.DAS.Payments.Audit.ArchiveService.UnitTests.csproj", "{05B5B374-6B63-4E8F-87E0-A47D32CC79B2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.Audit.ArchiveService.UnitTests", "SFA.DAS.Payments.Audit.ArchiveService.UnitTests\SFA.DAS.Payments.Audit.ArchiveService.UnitTests.csproj", "{05B5B374-6B63-4E8F-87E0-A47D32CC79B2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

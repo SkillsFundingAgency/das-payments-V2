@@ -13,7 +13,7 @@ namespace SFA.DAS.Payments.Audit.ArchiveService.Orchestrators
     public static class PeriodEndArchiveOrchestrator
     {
         [FunctionName("PeriodEndArchiveOrchestrator")]
-        public static async Task<string> RunOrchestrator(
+        public static async Task RunOrchestrator(
             [OrchestrationTrigger] IDurableOrchestrationContext context,
             [Inject] IPaymentLogger log)
         {
@@ -24,13 +24,13 @@ namespace SFA.DAS.Payments.Audit.ArchiveService.Orchestrators
             {
                 log.LogInfo("Starting Period End Archive Orchestrator");
 
-                return await context.CallActivityAsync<string>(nameof(StartPeriodEndArchiveActivity), messageJson);
+                await context.CallActivityAsync(nameof(StartPeriodEndArchiveActivity), messageJson);
+                await context.CallSubOrchestratorAsync(nameof(ArchiveStatusOrchestrator), null, messageJson);
             }
             catch (Exception ex)
             {
                 await context.CallActivityAsync<string>(nameof(ArchiveFailActivity), messageJson);
-                log.LogError("Error in PeriodEndArchiveOrchestrator", ex);
-                return null;
+                throw new Exception("Error in PeriodEndArchiveOrchestrator", ex);
             }
         }
     }

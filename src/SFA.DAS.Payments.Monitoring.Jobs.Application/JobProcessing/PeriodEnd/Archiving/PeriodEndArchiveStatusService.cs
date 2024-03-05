@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
+using SFA.DAS.Payments.Model.Core.Audit;
 using SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Configuration;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
 
@@ -182,8 +183,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd.A
 
             var content = await result.Content.ReadAsStringAsync();
 
-            var periodEndArchiverStatusSummary = JsonConvert.DeserializeObject<PeriodEndArchiverStatusSummary>(content);
-            return periodEndArchiverStatusSummary.EntityState.Status;
+            var periodEndArchiverStatusSummary = JsonConvert.DeserializeObject<ArchiveRunInformation>(content);
+            return periodEndArchiverStatusSummary.Status;
         }
 
 

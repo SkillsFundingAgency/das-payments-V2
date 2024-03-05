@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using AzureFunctions.Autofac;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;
@@ -19,9 +20,9 @@ namespace SFA.DAS.Payments.Audit.ArchiveService.Activities
             var runInformation = await StatusHelper.GetCurrentJobs(entityClient);
             runInformation.Status = "Failed";
 
-            logger.LogError($"JobId: {runInformation.JobId}. PeriodEndArchiveOrchestrator failed");
+            logger.LogError($"JobId: {runInformation.JobId}. ADF InstanceId: {runInformation.InstanceId} PeriodEndArchiveOrchestrator failed");
 
-            await StatusHelper.UpdateCurrentJobStatus(entityClient);
+            await StatusHelper.UpdateCurrentJobStatus(entityClient, runInformation);
         }
     }
 }

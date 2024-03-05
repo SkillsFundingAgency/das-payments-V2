@@ -69,6 +69,13 @@ namespace SFA.DAS.Payments.Audit.ArchiveService.Helpers
                 var content = await responseHttpMessage.Content.ReadAsStringAsync();
                 var newContent = $"Started orchestrator [{orchestratorName}] with ID [{instanceId}]\n\n{content}\n\n";
                 responseHttpMessage.Content = new StringContent(newContent);
+
+
+                log.LogInfo($"Triggering {nameof(ArchiveStatusOrchestrator)} to monitor instance {instanceId}");
+
+                await starter.StartNewAsync(nameof(ArchiveStatusOrchestrator),
+                    $"{nameof(ArchiveStatusOrchestrator)}-{Guid.NewGuid()}", messageJson);
+
                 return responseHttpMessage;
             }
             catch (Exception ex)

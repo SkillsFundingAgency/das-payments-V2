@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Audit.ArchiveService.Helpers;
 using SFA.DAS.Payments.Audit.ArchiveService.Infrastructure.IoC;
+using SFA.DAS.Payments.Model.Core.Audit;
 
 namespace SFA.DAS.Payments.Audit.ArchiveService.Triggers
 {
@@ -52,11 +53,12 @@ namespace SFA.DAS.Payments.Audit.ArchiveService.Triggers
                 }
 
                 //GET: Get the current status of the job
-                var stateResponse = await StatusHelper.GetCurrentJobs(client);
+                var stateResponse = await StatusHelper.GetCurrentJobs(client) ?? new ArchiveRunInformation();
 
                 if (stateResponse.JobId != urlParam)
                 {
                     stateResponse.JobId = urlParam;
+                    stateResponse.InstanceId = string.Empty;
                     stateResponse.Status = "Queued";
                 }
 

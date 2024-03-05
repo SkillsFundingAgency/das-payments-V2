@@ -2,21 +2,30 @@
 using Microsoft.Azure.WebJobs.Extensions.DurableTask;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Audit.ArchiveService.Extensions;
+using SFA.DAS.Payments.Model.Core.Audit;
 
 namespace SFA.DAS.Payments.Audit.ArchiveService.Helpers
 {
     public static class StatusHelper
     {
+        public enum ArchiveStatus
+        {
+            InProgress,
+            Queued,
+            Completed,
+            Failed
+        }
+
         public static EntityId GetEntityId()
         {
             return new EntityId(nameof(HandleCurrentJobId.Handle),
                 HandleCurrentJobId.PeriodEndArchiveEntityName);
         }
 
-        public static async Task UpdateCurrentJobStatus(IDurableEntityClient entityClient)
+        public static async Task UpdateCurrentJobStatus(IDurableEntityClient entityClient,
+            ArchiveRunInformation runInformation)
         {
             var entityId = GetEntityId();
-            var runInformation = await GetCurrentJobs(entityClient);
             await entityClient.SignalEntityAsync(entityId, "add", runInformation);
         }
 
@@ -34,9 +43,10 @@ namespace SFA.DAS.Payments.Audit.ArchiveService.Helpers
             var entityId = new EntityId(nameof(HandleCurrentJobId.Handle),
                 HandleCurrentJobId.PeriodEndArchiveEntityName);
 
-            await entityClient.SignalEntityAsync(entityId, "add", new RunInformation
+            await entityClient.SignalEntityAsync(entityId, "add", new ArchiveRunInformation
             {
                 JobId = string.Empty,
+                InstanceId = string.Empty,
                 Status = string.Empty
             });
             var currentRun = await GetCurrentJobs(entityClient);
@@ -45,11 +55,11 @@ namespace SFA.DAS.Payments.Audit.ArchiveService.Helpers
                 $"StatusHelper.ClearCurrentStatus: Current JobId: {currentRun.JobId}, JobStatus: {currentRun.Status}");
         }
 
-        public static async Task<RunInformation> GetCurrentJobs(IDurableEntityClient entityClient)
+        public static async Task<ArchiveRunInformation> GetCurrentJobs(IDurableEntityClient entityClient)
         {
             var entityId = GetEntityId();
-            var stateResponse = await entityClient.ReadEntityStateAsync<RunInformation>(entityId);
-            return stateResponse.EntityExists ? stateResponse.EntityState : null;
+            var stateResponse = await entityClient.ReadEntityStateAsync<ArchiveRunInformation>(entityId);
+            return stateResponse.EntityExists ? stateResponse.EntityState : new ArchiveRunInformation();
         }
     }
 }

@@ -12,9 +12,9 @@ using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
-using SFA.DAS.Payments.Audit.ArchiveService.Extensions;
 using SFA.DAS.Payments.Audit.ArchiveService.Orchestrators;
 using SFA.DAS.Payments.Audit.ArchiveService.Triggers;
+using SFA.DAS.Payments.Model.Core.Audit;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 
 namespace SFA.DAS.Payments.Audit.ArchiveService.UnitTests.Triggers
@@ -148,7 +148,7 @@ namespace SFA.DAS.Payments.Audit.ArchiveService.UnitTests.Triggers
             response.Should().NotBeNull();
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             content.Should()
-                .Be("{\"JobId\":\"2345\",\"Status\":\"Queued\"}");
+                .Be("{\"InstanceId\":\"\",\"JobId\":\"2345\",\"Status\":\"Queued\"}");
         }
 
         [Test]
@@ -166,7 +166,7 @@ namespace SFA.DAS.Payments.Audit.ArchiveService.UnitTests.Triggers
             response.Should().NotBeNull();
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             content.Should()
-                .Be("{\"JobId\":\"1234\",\"Status\":\"Success\"}");
+                .Be("{\"InstanceId\":null,\"JobId\":\"1234\",\"Status\":\"Success\"}");
         }
 
         [Test]
@@ -289,10 +289,10 @@ namespace SFA.DAS.Payments.Audit.ArchiveService.UnitTests.Triggers
 
         public void SetupMockRunInformation(string jobId = "1234")
         {
-            mockEntityClient.Setup(x => x.ReadEntityStateAsync<RunInformation>(It.IsAny<EntityId>(), null, null))
-                .ReturnsAsync(() => new EntityStateResponse<RunInformation>
+            mockEntityClient.Setup(x => x.ReadEntityStateAsync<ArchiveRunInformation>(It.IsAny<EntityId>(), null, null))
+                .ReturnsAsync(() => new EntityStateResponse<ArchiveRunInformation>
                 {
-                    EntityExists = true, EntityState = new RunInformation { JobId = jobId, Status = "Success" }
+                    EntityExists = true, EntityState = new ArchiveRunInformation { JobId = jobId, Status = "Success" }
                 });
         }
     }
