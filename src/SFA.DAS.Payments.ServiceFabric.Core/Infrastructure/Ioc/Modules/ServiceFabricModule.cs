@@ -34,6 +34,8 @@ namespace SFA.DAS.Payments.ServiceFabric.Core.Infrastructure.Ioc.Modules
                 .InstancePerLifetimeScope();
             builder.RegisterType<DuplicatePeriodisedPaymentEventService>().As<IDuplicatePeriodisedPaymentEventService>()
                 .InstancePerLifetimeScope();
+
+            builder.RegisterType<ServiceStatusManager>().As<IServiceStatusManager>().SingleInstance();
         }
     }
 }

@@ -18,6 +18,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.Earnings
 
     public class EarningsJobStatusService : JobStatusService, IEarningsJobStatusService
     {
+        protected override TimeSpan JobTimeoutPeriod => Config.EarningsJobTimeout;
+
         public EarningsJobStatusService(IJobStorageService jobStorageService, IPaymentLogger logger, ITelemetry telemetry, IJobStatusEventPublisher eventPublisher, IJobServiceConfiguration config)
             : base(jobStorageService, logger, telemetry, eventPublisher, config)
         {
@@ -61,11 +63,17 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.Earnings
             await base.ManageMessageStatus(jobId, completedMessages, inProgressMessages, cancellationToken);
         }
 
+        
+
         protected override async Task<bool> CompleteJob(JobModel job, JobStatus status, DateTimeOffset endTime, CancellationToken cancellationToken)
         {
-            status = job.DcJobSucceeded.HasValue && !job.DcJobSucceeded.Value
-                ? JobStatus.DcTasksFailed
-                : status;
+            if (job.DcJobSucceeded.HasValue)
+            {
+                if (!job.DcJobSucceeded.Value)
+                    status = JobStatus.DcTasksFailed;
+                else if (status == JobStatus.TimedOut)
+                    status = JobStatus.CompletedWithErrors;  //Work around - at this point it is too late to rollback the job as we've already told DC the job has finished (after datalocks completed).
+            }
 
             Logger.LogInfo($"Completing Earnings Job {job.DcJobId}. JobStatus: {status}");
 
