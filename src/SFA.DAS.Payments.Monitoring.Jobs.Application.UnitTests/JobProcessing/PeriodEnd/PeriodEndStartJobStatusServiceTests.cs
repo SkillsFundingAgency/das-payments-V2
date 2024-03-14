@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Extras.Moq;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Configuration;
+using SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing;
 using SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
+using SFA.DAS.Payments.ServiceFabric.Core.Infrastructure;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.PeriodEnd
 {
@@ -39,6 +39,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
                 Id = 1,
                 DcJobId = 99,
                 StartTime = DateTimeOffset.UtcNow.AddSeconds(-1),
+                EndTime = DateTimeOffset.UtcNow,
                 Status = JobStatus.InProgress,
                 LearnerCount = null,
                 JobType = JobType.PeriodEndStartJob,
@@ -79,191 +80,133 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.UnitTests.JobProcessing.P
             mocker.Mock<IJobsDataContext>()
                 .Setup(x => x.GetOutstandingOrTimedOutJobs(It.IsAny<JobModel>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(outstandingOrTimedOutJobs);
+            mocker.Mock<IJobServiceConfiguration>()
+                .Setup(x => x.PeriodEndStartJobTimeout)
+                .Returns(TimeSpan.FromMilliseconds(2000));
 
         }
 
         [Test]
-        public async Task ManageStatus_GiveAtLeastOneTimedOutJobs_FailsWithCompletedWithErrorsStatus()
+        public async Task Uses_Correct_ApplicationName()
         {
-            var jobId = 99;
-            var completedMessage = CreateCompletedMessage();
-            var inProgressMessage = CreateInProgressMessage(completedMessage);
-            inProgressMessages.Add(inProgressMessage);
-            completedMessages.Add(completedMessage);
-
-            var timedOutSubmissionJob = CreateTimedOutSubmissionJob();
-            outstandingOrTimedOutJobs.Add(timedOutSubmissionJob);
-
-            mocker.Mock<IJobStorageService>()
-                .Setup(x => x.GetJobStatus(It.IsAny<long>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync((hasFailedMessages: false, endTime: DateTimeOffset.UtcNow.AddSeconds(-10)));
+            mocker.Mock<IServiceStatusManager>()
+                .Setup(x => x.IsServiceRunning(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(true);
 
             var service = mocker.Create<PeriodEndStartJobStatusService>();
-            var result = await service.ManageStatus(jobId, CancellationToken.None).ConfigureAwait(false);
-            result.Should().BeTrue();
-            mocker.Mock<IJobStorageService>()
-                .Verify(
-                    x => x.SaveJobStatus(It.Is<long>(id => id == jobId),
-                        It.Is<JobStatus>(status => status == JobStatus.CompletedWithErrors),
-                        It.Is<DateTimeOffset>(endTime => endTime == timedOutSubmissionJob.EndTime),
-                        It.IsAny<CancellationToken>()), Times.Once());
-        }
 
-        [Test]
-        public async Task ManageStatus_GivenMultipleSubmissionJobsWhereOneTimesOut_FailsFastOnFirstFailure()
-        {
-            var jobId = 99;
-            var completedMessage = CreateCompletedMessage();
-            var inProgressMessage = CreateInProgressMessage(completedMessage);
-            inProgressMessages.Add(inProgressMessage);
-            completedMessages.Add(completedMessage);
-
-            outstandingOrTimedOutJobs.Add(CreateOutstandingSubmissionJob());
-            outstandingOrTimedOutJobs.Add(CreateOutstandingSubmissionJob());
-            outstandingOrTimedOutJobs.Add(CreateOutstandingSubmissionJob());
-
-            mocker.Mock<IJobStorageService>()
-                .Setup(x => x.GetJobStatus(It.IsAny<long>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync((hasFailedMessages: false, endTime: DateTimeOffset.UtcNow.AddSeconds(-10)));
-
-            var service = mocker.Create<PeriodEndStartJobStatusService>();
-            var result = await service.ManageStatus(jobId, CancellationToken.None).ConfigureAwait(false);
-            result.Should().BeFalse();
-
-            outstandingOrTimedOutJobs[0] = CreateTimedOutSubmissionJob();
-
-            result = await service.ManageStatus(jobId, CancellationToken.None).ConfigureAwait(false);
-            result.Should().BeTrue();
-
-            mocker.Mock<IJobStorageService>()
-                .Verify(
-                    x => x.SaveJobStatus(It.Is<long>(id => id == jobId),
-                        It.Is<JobStatus>(status => status == JobStatus.CompletedWithErrors),
-                        It.Is<DateTimeOffset>(endTime => endTime == outstandingOrTimedOutJobs[0].EndTime),
-                        It.IsAny<CancellationToken>()), Times.Once());
-        }
-
-        [Test]
-        public async Task ManageStatus_ContinuesUntilAllInProgressJobsHaveCompleted()
-        {
-            var jobId = 99;
-            var completedMessage = CreateCompletedMessage();
-            var inProgressMessage = CreateInProgressMessage(completedMessage);
-            var outstandingJob = CreateOutstandingSubmissionJob();
-
-            inProgressMessages.Add(inProgressMessage);
-            completedMessages.Add(completedMessage);
-            outstandingOrTimedOutJobs.Add(outstandingJob);
-
-            mocker.Mock<IJobStorageService>()
-                .Setup(x => x.GetJobStatus(It.IsAny<long>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync((hasFailedMessages: false, endTime: DateTimeOffset.UtcNow.AddSeconds(-10)));
-
-            mocker.Mock<IJobsDataContext>()
-                .Setup(x => x.DoSubmissionSummariesExistForJobs(It.IsAny<List<OutstandingJobResult>>()))
-                .Returns(new List<long?>());
-
-            var service = mocker.Create<PeriodEndStartJobStatusService>();
             var result =
-                await service.ManageStatus(jobId, CancellationToken.None)
-                    .ConfigureAwait(false); //should not complete on first pass
-            
-            result.Should().BeFalse();
+                await service.ManageStatus(job.DcJobId.Value, CancellationToken.None)
+                    .ConfigureAwait(false);
 
-            mocker.Mock<ITelemetry>()
-                .Verify(t => t.TrackEvent("PeriodEndStart Job Status Update", It.IsAny<Dictionary<string, string>>(), It.IsAny<Dictionary<string, double>>()));
-
-            CompleteJob(outstandingOrTimedOutJobs[0]);
-
-            result = await service.ManageStatus(jobId, CancellationToken.None).ConfigureAwait(false);
-
-            result.Should().BeTrue();
-
-            mocker.Mock<IJobStorageService>()
-                .Verify(
-                    x => x.SaveJobStatus(It.Is<long>(id => id == jobId),
-                        It.Is<JobStatus>(status => status == JobStatus.Completed),
-                        It.Is<DateTimeOffset>(endTime => EndTimeIsNearUtcNow(endTime)),
-                        It.IsAny<CancellationToken>()), Times.Once());
-
+            mocker.Mock<IServiceStatusManager>()
+                .Verify(x => x.IsServiceRunning(It.Is<string>(name => name.Equals(ServiceNames.DataLocksApprovals.ApplicationName)),It.IsAny<string>()));
         }
 
         [Test]
-        public async Task ManageStatus_ContinuesUntilAllInProgressAndUsesUtcNowAsJobEndTime()
+        public async Task Uses_Correct_ServiceName()
         {
-            var jobId = 99;
-            var completedMessage = CreateCompletedMessage();
-            var inProgressMessage = CreateInProgressMessage(completedMessage);
-            inProgressMessages.Add(inProgressMessage);
-            completedMessages.Add(completedMessage);
-
-            outstandingOrTimedOutJobs.Add(CreateOutstandingSubmissionJob());
-            outstandingOrTimedOutJobs.Add(CreateOutstandingSubmissionJob());
-
-            mocker.Mock<IJobStorageService>()
-                .Setup(x => x.GetJobStatus(It.IsAny<long>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync((hasFailedMessages: false, endTime: DateTimeOffset.UtcNow.AddSeconds(-10)));
-
-            mocker.Mock<IJobsDataContext>()
-                .Setup(x => x.DoSubmissionSummariesExistForJobs(It.IsAny<List<OutstandingJobResult>>()))
-                .Returns(new List<long?>());
+            mocker.Mock<IServiceStatusManager>()
+                .Setup(x => x.IsServiceRunning(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(true);
 
             var service = mocker.Create<PeriodEndStartJobStatusService>();
+
             var result =
-                await service.ManageStatus(jobId, CancellationToken.None)
-                    .ConfigureAwait(false); //should not complete on first pass
-            result.Should().BeFalse();
+                await service.ManageStatus(job.DcJobId.Value, CancellationToken.None)
+                    .ConfigureAwait(false);
 
-            CompleteJob(outstandingOrTimedOutJobs[0]);
-            CompleteJob(outstandingOrTimedOutJobs[1]);
-
-            result = await service.ManageStatus(jobId, CancellationToken.None).ConfigureAwait(false);
-            
-            result.Should().BeTrue();
-
-            mocker.Mock<IJobStorageService>()
-                .Verify(
-                    x => x.SaveJobStatus(It.Is<long>(id => id == jobId),
-                        It.Is<JobStatus>(status => status == JobStatus.Completed),
-                        It.Is<DateTimeOffset>(endTime => EndTimeIsNearUtcNow(endTime)),
-                        It.IsAny<CancellationToken>()), Times.Once());
-
+            mocker.Mock<IServiceStatusManager>()
+                .Verify(x => x.IsServiceRunning(It.IsAny<string>(),It.Is<string>(name => name.Equals(ServiceNames.DataLocksApprovals.ServiceName))));
         }
 
         [Test]
-        public async Task ManageStatus_EndTimeShouldUseUtcNow()
+        public async Task Completes_After_Reference_Data_Services_Are_Disabled()
         {
-            var jobId = 99;
-            var completedMessage = CreateCompletedMessage();
-            completedMessage.CompletedTime = DateTimeOffset.UtcNow;
-
-            var inProgressMessage = CreateInProgressMessage(completedMessage);
-            inProgressMessages.Add(inProgressMessage);
-            completedMessages.Add(completedMessage);
-
-            outstandingOrTimedOutJobs.Add(CreateCompletedSubmissionJob());//well complete prior to inprogress/completed messages
-
-            mocker.Mock<IJobStorageService>()
-                .Setup(x => x.GetJobStatus(It.IsAny<long>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync((hasFailedMessages: false, endTime: DateTimeOffset.UtcNow.AddSeconds(-10)));
-
-            mocker.Mock<IJobsDataContext>()
-                .Setup(x => x.DoSubmissionSummariesExistForJobs(It.IsAny<List<OutstandingJobResult>>()))
-                .Returns(new List<long?>());
+            mocker.Mock<IServiceStatusManager>()
+                .Setup(x => x.IsServiceRunning(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(false);
 
             var service = mocker.Create<PeriodEndStartJobStatusService>();
 
-            var result = await service.ManageStatus(jobId, CancellationToken.None).ConfigureAwait(false);
-            
+            var result =
+                await service.ManageStatus(job.DcJobId.Value, CancellationToken.None)
+                    .ConfigureAwait(false);
+
             result.Should().BeTrue();
+        }
+
+        [Test]
+        public async Task Saves_Status_After_Reference_Data_Services_Are_Disabled()
+        {
+            mocker.Mock<IServiceStatusManager>()
+                .Setup(x => x.IsServiceRunning(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(false);
+
+            var service = mocker.Create<PeriodEndStartJobStatusService>();
+
+            await service.ManageStatus(job.DcJobId.Value, CancellationToken.None)
+                    .ConfigureAwait(false);
             
             mocker.Mock<IJobStorageService>()
-                .Verify(
-                    x => x.SaveJobStatus(It.Is<long>(id => id == jobId),
-                        It.Is<JobStatus>(status => status == JobStatus.Completed),
-                        It.Is<DateTimeOffset>(endTime => EndTimeIsNearUtcNow(endTime)),
-                        It.IsAny<CancellationToken>()), Times.Once());
+                .Verify(x => x.SaveJobStatus(It.Is<long>(id => id == job.DcJobId.Value),It.Is<JobStatus>(status => status == JobStatus.Completed),It.IsAny<DateTimeOffset>(), It.IsAny<CancellationToken>()),Times.Once);
         }
+
+        [Test]
+        public async Task Publishes_Completed_Event_After_Reference_Data_Services_Are_Disabled()
+        {
+            mocker.Mock<IServiceStatusManager>()
+                .Setup(x => x.IsServiceRunning(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(false);
+
+            var service = mocker.Create<PeriodEndStartJobStatusService>();
+
+            await service.ManageStatus(job.DcJobId.Value, CancellationToken.None)
+                .ConfigureAwait(false);
+
+            mocker.Mock<IJobStatusEventPublisher>()
+                .Verify(x => x.PeriodEndJobFinished(It.IsAny<JobModel>(), It.Is<bool>(status => status )), Times.Once);
+        }
+
+        [Test]
+        public async Task Does_Not_Complete_If_Services_Are_Still_Running()
+        {
+            mocker.Mock<IServiceStatusManager>()
+                .Setup(x => x.IsServiceRunning(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(true);
+
+            var service = mocker.Create<PeriodEndStartJobStatusService>();
+
+            var result =
+                await service.ManageStatus(job.DcJobId.Value, CancellationToken.None)
+                    .ConfigureAwait(false);
+
+            result.Should().BeFalse();
+        }
+
+        [Test]
+        public async Task Times_Out_If_Services_Not_Disabled()
+        {
+            job.StartTime = DateTimeOffset.UtcNow;
+            mocker.Mock<IJobServiceConfiguration>()
+                .Setup(x => x.PeriodEndStartJobTimeout)
+                .Returns(TimeSpan.FromMilliseconds(500));
+            mocker.Mock<IServiceStatusManager>()
+                .Setup(x => x.IsServiceRunning(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(true);
+
+            var service = mocker.Create<PeriodEndStartJobStatusService>();
+            Thread.Sleep(500);
+            var result =
+                await service.ManageStatus(job.DcJobId.Value, CancellationToken.None)
+                    .ConfigureAwait(false);
+
+            result.Should().BeTrue();
+
+            mocker.Mock<IJobStorageService>()
+                .Verify(x => x.SaveJobStatus(It.Is<long>(id => id == job.DcJobId.Value), It.Is<JobStatus>(status => status == JobStatus.TimedOut), It.IsAny<DateTimeOffset>(), It.IsAny<CancellationToken>()), Times.Once);
+        }
+
 
         private static bool EndTimeIsNearUtcNow(DateTimeOffset endTime)
         {

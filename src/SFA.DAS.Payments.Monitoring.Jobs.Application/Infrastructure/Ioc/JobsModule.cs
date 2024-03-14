@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Autofac;
 using Microsoft.Extensions.Caching.Memory;
@@ -38,8 +38,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Ioc
                         TimeSpan.Parse(configHelper.GetSettingOrDefault("TimeToWaitForPeriodEndRunJobToComplete",
                             "00:20:00")),
                         TimeSpan.Parse(configHelper.GetSettingOrDefault("TimeToWaitToReceivePeriodEndILRSubmissions",
-                            "00:10:00"))
-
+                            "00:10:00")),
+                    TimeSpan.Parse(configHelper.GetSettingOrDefault("TimeToWaitForPeriodEndStartJobToComplete", "00:10:00"))
                     );
                 })
                 .As<IJobServiceConfiguration>()

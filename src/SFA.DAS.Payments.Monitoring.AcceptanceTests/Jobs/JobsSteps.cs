@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Policy;
@@ -14,6 +14,10 @@ using SFA.DAS.Payments.Monitoring.AcceptanceTests.Handlers;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
+using System.Fabric.Description;
+using System.Fabric;
+using System.ServiceModel.Channels;
+using SFA.DAS.Payments.Monitoring.AcceptanceTests.Infrastructure;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
@@ -70,6 +74,10 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
         {
             await ClearTestJobs();
             ClearTestSubmissionMetrics();
+            if (ScenarioContext.Current.ContainsKey("DataLocks.ApprovalsService"))
+            {
+                await ApprovalsServiceHelper.StartService();
+            }
             if (featureContext.ContainsKey("FailedTests"))
                 featureContext.Remove("FailedTests");
         }
@@ -298,6 +306,19 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
                 GeneratedMessages = GeneratedMessages
             };
             Console.WriteLine($"Job id: {TestSession.JobId}");
+        }
+
+        [Given(@"tha collection window has now been closed and period end has started")]
+        public async Task GivenThaCollectionWindowHasNowBeenClosedAndPeriodEndHasStarted()
+        {
+            GivenThePeriodEndServiceHasReceivedAPeriodEndStartJob();
+            await WhenThePeriodEndServiceNotifiesTheJobMonitoringServiceToRecordTheJob();
+        }
+
+        [Given(@"the monitoring service has recorded that the period end start job has started")]
+        public async Task GivenTheMonitoringServiceHasRecordedThatThePeriodEndStartJobHasStarted()
+        {
+            await ThenTheJobMonitoringServiceShouldRecordTheJob();
         }
 
         [Given(@"the period end service has received a period end run job")]
@@ -566,6 +587,7 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
 
         }
 
+        [Given(@"the period end service notifies the job monitoring service to record the start job")]
         [When(@"the earnings event service notifies the job monitoring service to record the job")]
         public async Task WhenTheEarningsEventServiceNotifiesTheJobMonitoringServiceToRecordTheJob()
         {
@@ -577,6 +599,7 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
         {
             await NotifyRecordJob<RecordPeriodEndStartJob>();
         }
+
 
         [When(@"the period end service notifies the job monitoring service to record run job")]
         public async Task WhenThePeriodEndServiceNotifiesTheJobMonitoringServiceToRecordRunJob()
@@ -650,6 +673,16 @@ namespace SFA.DAS.Payments.Monitoring.AcceptanceTests.Jobs
             }).ConfigureAwait(false);
         }
 
+        [When(@"the Approvals Reference Data Service has been stopped")]
+        [When(@"the Approvals Reference Data Service is disabled")]
+        public async Task WhenTheApprovalsReferenceDataServiceIsDisabled()
+        {
+            await ApprovalsServiceHelper.StopService();
+            Set(true,"DataLocks.ApprovalsService");
+            Console.WriteLine("Deleted DataLocks.ApprovalsService");
+        }
+        
+        [Then(@"the job monitoring service should update the status of the job to show that it has completed with errors")]
         [When(@"the earnings job times-out")]
         public async Task WhenTheEarningsJobTimes_Out()
         {
