@@ -140,6 +140,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
                 taskType == PeriodEndTaskType.PeriodEndStop ||
                 taskType == PeriodEndTaskType.PeriodEndSubmissionWindowValidation ||
                 taskType == PeriodEndTaskType.PeriodEndReports ||
+                taskType == PeriodEndTaskType.PeriodEndFcsHandoverComplete)
                 taskType == PeriodEndTaskType.PeriodEndIlrReprocessing)
             {
                 var job = CreatePeriodEndJob(taskType);
@@ -164,7 +165,7 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
                 throw new InvalidOperationException(
                     "Invalid period end message, cannot determine the type of message from the topics & tasks.");
 
-            if (!Enum.TryParse<PeriodEndTaskType>(taskName, out var taskType))
+            if (!Enum.TryParse<PeriodEndTaskType>(taskName, true, out var taskType))
                 throw new InvalidOperationException($"Invalid period end task type: '{taskName}'");
 
             logger.LogDebug($"Got task type: {taskType:G}");
@@ -189,6 +190,9 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
 
                 case PeriodEndTaskType.PeriodEndReports:
                     return new PeriodEndRequestReportsEvent();
+
+                case PeriodEndTaskType.PeriodEndFcsHandoverComplete:
+                    return new PeriodEndFcsHandOverCompleteEvent();
 
                 case PeriodEndTaskType.PeriodEndIlrReprocessing:
                     return new PeriodEndIlrReprocessingStartedEvent();
@@ -217,6 +221,9 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
                 case PeriodEndTaskType.PeriodEndReports:
                     return new RecordPeriodEndRequestReportsJob();
 
+                case PeriodEndTaskType.PeriodEndFcsHandoverComplete:
+                    return new RecordPeriodEndFcsHandOverCompleteJob();
+
                 case PeriodEndTaskType.PeriodEndIlrReprocessing:
                     return new RecordPeriodEndIlrReprocessingStartedJob();
 
@@ -237,6 +244,9 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.Handlers
 
                 case PeriodEndTaskType.PeriodEndStop:
                     return JobType.PeriodEndStopJob;
+
+                case PeriodEndTaskType.PeriodEndFcsHandoverComplete:
+                    return JobType.PeriodEndFcsHandOverCompleteJob;
 
                 case PeriodEndTaskType.PeriodEndIlrReprocessing:
                     return JobType.PeriodEndIlrReprocessingJob;

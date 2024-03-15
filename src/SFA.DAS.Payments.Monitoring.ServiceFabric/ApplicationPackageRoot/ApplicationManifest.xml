@@ -42,6 +42,9 @@
     <Parameter Name="MetricsGenerationDelay" DefaultValue="00:05:00" />
     <Parameter Name="MetricsFunctionApiKey" DefaultValue="" />
     <Parameter Name="MetricsFunctionBaseUrl" DefaultValue="" />
+    <Parameter Name="ArchiveFunctionUrl" DefaultValue="" />
+    <Parameter Name="ArchiveTimeout" DefaultValue="18000" />
+    <Parameter Name="ArchiveApiKey" DefaultValue="" />
   </Parameters>
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.Monitoring.Metrics.SubmissionServicePkg" ServiceManifestVersion="1.0.0" />
@@ -109,6 +112,9 @@
             <Parameter Name="DelayedMessageRetryDelay" Value="[DelayedMessageRetryDelay]" />
             <Parameter Name="MetricsFunctionApiKey" Value="[MetricsFunctionApiKey]" />
             <Parameter Name="MetricsFunctionBaseUrl" Value="[MetricsFunctionBaseUrl]" />
+            <Parameter Name="ArchiveFunctionUrl" Value="[ArchiveFunctionUrl]" />
+            <Parameter Name="ArchiveTimeout" Value="[ArchiveTimeout]" />
+            <Parameter Name="ArchiveApiKey" Value="[ArchiveApiKey]" />
           </Section>
         </Settings>
       </ConfigOverride>

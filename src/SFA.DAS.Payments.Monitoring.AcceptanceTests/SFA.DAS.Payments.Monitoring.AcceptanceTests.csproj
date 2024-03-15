@@ -213,6 +213,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EndpointNames.cs" />
+    <Compile Include="Handlers\PeriodEndFcsHandoverSuccessHandler.cs" />
     <Compile Include="Handlers\PeriodEndRunFailedHandler.cs" />
     <Compile Include="Handlers\PeriodEndStopSuccessHandler.cs" />
     <Compile Include="Handlers\PeriodEndRunSuccessHandler.cs" />

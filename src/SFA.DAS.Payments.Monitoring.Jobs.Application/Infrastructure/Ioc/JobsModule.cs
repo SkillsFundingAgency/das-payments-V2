@@ -11,6 +11,7 @@ using SFA.DAS.Payments.Monitoring.Jobs.Application.JobMessageProcessing;
 using SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing;
 using SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.Earnings;
 using SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd;
+using SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd.Archiving;
 using SFA.DAS.Payments.Monitoring.Jobs.Data;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
 using SFA.DAS.Payments.Monitoring.Jobs.Model;
@@ -30,15 +31,25 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Ioc
                 .As<IJobsDataContext>()
                 .InstancePerLifetimeScope();
             builder.Register((c, p) =>
-            {
-                var configHelper = c.Resolve<IConfigurationHelper>();
-                return new JobServiceConfiguration(
-                    TimeSpan.Parse(configHelper.GetSettingOrDefault("JobStatusCheck_Interval", "00:00:10")),
-                    TimeSpan.Parse(configHelper.GetSettingOrDefault("TimeToWaitForJobToComplete", "00:20:00")),
-                TimeSpan.Parse(configHelper.GetSettingOrDefault("TimeToWaitForPeriodEndRunJobToComplete", "00:20:00")),
-                    TimeSpan.Parse(configHelper.GetSettingOrDefault("TimeToWaitForPeriodEndStartJobToComplete", "00:10:00"))
+                {
+                    var configHelper = c.Resolve<IConfigurationHelper>();
+                    return new PeriodEndArchiveConfiguration(
+                        configHelper.GetSetting("ArchiveFunctionUrl"),
+                        int.Parse(configHelper.GetSetting("ArchiveTimeout")),
+                        configHelper.GetSetting("ArchiveApiKey"));
+                })
+                .As<IPeriodEndArchiveConfiguration>()
+                .SingleInstance();
+            builder.Register((c, p) =>
+                {
+                    var configHelper = c.Resolve<IConfigurationHelper>();
+                    return new JobServiceConfiguration(
+                        TimeSpan.Parse(configHelper.GetSettingOrDefault("JobStatusCheck_Interval", "00:00:10")),
+                        TimeSpan.Parse(configHelper.GetSettingOrDefault("TimeToWaitForJobToComplete", "00:20:00")),
+                        TimeSpan.Parse(configHelper.GetSettingOrDefault("TimeToWaitForPeriodEndRunJobToComplete", "00:20:00")),
+                        TimeSpan.Parse(configHelper.GetSettingOrDefault("TimeToWaitForPeriodEndStartJobToComplete", "00:10:00"))
                     );
-            })
+                })
                 .As<IJobServiceConfiguration>()
                 .SingleInstance();
             builder.RegisterType<EarningsJobStatusManager>()
@@ -49,6 +60,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Ioc
                 .SingleInstance();
             builder.RegisterType<PeriodEndStartJobStatusManager>()
                 .As<IPeriodEndStartJobStatusManager>()
+                .SingleInstance();
+            builder.RegisterType<PeriodEndArchiveJobStatusManager>()
+                .As<IPeriodEndArchiveJobStatusManager>()
                 .SingleInstance();
             builder.RegisterType<JobService>()
                 .As<ICommonJobService>()
@@ -71,8 +85,11 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Ioc
             builder.RegisterType<PeriodEndStartJobStatusService>()
                 .As<IPeriodEndStartJobStatusService>()
                 .InstancePerLifetimeScope();
-           
-            
+            builder.RegisterType<PeriodEndArchiveStatusService>()
+                .As<IPeriodEndArchiveStatusService>()
+                .InstancePerLifetimeScope();
+
+
             builder.Register((c, p) => new MemoryCache(new MemoryCacheOptions()))
                 .As<IMemoryCache>()
                 .SingleInstance();
@@ -83,7 +100,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Ioc
             builder.RegisterBuildCallback(c =>
             {
                 var config = c.Resolve<IApplicationConfiguration>();
-                EndpointConfigurationEvents.ConfiguringTransport += (object sender, TransportExtensions<AzureServiceBusTransport> e) =>
+                EndpointConfigurationEvents.ConfiguringTransport += (sender, e) =>
                 {
                     e.Routing().RouteToEndpoint(typeof(RecordEarningsJob).Assembly, config.EndpointName);
                 };
@@ -109,8 +126,6 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Ioc
                 .As<IActorDataCache<(JobStepStatus jobStatus, DateTimeOffset? endTime)>>()
                 //.AsImplementedInterfaces()
                 .InstancePerLifetimeScope();
-
-
         }
     }
 }
