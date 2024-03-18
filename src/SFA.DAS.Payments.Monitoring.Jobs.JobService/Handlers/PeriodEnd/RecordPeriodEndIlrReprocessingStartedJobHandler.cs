@@ -12,28 +12,32 @@ using SFA.DAS.Payments.Monitoring.Jobs.Model;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.JobService.Handlers.PeriodEnd
 {
-    public class RecordPeriodEndStopJobHandler : IHandleMessageBatches<RecordPeriodEndStopJob>
+    public class
+        RecordPeriodEndIlrReprocessingStartedJobHandler : IHandleMessageBatches<
+            RecordPeriodEndIlrReprocessingStartedJob>
     {
+        private readonly IJobStatusManager jobStatusManager;
         private readonly IPaymentLogger logger;
         private readonly IPeriodEndJobService periodEndJobService;
-        private readonly IJobStatusManager jobStatusManager;
 
-
-        public RecordPeriodEndStopJobHandler(IPaymentLogger logger, IPeriodEndJobService periodEndJobService, IJobStatusManager jobStatusManager)
+        public RecordPeriodEndIlrReprocessingStartedJobHandler(IPaymentLogger logger,
+            IPeriodEndJobService periodEndJobService, IJobStatusManager jobStatusManager)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            this.periodEndJobService = periodEndJobService ?? throw new ArgumentNullException(nameof(periodEndJobService));
+            this.periodEndJobService =
+                periodEndJobService ?? throw new ArgumentNullException(nameof(periodEndJobService));
             this.jobStatusManager = jobStatusManager ?? throw new ArgumentNullException(nameof(jobStatusManager));
         }
 
-        public async Task Handle(IList<RecordPeriodEndStopJob> messages, CancellationToken cancellationToken)
+        public async Task Handle(IList<RecordPeriodEndIlrReprocessingStartedJob> messages,
+            CancellationToken cancellationToken)
         {
             foreach (var message in messages)
             {
-                logger.LogInfo($"Handling period end stop job: {message.ToJson()}");
+                logger.LogInfo($"Handling period end Ilr reprocessing job: {message.ToJson()}");
                 await periodEndJobService.RecordPeriodEndJob(message, cancellationToken);
-                jobStatusManager.StartMonitoringJob(message.JobId, JobType.PeriodEndStopJob);
-                logger.LogInfo($"Handled period end stop job: {message.JobId}");
+                jobStatusManager.StartMonitoringJob(message.JobId, JobType.PeriodEndIlrReprocessingJob);
+                logger.LogInfo($"Handled period end Ilr reprocessing job: {message.JobId}");
             }
         }
     }

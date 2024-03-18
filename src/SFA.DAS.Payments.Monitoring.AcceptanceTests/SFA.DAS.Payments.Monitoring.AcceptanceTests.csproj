@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\SpecFlow.Tools.MsBuild.Generation.2.4.1\build\SpecFlow.Tools.MsBuild.Generation.props" Condition="Exists('..\packages\SpecFlow.Tools.MsBuild.Generation.2.4.1\build\SpecFlow.Tools.MsBuild.Generation.props')" />
   <Import Project="..\packages\NUnit.3.11.0\build\NUnit.props" Condition="Exists('..\packages\NUnit.3.11.0\build\NUnit.props')" />
@@ -213,6 +213,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EndpointNames.cs" />
+    <Compile Include="Handlers\PeriodEndIlrReprocessingFailedHandler.cs" />
+    <Compile Include="Handlers\PeriodEndIlrReprocessingSuccessHandler.cs" />
     <Compile Include="Handlers\PeriodEndRunFailedHandler.cs" />
     <Compile Include="Handlers\PeriodEndStopSuccessHandler.cs" />
     <Compile Include="Handlers\PeriodEndRunSuccessHandler.cs" />
@@ -222,6 +224,11 @@
     <Compile Include="Handlers\SubmissionJobFailedHandler.cs" />
     <Compile Include="Handlers\SubmissionJobSucceededHandler.cs" />
     <Compile Include="Infrastructure\BindingBootstrapper.cs" />
+    <Compile Include="Jobs\PeriodEndILRResubmission.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PeriodEndILRResubmission.feature</DependentUpon>
+    </Compile>
     <Compile Include="Infrastructure\ApprovalsServiceHelper.cs" />
     <Compile Include="Jobs\Period End Start Job.feature.cs">
       <AutoGen>True</AutoGen>
@@ -239,6 +246,11 @@
       <DependentUpon>Jobs.feature</DependentUpon>
     </Compile>
     <Compile Include="Jobs\JobsSteps.cs" />
+    <Compile Include="Jobs\PeriodEndSubmissionWindowValidation.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PeriodEndSubmissionWindowValidation.feature</DependentUpon>
+    </Compile>
     <Compile Include="Metrics\PeriodEndTests.cs" />
     <Compile Include="Metrics\SubmissionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -267,6 +279,14 @@
     <None Include="Jobs\Jobs.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Jobs.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Jobs\PeriodEndILRResubmission.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PeriodEndILRResubmission.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Jobs\PeriodEndSubmissionWindowValidation.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>PeriodEndSubmissionWindowValidation.feature.cs</LastGenOutput>
     </None>
     <None Include="packages.config" />
   </ItemGroup>

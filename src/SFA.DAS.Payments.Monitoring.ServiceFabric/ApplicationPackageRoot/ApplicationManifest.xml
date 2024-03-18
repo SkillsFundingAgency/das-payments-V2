@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="SFA.DAS.Payments.Monitoring.ServiceFabricType" ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
     <Parameter Name="Monitoring_Metrics_SubmissionService_InstanceCount" DefaultValue="-1" />
@@ -35,6 +35,7 @@
     <Parameter Name="TimeToWaitForJobToComplete" DefaultValue="01:00:00" />
     <Parameter Name="TimeToWaitForPeriodEndRunJobToComplete" DefaultValue="01:00:00" />
     <Parameter Name="TimeToWaitForPeriodEndStartJobToComplete" DefaultValue="00:10:00" />
+    <Parameter Name="TimeToWaitToReceivePeriodEndILRSubmissions" DefaultValue="00:10:00" />
     <Parameter Name="DasNServiceBusLicenseKey" DefaultValue="" />
     <Parameter Name="ImmediateMessageRetries" DefaultValue="1" />
     <Parameter Name="DelayedMessageRetries" DefaultValue="3" />
@@ -104,6 +105,7 @@
             <Parameter Name="TimeToWaitForJobToComplete" Value="[TimeToWaitForJobToComplete]" />
             <Parameter Name="TimeToWaitForPeriodEndRunJobToComplete" Value="[TimeToWaitForPeriodEndRunJobToComplete]" />
             <Parameter Name="TimeToWaitForPeriodEndStartJobToComplete" Value="[TimeToWaitForPeriodEndStartJobToComplete]" />
+            <Parameter Name="TimeToWaitToReceivePeriodEndILRSubmissions" Value="[TimeToWaitToReceivePeriodEndILRSubmissions]" />
             <Parameter Name="NumberOfNServiceBusThreads" Value="[NumberOfNServiceBusThreads]" />
             <Parameter Name="DasNServiceBusLicenseKey" Value="[DasNServiceBusLicenseKey]" />
             <Parameter Name="ImmediateMessageRetries" Value="[ImmediateMessageRetries]" />
@@ -146,11 +148,6 @@
           <Partition Name="17" />
           <Partition Name="18" />
           <Partition Name="19" />
-          <!--<Partition Name="10003915" />
-          <Partition Name="10033440" />
-          <Partition Name="10003161" />
-          <Partition Name="10012467" />
-          <Partition Name="10000446" />-->
         </NamedPartition>
         <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
       </StatefulService>

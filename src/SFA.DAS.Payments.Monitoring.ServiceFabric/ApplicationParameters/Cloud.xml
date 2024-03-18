@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Application xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="fabric:/SFA.DAS.Payments.Monitoring.ServiceFabric" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
     <Parameter Name="Monitoring_Metrics_SubmissionService_InstanceCount" Value="__Monitoring_Metrics_SubmissionService_InstanceCount__" />
@@ -31,6 +31,7 @@
     <Parameter Name="TimeToWaitForJobToComplete" Value="__TimeToWaitForJobToComplete__" />
     <Parameter Name="TimeToWaitForPeriodEndRunJobToComplete" Value="__TimeToWaitForPeriodEndRunJobToComplete__" />
     <Parameter Name="TimeToWaitForPeriodEndStartJobToComplete" Value="__TimeToWaitForPeriodEndStartJobToComplete__" />
+    <Parameter Name="TimeToWaitToReceivePeriodEndILRSubmissions" Value="__TimeToWaitToReceivePeriodEndILRSubmissions__" />
     <Parameter Name="DasNServiceBusLicenseKey" Value="__DasNServiceBusLicenseKey__" />
     <Parameter Name="MetricsGenerationDelay" Value="__MetricsGenerationDelay__" />
     <Parameter Name="MetricsFunctionApiKey" Value="__MetricsFunctionApiKey__" />
