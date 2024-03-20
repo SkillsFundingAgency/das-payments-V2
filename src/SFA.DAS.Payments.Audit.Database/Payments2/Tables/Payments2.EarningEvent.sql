@@ -35,3 +35,32 @@ CREATE NONCLUSTERED INDEX [IX_EarningEvent__AuditDataFactory] ON [Payments2].[Ea
 )
 WITH (ONLINE = ON)
 GO
+
+CREATE NONCLUSTERED INDEX [IX_EarningEvent__By_ULN_Year] ON [Payments2].[EarningEvent] 
+(
+    [LearnerUln],
+    [AcademicYear]
+)
+INCLUDE (
+    [EventId],
+    [Ukprn],
+    [ContractType],
+    [CollectionPeriod],
+    [LearnerReferenceNumber],
+    [LearningAimReference],
+    [LearningAimProgrammeType],
+    [LearningAimStandardCode],
+    [LearningAimFrameworkCode],
+    [LearningAimPathwayCode],
+    [LearningAimFundingLineType],
+    [LearningStartDate],
+    [AgreementId],
+    [IlrSubmissionDateTime],
+    [JobId],
+    [EventTime],
+    [LearningAimSequenceNumber],
+    [SfaContributionPercentage],
+    [IlrFileName],
+    [EventType])
+GO
+
