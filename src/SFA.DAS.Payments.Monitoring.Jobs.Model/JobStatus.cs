@@ -6,6 +6,7 @@
         Completed, 
         CompletedWithErrors,
         TimedOut,
-        DcTasksFailed
+        DcTasksFailed,
+        PaymentsTaskFailed
     }
 }

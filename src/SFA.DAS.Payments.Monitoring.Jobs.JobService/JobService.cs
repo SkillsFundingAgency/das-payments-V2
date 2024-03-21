@@ -24,8 +24,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.JobService
         private readonly IPaymentLogger logger;
         private string partitionEndpointName;
 
-        public JobService(StatefulServiceContext context, 
-            IPaymentLogger logger,
+        public JobService(StatefulServiceContext context, IPaymentLogger logger,
             IJobStatusManager jobStatusManager,
             ILifetimeScope lifetimeScope
         )

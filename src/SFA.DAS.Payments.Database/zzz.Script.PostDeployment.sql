@@ -27,6 +27,10 @@ IF NOT EXISTS (SELECT * FROM [Payments2].[JobStatus]  WHERE [Id] = 5)
 	INSERT INTO [Payments2].[JobStatus]  values (5,'DC Tasks Failed')
 GO
 
+IF NOT EXISTS (SELECT * FROM [Payments2].[JobStatus]  WHERE [Id] = 6)
+	INSERT INTO [Payments2].[JobStatus]  values (6,'Payments Task Failed')
+GO
+
 IF NOT EXISTS (SELECT * FROM [Payments2].[JobEventStatus]  WHERE [Id] = 1)
 	INSERT INTO [Payments2].[JobEventStatus] values (1,'Queued')
 GO 
@@ -80,6 +84,10 @@ GO
 
 IF NOT EXISTS (SELECT * FROM [Payments2].[JobType]  WHERE [Id] = 9)
 	INSERT INTO [Payments2].[JobType] values (9,'Period end Ilr reprocessing job')
+GO 
+
+IF NOT EXISTS (SELECT * FROM [Payments2].[JobType]  WHERE [Id] = 10)
+	INSERT INTO [Payments2].[JobType] values (10,'Period end Fcs handover job')
 GO 
 
 MERGE INTO [Payments2].[ApprenticeshipStatus]	 AS Target

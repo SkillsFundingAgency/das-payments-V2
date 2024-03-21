@@ -500,5 +500,37 @@ namespace SFA.DAS.Payments.PeriodEnd.Application.UnitTests
             };
             return jobContextMessage;
         }
+
+        [Test]
+        public async Task Publishes_FCS_Handover_Complete_Event_From_FCS_Handover_Complete_Task()
+        {
+            var jobContextMessage = CreatePeriodEndJobContextMessage(PeriodEndTaskType.PeriodEndFcsHandoverComplete);
+
+            var handler = mocker.Create<PeriodEndJobContextMessageHandler>();
+            await handler.HandleAsync(jobContextMessage, CancellationToken.None);
+            mocker.Mock<IEndpointInstance>()
+                .Verify(x => x.Publish(It.Is<PeriodEndFcsHandOverCompleteEvent>(startedEvent => startedEvent.JobId == 1
+                        && startedEvent.CollectionPeriod.Period == 10
+                        && startedEvent.CollectionPeriod.AcademicYear == 1819),
+                    It.IsAny<PublishOptions>()), Times.Once);
+        }
+
+        [Test]
+        public async Task Does_Not_Publish_FCS_Handover_Complete_Event_When_Job_Already_Exists()
+        {
+            long existingJobId = 124312;
+            var jobContextMessage = CreatePeriodEndJobContextMessage(PeriodEndTaskType.PeriodEndFcsHandoverComplete);
+            mocker.Mock<IJobsDataContext>()
+                .Setup(x => x.GetNonFailedDcJobId(It.IsAny<JobType>(), It.IsAny<short>(), It.IsAny<byte>()))
+                .ReturnsAsync(existingJobId);
+
+            var handler = mocker.Create<PeriodEndJobContextMessageHandler>();
+
+            await handler.HandleAsync(jobContextMessage, CancellationToken.None);
+
+            mocker.Mock<IEndpointInstance>()
+                .Verify(x => x.Publish(It.IsAny<PeriodEndFcsHandOverCompleteEvent>(),
+                    It.IsAny<PublishOptions>()), Times.Never);
+        }
     }
 }

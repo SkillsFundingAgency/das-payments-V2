@@ -20,9 +20,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
     {
         private readonly ConcurrentDictionary<long, (JobType JobType, bool IsFinished)> currentJobs;
         private readonly TimeSpan interval;
+        private readonly IJobStatusServiceFactory jobStatusServiceFactory;
         private readonly IPaymentLogger logger;
         private readonly IUnitOfWorkScopeFactory scopeFactory;
-        private readonly IJobStatusServiceFactory jobStatusServiceFactory;
         protected CancellationToken cancellationToken;
 
         public JobStatusManager(IPaymentLogger logger, IUnitOfWorkScopeFactory scopeFactory,
@@ -30,7 +30,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.scopeFactory = scopeFactory ?? throw new ArgumentNullException(nameof(scopeFactory));
-            this.jobStatusServiceFactory = jobStatusServiceFactory ?? throw new ArgumentNullException(nameof(jobStatusServiceFactory));
+            this.jobStatusServiceFactory = jobStatusServiceFactory ??
+                                           throw new ArgumentNullException(nameof(jobStatusServiceFactory));
             interval = configuration.JobStatusInterval;
             currentJobs = new ConcurrentDictionary<long, (JobType JobType, bool IsFinished)>();
         }
@@ -53,7 +54,8 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
             while (!cancellationToken.IsCancellationRequested)
                 try
                 {
-                    var tasks = currentJobs.Select(job => CheckJobStatus(partitionEndpointName, job.Key, job.Value.JobType)).ToList();
+                    var tasks = currentJobs
+                        .Select(job => CheckJobStatus(partitionEndpointName, job.Key, job.Value.JobType)).ToList();
                     await Task.WhenAll(tasks);
                     var completedJobs = currentJobs.Where(item => item.Value.IsFinished).ToList();
                     foreach (var completedJob in completedJobs)
@@ -104,7 +106,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing
                         var jobStatusService = jobStatusServiceFactory.Create(scope, jobType);
                         var finished = await jobStatusService.ManageStatus(jobId, cancellationToken);
                         await scope.Commit();
-                        currentJobs[jobId] = (jobType,finished);
+                        currentJobs[jobId] = (jobType, finished);
                         logger.LogInfo($"Job: {jobId},  finished: {finished}");
                     }
                     catch (Exception ex)
