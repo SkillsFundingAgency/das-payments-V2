@@ -297,7 +297,7 @@
 			{
 			  "name": "AppInsightsAuthValue",
 			  "value": "[parameters('appInsightsApiKey')]"
-			},
+			}
 			
           ]
         }
