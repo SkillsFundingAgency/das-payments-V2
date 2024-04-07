@@ -8,6 +8,12 @@
 				"description": "The name of the Azure Function app."
 			}
 		},
+		"ArchivefunctionAppName": {
+			"type": "string",
+			"metadata": {
+				"description": "The name of the Azure Archive Function app."
+			}
+		},
 		"applicationInsightsName": {
 			"type": "string",
 			"metadata": {
@@ -114,7 +120,8 @@
 		}
 	},
   "variables": {
-    "hostingPlanName": "[parameters('functionAppName')]"
+    "hostingPlanName": "[parameters('functionAppName')]",
+	"ArchivehostingPlanName": "[parameters('ArchivefunctionAppName')]"
 	},
   "resources": [
     {
@@ -131,6 +138,21 @@
       "type": "Microsoft.Web/serverfarms",
       "apiVersion": "2022-03-01",
       "name": "[variables('hostingPlanName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "Y1",
+        "tier": "Dynamic",
+        "size": "Y1",
+        "family": "Y"
+      },
+      "properties": {
+        "computeMode": "Dynamic"
+      }
+    },
+	{
+      "type": "Microsoft.Web/serverfarms",
+      "apiVersion": "2022-03-01",
+      "name": "[variables('ArchivehostingPlanName')]",
       "location": "[parameters('location')]",
       "sku": {
         "name": "Y1",
@@ -217,6 +239,66 @@
 			  "name": "SlackChannelUri2",
 			  "value": "[parameters('mngAlertSlackChannelUri')]"
 			}
+          ]
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Insights/components', parameters('applicationInsightsName'))]",
+        "[resourceId('Microsoft.Web/serverfarms', variables('hostingPlanName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+      ]
+    },
+	{
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2022-03-01",
+      "name": "[parameters('ArchivefunctionAppName')]",
+      "location": "[parameters('location')]",
+      "kind": "functionapp",
+      "properties": {
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('ArchivehostingPlanName'))]",
+        "siteConfig": {
+          "appSettings": [
+            {
+              "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+              "value": "[reference(resourceId('Microsoft.Insights/components', parameters('applicationInsightsName')), '2020-02-02').InstrumentationKey]"
+            },
+            {
+              "name": "AzureWebJobsStorage",
+              "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};EndpointSuffix={1};AccountKey={2}', parameters('storageAccountName'), environment().suffixes.storage, listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2021-09-01').keys[0].value)]"
+            },
+            {
+              "name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
+              "value": "[format('DefaultEndpointsProtocol=https;AccountName={0};EndpointSuffix={1};AccountKey={2}', parameters('storageAccountName'), environment().suffixes.storage, listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2021-09-01').keys[0].value)]"
+            },
+            {
+              "name": "WEBSITE_CONTENTSHARE",
+              "value": "[toLower(parameters('functionAppName'))]"
+            },
+            {
+              "name": "FUNCTIONS_EXTENSION_VERSION",
+              "value": "~4"
+            },
+            {
+              "name": "FUNCTIONS_WORKER_RUNTIME",
+              "value": "dotnet"
+            },
+            {
+              "name": "WEBSITE_NODE_DEFAULT_VERSION",
+              "value": "~14"
+            },
+            {
+              "name": "WEBSITE_RUN_FROM_PACKAGE",
+              "value": "1"
+            },
+			{
+			  "name": "AppInsightsAuthHeader",
+			  "value": "x-api-key"
+			},
+			{
+			  "name": "AppInsightsAuthValue",
+			  "value": "[parameters('appInsightsApiKey')]"
+			},
+			
           ]
         }
       },
