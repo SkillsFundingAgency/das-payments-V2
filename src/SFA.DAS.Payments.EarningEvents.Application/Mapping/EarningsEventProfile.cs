@@ -28,6 +28,10 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 .ForMember(destinationMember => destinationMember.EventId, opt => opt.Ignore())
                 .ForMember(dest => dest.CollectionPeriod, opt => opt.ResolveUsing(src => CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(src.AcademicYear, (byte)src.CollectionPeriod)))
                 .ForMember(dest => dest.LearningAim, opt => opt.MapFrom(source => source))
+                .ForMember(destinationMember => destinationMember.AgeAtStartOfLearning,
+                    opt => opt.MapFrom(source =>
+                        source.Aims.OrderBy(aim => aim.LearningDeliveryValues.LearnStartDate).First()
+                            .LearningDeliveryValues.AgeAtProgStart))
                 .AfterMap((intermediateLearningAim, earningEvent) => earningEvent.PriceEpisodes.ForEach(pe =>
                     pe.CourseStartDate = intermediateLearningAim.Aims
                         .First(x => x.AimSeqNumber == pe.LearningAimSequenceNumber).LearningDeliveryValues
@@ -40,6 +44,10 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 .Include<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>()
                 .ForMember(destinationMember => destinationMember.OnProgrammeEarnings, opt => opt.ResolveUsing<OnProgrammeEarningValueResolver>())
                 .ForMember(destinationMember => destinationMember.IncentiveEarnings, opt => opt.ResolveUsing<IncentiveEarningValueResolver>())
+                .ForMember(destinationMember => destinationMember.AgeAtStartOfLearning,
+                    opt => opt.MapFrom(source =>
+                        source.Aims.OrderBy(aim => aim.LearningDeliveryValues.LearnStartDate).First()
+                            .LearningDeliveryValues.AgeAtProgStart))
                 .ForMember(dest => dest.StartDate, opt => opt.MapFrom(src => src.Aims.Min(aim => aim.LearningDeliveryValues.LearnStartDate)))
                 .Ignore(dest => dest.SfaContributionPercentage)
                 ;
