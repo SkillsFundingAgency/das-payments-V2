@@ -23,7 +23,8 @@
 	JobId  BIGINT NOT NULL,
 	EventTime DATETIMEOFFSET NOT NULL,
 	CreationDate DATETIMEOFFSET NOT NULL CONSTRAINT DF_DataLockEvent__CreationDate DEFAULT (SYSDATETIMEOFFSET()),
-	DuplicateNumber INT NULL
+	DuplicateNumber INT NULL,
+	AgeAtStartOfLearning TINYINT NULL,
 )
 GO
 
