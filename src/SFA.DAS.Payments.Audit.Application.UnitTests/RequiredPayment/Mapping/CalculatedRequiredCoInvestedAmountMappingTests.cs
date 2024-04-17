@@ -15,7 +15,8 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.RequiredPayment.Mapping
             {
                 ContractType = ContractType.Act1,
                 ApprenticeshipId = 400L,
-                ApprenticeshipPriceEpisodeId = 800L
+                ApprenticeshipPriceEpisodeId = 800L,
+                AgeAtStartOfLearning = 17
             };
         }
 
@@ -27,6 +28,16 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.RequiredPayment.Mapping
             payment.ContractType = contractType;
 
             Mapper.Map<RequiredPaymentEventModel>(payment).ContractType.Should().Be(payment.ContractType);
+        }
+
+        [TestCase(ContractType.Act1)]
+        [TestCase(ContractType.Act2)]
+        public void Maps_AgeAtStartOfLearning(ContractType contractType)
+        {
+            var payment = CreatePaymentEvent();
+            payment.ContractType = contractType;
+
+            Mapper.Map<RequiredPaymentEventModel>(payment).AgeAtStartOfLearning.Should().Be(17);
         }
     }
 }

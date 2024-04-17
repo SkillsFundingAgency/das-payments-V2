@@ -58,6 +58,7 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.RequiredPaymentEvents
                 .Include<CalculatedRequiredCoInvestedAmount, RequiredPaymentEventModel>()
                 .Include<CalculatedRequiredLevyAmount, RequiredPaymentEventModel>()
                 .ForMember(dest => dest.TransactionType, opt => opt.MapFrom(source => (TransactionType)source.OnProgrammeEarningType))
+                .ForMember(dest => dest.AgeAtStartOfLearning, opt => opt.MapFrom(source => source.AgeAtStartOfLearning))
                 ;
 
             CreateMap<CalculatedRequiredCoInvestedAmount, RequiredPaymentEventModel>()
