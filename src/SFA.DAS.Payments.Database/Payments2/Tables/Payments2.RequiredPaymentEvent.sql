@@ -41,7 +41,8 @@ CREATE TABLE [Payments2].[RequiredPaymentEvent]
 	ApprenticeshipEmployerType TINYINT NULL, 
     NonPaymentReason TINYINT NULL,
 	EventType NVARCHAR(4000) NULL,
-	DuplicateNumber INT NULL
+	DuplicateNumber INT NULL,
+	AgeAtStartOfLearning TINYINT NULL
 )
 GO
 

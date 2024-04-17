@@ -2,6 +2,7 @@
 using AutoMapper;
 using FluentAssertions;
 using NUnit.Framework;
+using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.RequiredPayments.Application.Mapping;
 using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
@@ -56,5 +57,25 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ma
             mapper.Map(requiredPayment, requiredPaymentEvent);
             requiredPaymentEvent.TransferSenderAccountId.Should().Be(requiredPayment.TransferSenderAccountId);
         }
+
+        [Test]
+        public void Maps_AgeAtStartOfLearning_From_PayableEarningEvent_To_CalculatedRequiredOnProgrammeAmount()
+        {
+            // Arrange
+            var payableEarningEvent = new PayableEarningEvent
+            {
+                AgeAtStartOfLearning = 25
+            };
+
+            var requiredPaymentEvent = Activator.CreateInstance(typeof(CalculatedRequiredCoInvestedAmount)) as CalculatedRequiredOnProgrammeAmount;
+
+            // Act
+            mapper.Map(payableEarningEvent, requiredPaymentEvent);
+
+            // Assert
+            requiredPaymentEvent.AgeAtStartOfLearning.Should().Be(25);
+        }
+
+
     }
 }
