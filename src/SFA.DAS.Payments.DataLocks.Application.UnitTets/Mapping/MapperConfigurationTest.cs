@@ -67,6 +67,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Mapping
                 CollectionPeriod = new CollectionPeriod { Period = 12, AcademicYear = 1819 },
                 Learner = new Learner { ReferenceNumber = "1234-ref", Uln = 123456 },
                 CollectionYear = 2019,
+                AgeAtStartOfLearning = 17,
                 LearningAim = new LearningAim
                 {
                     PathwayCode = 12,
@@ -222,7 +223,13 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Mapping
             payableEarning.Learner.Should().NotBeNull();
             payableEarning.Learner.ReferenceNumber.Should().Be(earningEventPayment.Learner.ReferenceNumber);
         }
-
+        [Test]
+        public void CanMapAgeAtStartOfLearning()
+        {
+            var payableEarning = Mapper.Map<ApprenticeshipContractType1EarningEvent, PayableEarningEvent>(earningEventPayment);
+            payableEarning.Learner.Should().NotBeNull();
+            payableEarning.AgeAtStartOfLearning.Should().Be(17);
+        }
         [Test]
         [TestCaseSource(nameof(GetIncentives))]
         public void CanMapIncentiveEarnings(IncentiveEarningType type)
