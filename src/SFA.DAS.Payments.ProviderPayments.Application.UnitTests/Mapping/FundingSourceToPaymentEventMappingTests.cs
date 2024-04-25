@@ -55,6 +55,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
                 ClawbackSourcePaymentEventId = Guid.NewGuid(),
                 AccountId = 123456789,
                 ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy,
+                AgeAtStartOfLearning = 17
             };
             var payment = Mapper.Map<EmployerCoInvestedFundingSourcePaymentEvent, ProviderPaymentEventModel>(employerCoInvested);
             payment.Ukprn.Should().Be(employerCoInvested.Ukprn);
@@ -72,6 +73,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
             payment.ApprenticeshipEmployerType.Should().Be(employerCoInvested.ApprenticeshipEmployerType);
             payment.RequiredPaymentEventId.Should().Be(employerCoInvested.RequiredPaymentEventId);
             payment.ClawbackSourcePaymentEventId.Should().Be(employerCoInvested.ClawbackSourcePaymentEventId);
+            payment.AgeAtStartOfLearning.Should().Be(17);
         }
 
         [Test]
@@ -109,6 +111,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
                 ClawbackSourcePaymentEventId = Guid.NewGuid(),
                 AccountId = 123456789,
                 ApprenticeshipEmployerType = ApprenticeshipEmployerType.NonLevy,
+                AgeAtStartOfLearning = 17
             };
 
             var payment = Mapper.Map<ProviderPaymentEventModel>(levy);
@@ -127,6 +130,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
             payment.ApprenticeshipEmployerType.Should().Be(levy.ApprenticeshipEmployerType);
             payment.RequiredPaymentEventId.Should().Be(levy.RequiredPaymentEventId);
             payment.ClawbackSourcePaymentEventId.Should().Be(levy.ClawbackSourcePaymentEventId);
+            payment.AgeAtStartOfLearning.Should().Be(17);
         }
 
         [Test]
@@ -164,6 +168,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
                 ClawbackSourcePaymentEventId = Guid.NewGuid(),
                 AccountId = 123456789,
                 ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy,
+                AgeAtStartOfLearning = 17
             };
 
             var payment = Mapper.Map<ProviderPaymentEventModel>(transfer);
@@ -182,6 +187,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
             payment.ApprenticeshipEmployerType.Should().Be(transfer.ApprenticeshipEmployerType);
             payment.RequiredPaymentEventId.Should().Be(transfer.RequiredPaymentEventId);
             payment.ClawbackSourcePaymentEventId.Should().Be(transfer.ClawbackSourcePaymentEventId);
+            payment.AgeAtStartOfLearning.Should().Be(17);
 
         }
 
@@ -264,6 +270,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
             fundingSourceEvent.RequiredPaymentEventId = Guid.NewGuid();
             fundingSourceEvent.ClawbackSourcePaymentEventId = Guid.NewGuid();
             fundingSourceEvent.AccountId = 123456789;
+            fundingSourceEvent.AgeAtStartOfLearning = 17;
 
             var payment = Mapper.Map<ProviderPaymentEvent>(fundingSourceEvent);
             payment.Should().NotBeNull();
@@ -298,6 +305,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
                 ProgrammeType = 7890,
                 Reference = "1234567-aim-ref"
             };
+            fundingSourceEvent.AgeAtStartOfLearning = 17;
 
             var providerPayment = Mapper.Map<ProviderPaymentEventModel>(fundingSourceEvent);
 
@@ -313,6 +321,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
             providerPayment.ApprenticeshipEmployerType.Should().Be(fundingSourceEvent.ApprenticeshipEmployerType);
             providerPayment.RequiredPaymentEventId.Should().Be(fundingSourceEvent.RequiredPaymentEventId);
             providerPayment.ClawbackSourcePaymentEventId.Should().Be(fundingSourceEvent.ClawbackSourcePaymentEventId);
+            providerPayment.AgeAtStartOfLearning.Should().Be(17);
         }
 
         [TestCase(typeof(EmployerCoInvestedProviderPaymentEvent))]
