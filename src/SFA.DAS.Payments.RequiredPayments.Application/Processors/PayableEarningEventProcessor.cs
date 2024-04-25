@@ -4,10 +4,12 @@ using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.Application.Repositories;
 using SFA.DAS.Payments.RequiredPayments.Domain;
 using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 using SFA.DAS.Payments.RequiredPayments.Domain.Services;
+using System;
 using System.Collections.Generic;
 
 namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
@@ -56,7 +58,12 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 
         protected override EarningType GetEarningType(int type)
         {
-            return coInvestmentCalculationService.GetEarningType(type);
+            if (Enum.IsDefined(typeof(OnProgrammeEarningType), type))
+            {
+                return EarningType.Levy;
+            }
+
+            return EarningType.Incentive;
         }
     }
 }

@@ -5,6 +5,7 @@ using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
+using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 using SFA.DAS.Payments.RequiredPayments.Domain.Services;
@@ -76,23 +77,19 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
         }
 
         [Test]
-        [TestCase(1)]
-        [TestCase(2)]
-        [TestCase(3)]
-        public void GetEarningType_ReturnsLevyWhenOnProgrammeEarningType(int typeEnum)
+        [TestCase(ApprenticeshipEmployerType.Levy, null)]
+        [TestCase(ApprenticeshipEmployerType.NonLevy, 1.0)]
+
+        public void ProcessPeriodsForRecalculation_ShouldNotRecalcForLevyApprenticeshipEmployerType(ApprenticeshipEmployerType apprenticeshipEmployerType, decimal? fundingPercentage)
         {
-            var result = service.GetEarningType(typeEnum);
+            var periods = new List<(EarningPeriod period, int type)>
+            {
+                (new EarningPeriod { ApprenticeshipId = 1234, ApprenticeshipEmployerType = apprenticeshipEmployerType} , 1)
+            };
 
-            result.Should().Be(EarningType.Levy);
+            var result = service.ProcessPeriodsForRecalculation(periods);
+
+            result.FirstOrDefault().period.SfaContributionPercentage.Should().Be(fundingPercentage);
         }
-
-        [Test]
-        public void GetEarningType_ReturnsLevyWhenNotOnProgrammeEarningType()
-        {
-            var result = service.GetEarningType(-1);
-
-            result.Should().Be(EarningType.Incentive);
-        }
-
     }
 }

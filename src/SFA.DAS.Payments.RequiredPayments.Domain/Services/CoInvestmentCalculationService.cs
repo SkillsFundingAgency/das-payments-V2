@@ -5,13 +5,13 @@ using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
 {
     public interface ICoInvestmentCalculationService
     {
         bool IsEligibleForRecalculation(PayableEarningEvent payableEarningEvent);
-        EarningType GetEarningType(int type);
 
         IReadOnlyCollection<(EarningPeriod period, int type)> ProcessPeriodsForRecalculation(
             IReadOnlyCollection<(EarningPeriod period, int type)> periods);
@@ -45,22 +45,12 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
 
                 if (earningPeriod.period.DataLockFailures is not null && earningPeriod.period.DataLockFailures.Any()) continue;
 
-                if (GetEarningType(earningPeriod.type) == EarningType.Levy)
+                if (earningPeriod.period.ApprenticeshipEmployerType == ApprenticeshipEmployerType.NonLevy)
                 {
                     earningPeriod.period.SfaContributionPercentage = new decimal(1.0);
                 }
             }
             return periods;
-        }
-
-        public EarningType GetEarningType(int type)
-        {
-            if (Enum.IsDefined(typeof(OnProgrammeEarningType), type))
-            {
-                return EarningType.Levy;
-            }
-
-            return EarningType.Incentive;
         }
     }
 }
