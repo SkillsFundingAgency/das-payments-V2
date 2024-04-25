@@ -52,6 +52,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
                 ContractType = ContractType.Act1,
                 ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy,
                 ApprenticeshipId = 12,
+                AgeAtStartOfLearning = 17
             };
             mapperConfiguration = AutoMapperConfigurationFactory.CreateMappingConfig();
             autoMapper = mapperConfiguration.CreateMapper();
@@ -82,6 +83,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
             actualEvent.EventTime = expectedEvent.EventTime;
             actualEvent.EventId = expectedEvent.EventId;
             actualEvent.Should().BeEquivalentTo(expectedEvent);
+            actualEvent.AgeAtStartOfLearning.Should().Be(17);
         }
 
         [Test]
@@ -105,6 +107,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
             actualEvent.EventTime = expectedEvent.EventTime;
             actualEvent.EventId = expectedEvent.EventId;
             actualEvent.Should().BeEquivalentTo(expectedEvent);
+            actualEvent.AgeAtStartOfLearning.Should().Be(17);
         }
 
         [Test]
@@ -128,6 +131,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
             actualEvent.EventTime = expectedEvent.EventTime;
             actualEvent.EventId = expectedEvent.EventId;
             actualEvent.Should().BeEquivalentTo(expectedEvent);
+            actualEvent.AgeAtStartOfLearning.Should().Be(17);
         }
 
         [Test]
@@ -151,6 +155,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
             actualEvent.EventTime = expectedEvent.EventTime;
             actualEvent.EventId = expectedEvent.EventId;
             actualEvent.Should().BeEquivalentTo(expectedEvent);
+            actualEvent.AgeAtStartOfLearning.Should().Be(17);
         }
 
         private void PopulateCommonProperties(FundingSourcePaymentEvent expectedEvent)
@@ -180,6 +185,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
             expectedEvent.AccountId = 1000000;
             expectedEvent.EarningEventId = requiredPaymentEvent.EarningEventId;
             expectedEvent.ApprenticeshipEmployerType = requiredPaymentEvent.ApprenticeshipEmployerType;
+            expectedEvent.AgeAtStartOfLearning = requiredPaymentEvent.AgeAtStartOfLearning;
         }
     }
 }
