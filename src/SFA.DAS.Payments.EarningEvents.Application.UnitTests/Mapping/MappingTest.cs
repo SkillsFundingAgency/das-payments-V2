@@ -444,7 +444,6 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
         [Test]
         public void Maps_AgeAtStartOfLearning_From_Oldest_LearnStartDate()
         {
-            var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>(learningAim);
             // Arrange
             var testLearner = new FM36Learner
             {
