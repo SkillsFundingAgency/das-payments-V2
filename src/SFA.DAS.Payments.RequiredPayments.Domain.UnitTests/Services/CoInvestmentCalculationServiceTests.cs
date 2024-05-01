@@ -6,8 +6,6 @@ using NUnit.Framework;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
-using SFA.DAS.Payments.Model.Core.OnProgramme;
-using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 using SFA.DAS.Payments.RequiredPayments.Domain.Services;
 
 namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
@@ -47,7 +45,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
         [TestCase(21, true)]
         [TestCase(22, false)]
         [TestCase(23, false)]
-        public void IsEligibleForRecalculation_ShouldNotAllowApprentice22OrOver(int apprenticeAge, bool isCorrectAge)
+        [TestCase(null, false)]
+        public void IsEligibleForRecalculation_ShouldNotAllowApprentice22OrOver(int? apprenticeAge, bool isCorrectAge)
         {
             payableEvent.StartDate = recalculationStartDate;
             payableEvent.AgeAtStartOfLearning = apprenticeAge;
@@ -55,6 +54,26 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
             var result = service.IsEligibleForRecalculation(payableEvent);
 
             result.Should().Be(isCorrectAge);
+        }
+
+        [Test]
+        [TestCase(null, 21)]
+        [TestCase("2024/03/02", 21)]
+        [TestCase("2024/04/01", 23)]
+        [TestCase("2024/04/01", null)]
+
+        public void ProcessPeriodsForRecalculation_ShouldNotRecalcForInvalidEvents(DateTime? eventStartDate, int? ageAtStartOfLearning)
+        {
+
+            var dataLockFailures = new List<DataLockFailure> { new DataLockFailure() };
+            var periods = new List<(EarningPeriod period, int type)>
+            {
+                (new EarningPeriod { ApprenticeshipId = 1234, DataLockFailures = null, SfaContributionPercentage = 0} , 1)
+            };
+
+            var result = service.ProcessPeriodsForRecalculation(payableEvent, periods);
+
+            result.FirstOrDefault().period.SfaContributionPercentage.Should().Be(0);
         }
 
         [Test]
@@ -71,7 +90,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
                 (new EarningPeriod { ApprenticeshipId = apprenticeId, DataLockFailures = DLFailure ? dataLockFailures : null, SfaContributionPercentage = 0} , 1)
             };
 
-            var result = service.ProcessPeriodsForRecalculation(periods);
+            var result = service.ProcessPeriodsForRecalculation(payableEvent, periods);
 
             result.FirstOrDefault().period.SfaContributionPercentage.Should().Be(0);
         }
@@ -82,12 +101,14 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.UnitTests.Services
 
         public void ProcessPeriodsForRecalculation_ShouldNotRecalcForLevyApprenticeshipEmployerType(ApprenticeshipEmployerType apprenticeshipEmployerType, decimal? fundingPercentage)
         {
+            payableEvent.StartDate = recalculationStartDate;
+            payableEvent.AgeAtStartOfLearning = 21;
             var periods = new List<(EarningPeriod period, int type)>
             {
                 (new EarningPeriod { ApprenticeshipId = 1234, ApprenticeshipEmployerType = apprenticeshipEmployerType} , 1)
             };
 
-            var result = service.ProcessPeriodsForRecalculation(periods);
+            var result = service.ProcessPeriodsForRecalculation(payableEvent, periods);
 
             result.FirstOrDefault().period.SfaContributionPercentage.Should().Be(fundingPercentage);
         }

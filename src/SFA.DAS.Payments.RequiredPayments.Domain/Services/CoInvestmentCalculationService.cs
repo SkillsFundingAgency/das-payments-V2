@@ -13,7 +13,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
     {
         bool IsEligibleForRecalculation(PayableEarningEvent payableEarningEvent);
 
-        IReadOnlyCollection<(EarningPeriod period, int type)> ProcessPeriodsForRecalculation(
+        IReadOnlyCollection<(EarningPeriod period, int type)> ProcessPeriodsForRecalculation(PayableEarningEvent earningEvent,
             IReadOnlyCollection<(EarningPeriod period, int type)> periods);
     }
 
@@ -36,20 +36,26 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Services
             return false;
         }
 
-        public IReadOnlyCollection<(EarningPeriod period, int type)> ProcessPeriodsForRecalculation(IReadOnlyCollection<(EarningPeriod period, int type)> periods)
+        public IReadOnlyCollection<(EarningPeriod period, int type)> ProcessPeriodsForRecalculation(PayableEarningEvent earningEvent, IReadOnlyCollection<(EarningPeriod period, int type)> periods)
         {
-            foreach (var earningPeriod in periods)
+            var requiresRecalculation = IsEligibleForRecalculation(earningEvent);
+
+            if (requiresRecalculation)
             {
-                //Is data matched?
-                if (earningPeriod.period.ApprenticeshipId is null or 0) continue;
-
-                if (earningPeriod.period.DataLockFailures is not null && earningPeriod.period.DataLockFailures.Any()) continue;
-
-                if (earningPeriod.period.ApprenticeshipEmployerType == ApprenticeshipEmployerType.NonLevy)
+                foreach (var earningPeriod in periods)
                 {
-                    earningPeriod.period.SfaContributionPercentage = new decimal(1.0);
+                    //Is data matched?
+                    if (earningPeriod.period.ApprenticeshipId is null or 0) continue;
+
+                    if (earningPeriod.period.DataLockFailures is not null && earningPeriod.period.DataLockFailures.Any()) continue;
+
+                    if (earningPeriod.period.ApprenticeshipEmployerType == ApprenticeshipEmployerType.NonLevy)
+                    {
+                        earningPeriod.period.SfaContributionPercentage = new decimal(1.0);
+                    }
                 }
             }
+
             return periods;
         }
     }
