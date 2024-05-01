@@ -44,16 +44,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 
         protected override IReadOnlyCollection<(EarningPeriod period, int type)> GetPeriods(PayableEarningEvent earningEvent)
         {
-            var periods = base.GetPeriods(earningEvent);
-
-            var requiresRecalculation = coInvestmentCalculationService.IsEligibleForRecalculation(earningEvent);
-
-            if (requiresRecalculation)
-            {
-                periods = coInvestmentCalculationService.ProcessPeriodsForRecalculation(periods);
-            }
-
-            return periods;
+            return coInvestmentCalculationService.ProcessPeriodsForRecalculation(earningEvent, base.GetPeriods(earningEvent));
         }
 
         protected override EarningType GetEarningType(int type)
