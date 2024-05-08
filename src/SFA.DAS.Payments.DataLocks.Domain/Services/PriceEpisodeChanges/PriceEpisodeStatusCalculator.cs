@@ -30,7 +30,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.PriceEpisodeChanges
             return matched.Union(removed).ToList();
         }
 
-        public PriceEpisodeStatus DetermineStatus(PriceEpisode priceEpisode, List<OnProgrammeEarning> earnings, List<PriceEpisodeStatusChange> previousPriceEpisodeStatuses)
+        public PriceEpisodeStatus DetermineStatus(short academicYear, PriceEpisode priceEpisode, List<OnProgrammeEarning> earnings, List<PriceEpisodeStatusChange> previousPriceEpisodeStatuses)
         {
             var previousPriceEpisode = previousPriceEpisodeStatuses.FirstOrDefault(previous =>
                 previous.DataLock.PriceEpisodeIdentifier.Equals(priceEpisode.Identifier));
