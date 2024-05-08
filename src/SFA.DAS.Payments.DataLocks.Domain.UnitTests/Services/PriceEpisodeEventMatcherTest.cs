@@ -33,7 +33,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
         }
 
         [Theory, AutoData]
-        public void When_price_episode_is_stored_and_has_not_changed_then_return_New(
+        public void When_price_episode_is_stored_and_has_not_changed_then_return_NotChanged(
             PriceEpisode priceEpisode,
             PriceEpisodeStatusCalculator sut)
         {
@@ -43,6 +43,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                 {
                     PriceEpisodeIdentifier = priceEpisode.Identifier,
                     AgreedPrice = priceEpisode.AgreedPrice,
+                    
                 }
             };
 

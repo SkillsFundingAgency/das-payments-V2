@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.DataLocks.Model.Entities;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
+using SFA.DAS.Payments.Model.Core.OnProgramme;
 
 namespace SFA.DAS.Payments.DataLocks.Domain.Services.PriceEpisodeChanges
 {
@@ -27,6 +29,12 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.PriceEpisodeChanges
             
             return matched.Union(removed).ToList();
         }
+
+        public PriceEpisodeStatus DetermineStatus(PriceEpisode priceEpisode, List<OnProgrammeEarning> earnings, List<PriceEpisodeStatusChange> previousPriceEpisodeStatuses)
+        {
+            throw new NotImplementedException();
+        }
+       
 
         public PriceEpisodeStatus Match(
             IEnumerable<CurrentPriceEpisode> recordedPriceEpisodes, 

@@ -120,6 +120,71 @@ namespace SFA.DAS.Payments.DataLocks.Application.UnitTests.Services
                 });
         }
 
+        [Theory, AutoDomainData]
+        public async Task When_job_succeeded_builds_approval_event_for_updated_price_episodes(
+            ICurrentPriceEpisodeForJobStore currentContext,
+            IReceivedDataLockEventStore receivedContext,
+            TestCaseData testCaseData,
+            PriceEpisode newPriceEpisode,
+            EarningPeriod newPeriod,
+            PriceEpisodesReceivedService sut)
+        {
+            // Given
+            testCaseData.earning.PriceEpisodes.Add(newPriceEpisode);
+
+            newPeriod.ApprenticeshipId = testCaseData.apprenticeship.Id;
+            newPeriod.AccountId = testCaseData.apprenticeship.AccountId;
+            newPeriod.PriceEpisodeIdentifier = newPriceEpisode.Identifier;
+            testCaseData.earning.OnProgrammeEarnings[0].Periods =
+                testCaseData.earning.OnProgrammeEarnings[0].Periods.Append(newPeriod).ToList().AsReadOnly();
+
+            await currentContext.Add(CreateCurrentPriceEpisodeFor(testCaseData.earning));
+            await testCaseData.AddDataLockEventToContext(receivedContext);
+
+            // When
+            var changeMessages = await sut.GetPriceEpisodeChanges(testCaseData.earning.JobId, testCaseData.earning.Ukprn, testCaseData.earning.CollectionYear);
+
+            // Then
+            changeMessages.Should().ContainEquivalentOf(
+                new
+                {
+                    DataLock = new
+                    {
+                        PriceEpisodeIdentifier = testCaseData.earning.PriceEpisodes[0].Identifier,
+                        Status = PriceEpisodeStatus.Updated,
+                    },
+                });
+        }
+
+        [Theory, AutoDomainData]
+        public async Task When_job_succeeded_does_not_build_approval_event_if_price_episode_has_not_changed(
+            ICurrentPriceEpisodeForJobStore currentContext,
+            IReceivedDataLockEventStore receivedContext,
+            TestCaseData testCaseData,
+            PriceEpisode newPriceEpisode,
+            EarningPeriod newPeriod,
+            PriceEpisodesReceivedService sut)
+        {
+            // Given
+            testCaseData.earning.PriceEpisodes.Add(newPriceEpisode);
+
+            newPeriod.ApprenticeshipId = testCaseData.apprenticeship.Id;
+            newPeriod.AccountId = testCaseData.apprenticeship.AccountId;
+            newPeriod.PriceEpisodeIdentifier = newPriceEpisode.Identifier;
+            testCaseData.earning.OnProgrammeEarnings[0].Periods =
+                testCaseData.earning.OnProgrammeEarnings[0].Periods.Append(newPeriod).ToList().AsReadOnly();
+
+            await currentContext.Add(CreateCurrentPriceEpisodeFor(testCaseData.earning));
+            await testCaseData.AddDataLockEventToContext(receivedContext);
+
+            // When
+            var changeMessages = await sut.GetPriceEpisodeChanges(testCaseData.earning.JobId, testCaseData.earning.Ukprn, testCaseData.earning.CollectionYear);
+
+            // Then
+            changeMessages.Should().BeEmpty();
+        }
+
+
         private CurrentPriceEpisode CreateCurrentPriceEpisodeFor(EarningFailedDataLockMatching earning)
         {
             return new CurrentPriceEpisode

@@ -46,9 +46,10 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             {
                 var learnerDataLocks = dataLockEvents.Where(x => x.Learner.Uln == learnerUln).ToList();
                 var leanerPriceEpisodes = currentPriceEpisodes.Where(x => x.Uln == learnerUln).ToList();
-                var changes = CalculatePriceEpisodeStatus(learnerDataLocks, leanerPriceEpisodes);
                 var previousPriceEpisodesStatus = GetPreviousPriceEpisodeStatus(leanerPriceEpisodes);
-                
+                var changes = CalculatePriceEpisodeStatus(learnerDataLocks, leanerPriceEpisodes);
+                //CalculatePriceEpisodeStatus(learnerDataLocks, previousPriceEpisodesStatus);
+
                 var priceEpisodeStatusChanges = await CreateStatusChangedEvents(learnerDataLocks, changes, previousPriceEpisodesStatus, currentAcademicYear);
                 var learnerPriceEpisodeReplacements = CreateLearnerCurrentPriceEpisodesReplacement(jobId, ukprn, learnerUln, priceEpisodeStatusChanges);
                 priceEpisodeReplacements.AddRange(learnerPriceEpisodeReplacements);
@@ -92,6 +93,14 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             var changes = calculator.Calculate(currentPriceEpisodes, dataLocks.SelectMany(x => x.PriceEpisodes));
             return changes;
         }
+
+        //private static List<(string identifier, PriceEpisodeStatus status)> CalculatePriceEpisodeStatus(
+        //    IEnumerable<DataLockEvent> dataLocks, List<PriceEpisodeStatusChange> currentPriceEpisodes)
+        //{
+        //    var calculator = new PriceEpisodeStatusCalculator();
+        //    var changes = calculator.Calculate(currentPriceEpisodes, dataLocks);
+        //    return changes;
+        //}
 
         private async Task<List<PriceEpisodeStatusChange>> CreateStatusChangedEvents(
             IEnumerable<DataLockEvent> dataLocks,
