@@ -33,7 +33,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.PriceEpisodeChanges
         public PriceEpisodeStatus DetermineStatus(short academicYear, PriceEpisode priceEpisode, List<OnProgrammeEarning> earnings, List<PriceEpisodeStatusChange> previousPriceEpisodeStatuses)
         {
             var previousPriceEpisode = previousPriceEpisodeStatuses.FirstOrDefault(previous =>
-                previous.DataLock.PriceEpisodeIdentifier.Equals(priceEpisode.Identifier));
+                previous.DataLock.PriceEpisodeIdentifier.Equals(priceEpisode.Identifier) && previous.DataLock.AcademicYear.Equals(academicYear.ToString()));
             if (previousPriceEpisode == null)
                 return PriceEpisodeStatus.New;
 
