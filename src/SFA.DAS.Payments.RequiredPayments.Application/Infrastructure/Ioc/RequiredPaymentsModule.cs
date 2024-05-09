@@ -15,6 +15,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Ioc
             builder.RegisterType<RefundService>().AsImplementedInterfaces().SingleInstance();
             builder.RegisterType<NegativeEarningsService>().AsImplementedInterfaces().SingleInstance();
             builder.RegisterType<RemovedLearnerAimIdentificationService>().AsImplementedInterfaces().SingleInstance();
+            builder.RegisterType<CoInvestmentCalculationService>().AsImplementedInterfaces();
 
             // app layer event handlers
             builder.RegisterType<ClawbackRemovedLearnerAimsProcessor>().AsImplementedInterfaces();
@@ -23,6 +24,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Infrastructure.Ioc
             builder.RegisterType<FunctionalSkillEarningsEventProcessor>().AsImplementedInterfaces();
             builder.RegisterType<PayableEarningEventProcessor>().AsImplementedInterfaces();
             builder.RegisterType<HoldingBackCompletionPaymentService>().AsImplementedInterfaces();
+
         }
     }
 }
