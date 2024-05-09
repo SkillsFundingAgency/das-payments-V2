@@ -132,5 +132,45 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
 
             calc.DetermineStatus(2324, priceEpisode, earnings, previousPriceEpisodeStatuses).Should().Be(PriceEpisodeStatus.New);
         }
+
+        [Test]
+        public void Changed_Price_Returns_Updated()
+        {
+            var calc = mocker.Create<PriceEpisodeStatusCalculator>();
+
+            var priceEpisode = new PriceEpisode
+            {
+                Identifier = "1234",
+                AgreedPrice = 1500,
+            };
+
+            var earnings = new List<OnProgrammeEarning>
+            {
+                new OnProgrammeEarning
+                {
+
+                    Type = OnProgrammeEarningType.Learning,
+                    Periods = new ReadOnlyCollection<EarningPeriod>(new List<EarningPeriod>
+                    {
+                        new EarningPeriod
+                        {
+                            AccountId = 12, Amount = 100, ApprenticeshipId = 1, Period = 1,
+                            DataLockFailures = new List<DataLockFailure>()
+                        }
+                    })
+                }
+            };
+
+            var previousPriceEpisodeStatuses = new List<PriceEpisodeStatusChange>
+            {
+                new PriceEpisodeStatusChange
+                {
+                    DataLock = new LegacyDataLockEvent{ PriceEpisodeIdentifier = "1234" , AcademicYear = "2324" },
+                    AgreedPrice = 1000
+                }
+            };
+
+            calc.DetermineStatus(2324, priceEpisode, earnings, previousPriceEpisodeStatuses).Should().Be(PriceEpisodeStatus.Updated);
+        }
     }
 }
