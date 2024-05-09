@@ -37,6 +37,9 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.PriceEpisodeChanges
             if (previousPriceEpisode == null)
                 return PriceEpisodeStatus.New;
 
+            if (previousPriceEpisode.AgreedPrice != priceEpisode.AgreedPrice)
+                return PriceEpisodeStatus.Updated;
+
             throw new NotImplementedException();
         }
 
