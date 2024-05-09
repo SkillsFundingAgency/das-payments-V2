@@ -40,13 +40,18 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.PriceEpisodeChanges
             if (previousPriceEpisode.AgreedPrice != priceEpisode.AgreedPrice)
                 return PriceEpisodeStatus.Updated;
 
-            var previousDataLocks = previousPriceEpisode.Errors.Select(er => er.DataLockEventId).Distinct().ToList();
+            var previousDataLocks = previousPriceEpisode.Errors.Select(er => er.ErrorCode).Distinct().ToList();
             var currentDataLocks = earnings.SelectMany( earning => earning.Periods)
                 .SelectMany(period => period.DataLockFailures)
-                .Select(failure => failure.DataLockError)
-                .Distinct();
+                .Select(failure => failure.DataLockError.ToString())
+                .Distinct()
+                .ToList();
 
-            if (previousDataLocks.Count != currentDataLocks.Count())
+            if (previousDataLocks.Count != currentDataLocks.Count)
+                return PriceEpisodeStatus.Updated;
+
+
+            if (currentDataLocks.Except(previousDataLocks).Any())
                 return PriceEpisodeStatus.Updated;
 
             throw new NotImplementedException();

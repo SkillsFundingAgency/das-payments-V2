@@ -230,5 +230,61 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
 
             calc.DetermineStatus(DefaultAcademicYear, priceEpisode, earnings, previousPriceEpisodeStatuses).Should().Be(PriceEpisodeStatus.Updated);
         }
+
+        [Test]
+        public void Different_DataLocks_Returns_Updated()
+        {
+            var calc = mocker.Create<PriceEpisodeStatusCalculator>();
+
+            var priceEpisode = new PriceEpisode
+            {
+                Identifier = "1234",
+                AgreedPrice = 1000,
+            };
+
+            var earnings = new List<OnProgrammeEarning>
+            {
+                new OnProgrammeEarning
+                {
+
+                    Type = OnProgrammeEarningType.Learning,
+                    Periods = new ReadOnlyCollection<EarningPeriod>(new List<EarningPeriod>
+                    {
+                        new EarningPeriod
+                        {
+                            AccountId = 12, Amount = 100, ApprenticeshipId = 1, Period = 1,
+                            DataLockFailures = new List<DataLockFailure>
+                            {
+                                new DataLockFailure { ApprenticeshipId = 1, DataLockError = DataLockErrorCode.DLOCK_04, ApprenticeshipPriceEpisodeIds = new List<long>{ 1 } },
+                            }
+                        },
+                        new EarningPeriod
+                        {
+                            AccountId = 12, Amount = 100, ApprenticeshipId = 1, Period = 2,
+                            DataLockFailures = new List<DataLockFailure>()
+                        },
+                    })
+                }
+            };
+
+            var previousPriceEpisodeStatuses = new List<PriceEpisodeStatusChange>
+            {
+                new PriceEpisodeStatusChange
+                {
+                    DataLock = new LegacyDataLockEvent{ PriceEpisodeIdentifier = priceEpisode.Identifier , AcademicYear = DefaultAcademicYear.ToString() },
+                    AgreedPrice = priceEpisode.AgreedPrice,
+                    Errors = new LegacyDataLockEventError[]
+                    {
+                        new LegacyDataLockEventError
+                        {
+                            ErrorCode = "DLOCK_03",
+                            SystemDescription = "No matching record found in the employer digital account for the standard code"
+                        }
+                    },
+                }
+            };
+
+            calc.DetermineStatus(DefaultAcademicYear, priceEpisode, earnings, previousPriceEpisodeStatuses).Should().Be(PriceEpisodeStatus.Updated);
+        }
     }
 }
