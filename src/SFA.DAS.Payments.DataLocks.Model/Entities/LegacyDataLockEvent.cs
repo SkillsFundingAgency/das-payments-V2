@@ -7,6 +7,7 @@ namespace SFA.DAS.Payments.DataLocks.Model.Entities
         New = 1,
         Updated,
         Removed,
+        NoCHange,
     }
 
     public class LegacyDataLockEvent

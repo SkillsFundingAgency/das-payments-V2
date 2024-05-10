@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
 using SFA.DAS.Payments.DataLocks.Model.Entities;
@@ -32,29 +33,71 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.PriceEpisodeChanges
 
         public PriceEpisodeStatus DetermineStatus(short academicYear, PriceEpisode priceEpisode, List<OnProgrammeEarning> earnings, List<PriceEpisodeStatusChange> previousPriceEpisodeStatuses)
         {
-            var previousPriceEpisode = previousPriceEpisodeStatuses.FirstOrDefault(previous =>
-                previous.DataLock.PriceEpisodeIdentifier.Equals(priceEpisode.Identifier) && previous.DataLock.AcademicYear.Equals(academicYear.ToString()));
+            //make sure only checking price episodes that are in scope
+            var earningPeriodsForPriceEpisode = earnings.SelectMany(earning => earning.Periods)
+                .Where(period => !string.IsNullOrEmpty(period.PriceEpisodeIdentifier) && period.PriceEpisodeIdentifier.Equals(priceEpisode.Identifier))
+                .ToList();
+
+            var filteredPreviousStatuses = previousPriceEpisodeStatuses.Where(previous =>
+                previous.DataLock.PriceEpisodeIdentifier.Equals(priceEpisode.Identifier)
+                && previous.DataLock.AcademicYear.Equals(academicYear.ToString()))
+                .ToList();
+
+
+            //Price episode identifier contains the academic year but adding extra check for safety e.g. 25-237-11/01/2024
+            var previousPriceEpisode = filteredPreviousStatuses.FirstOrDefault();
             if (previousPriceEpisode == null)
                 return PriceEpisodeStatus.New;
 
             if (previousPriceEpisode.AgreedPrice != priceEpisode.AgreedPrice)
                 return PriceEpisodeStatus.Updated;
 
-            var previousDataLocks = previousPriceEpisode.Errors.Select(er => er.ErrorCode).Distinct().ToList();
-            var currentDataLocks = earnings.SelectMany( earning => earning.Periods)
+            var previousDataLocks = filteredPreviousStatuses
+                .SelectMany(previous => previous.Errors)
+                .Select(er => er.ErrorCode)
+                .Distinct()
+                .ToList();
+            var currentDataLocks = earningPeriodsForPriceEpisode
                 .SelectMany(period => period.DataLockFailures)
                 .Select(failure => failure.DataLockError.ToString())
                 .Distinct()
                 .ToList();
 
-            if (previousDataLocks.Count != currentDataLocks.Count)
-                return PriceEpisodeStatus.Updated;
-
-
             if (currentDataLocks.Except(previousDataLocks).Any())
                 return PriceEpisodeStatus.Updated;
 
-            throw new NotImplementedException();
+            var previousCommitments =
+                filteredPreviousStatuses.Select(previous => previous.DataLock.CommitmentId)
+                    .Distinct()
+                    .ToList();
+            var currentApprenticeships = earningPeriodsForPriceEpisode
+                .Where(period => period.ApprenticeshipId.HasValue)
+                .Select(period => period.ApprenticeshipId.Value)
+                .Distinct()
+                .ToList();
+
+            if (currentApprenticeships.Except(previousCommitments).Any())
+                return PriceEpisodeStatus.Updated;
+
+
+            var commitmentErrors = filteredPreviousStatuses
+                .GroupBy(x => x.DataLock.CommitmentId, x => new {Id = x.DataLock.CommitmentId, Errors = x.Errors} )
+                .ToList();
+
+            //Edge case: Same learners
+            foreach (var commitmentErrorGroup in commitmentErrors)
+            {
+                var errors = commitmentErrorGroup.SelectMany(x => x.Errors).Select(x => x.ErrorCode).Distinct().ToList();
+                if (earningPeriodsForPriceEpisode
+                    .Where(period => period.ApprenticeshipId == commitmentErrorGroup.Key)
+                    .SelectMany(period => period.DataLockFailures)
+                    .Select(failure => failure.DataLockError.ToString())
+                    .Distinct()
+                    .Except(errors).Any())
+                    return PriceEpisodeStatus.Updated;
+            }
+
+            return PriceEpisodeStatus.NoCHange;
         }
 
 
