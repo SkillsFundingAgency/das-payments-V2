@@ -31,7 +31,9 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.PriceEpisodeChanges
             return matched.Union(removed).ToList();
         }
 
-        public PriceEpisodeStatus DetermineStatus(short academicYear, PriceEpisode priceEpisode, List<OnProgrammeEarning> earnings, List<PriceEpisodeStatusChange> previousPriceEpisodeStatuses)
+
+        
+        public PriceEpisodeStatus DetermineDataLockStatus(short academicYear, PriceEpisode priceEpisode, List<OnProgrammeEarning> earnings, List<PriceEpisodeStatusChange> previousPriceEpisodeStatuses)
         {
             //make sure only checking price episodes that are in scope
             var earningPeriodsForPriceEpisode = earnings.SelectMany(earning => earning.Periods)
@@ -42,8 +44,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.PriceEpisodeChanges
                 previous.DataLock.PriceEpisodeIdentifier.Equals(priceEpisode.Identifier)
                 && previous.DataLock.AcademicYear.Equals(academicYear.ToString()))
                 .ToList();
-
-
+            
             //Price episode identifier contains the academic year but adding extra check for safety e.g. 25-237-11/01/2024
             var previousPriceEpisode = filteredPreviousStatuses.FirstOrDefault();
             if (previousPriceEpisode == null)
@@ -100,7 +101,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.Services.PriceEpisodeChanges
             return PriceEpisodeStatus.NoCHange;
         }
 
-
+        
         public PriceEpisodeStatus Match(
             IEnumerable<CurrentPriceEpisode> recordedPriceEpisodes,
             PriceEpisode newPriceEpisode)
