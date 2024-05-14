@@ -16,6 +16,14 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
         Task<List<PriceEpisodeStatusChange>> GetPriceEpisodeChanges(long jobId, long ukprn, short currentAcademicYear);
     }
 
+    //TODO: Finish refactoring the price episode status change logic for each data-locked learner
+    public class LearnerPriceEpisodeStatusChangeService
+    {
+
+    }
+
+
+    //TODO: Refactor, this class is too big, complicated and is really really hard to test.  
     public class PriceEpisodesReceivedService: IPriceEpisodesReceivedService
     {
         private readonly ICurrentPriceEpisodeForJobStore currentPriceEpisodesStore;
@@ -47,9 +55,10 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
                 var learnerDataLocks = dataLockEvents.Where(x => x.Learner.Uln == learnerUln).ToList();
                 var leanerPriceEpisodes = currentPriceEpisodes.Where(x => x.Uln == learnerUln).ToList();
                 var previousPriceEpisodesStatus = GetPreviousPriceEpisodeStatus(leanerPriceEpisodes);
-                var changes = CalculatePriceEpisodeStatus(learnerDataLocks, leanerPriceEpisodes);
-                //CalculatePriceEpisodeStatus(learnerDataLocks, previousPriceEpisodesStatus);
-
+//                var changes = CalculatePriceEpisodeStatus(learnerDataLocks, leanerPriceEpisodes);
+                //Needs to use previous price episode data-locks
+                var changes = CalculatePriceEpisodeStatus(learnerDataLocks, previousPriceEpisodesStatus );  
+  
                 var priceEpisodeStatusChanges = await CreateStatusChangedEvents(learnerDataLocks, changes, previousPriceEpisodesStatus, currentAcademicYear);
                 var learnerPriceEpisodeReplacements = CreateLearnerCurrentPriceEpisodesReplacement(jobId, ukprn, learnerUln, priceEpisodeStatusChanges);
                 priceEpisodeReplacements.AddRange(learnerPriceEpisodeReplacements);
@@ -60,7 +69,9 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             await ReplaceCurrentPriceEpisodes(jobId, ukprn, priceEpisodeReplacements);
             await RemoveReceivedDataLockEvents(jobId, ukprn);
 
-            return allPriceEpisodeStatusChanges;
+            return allPriceEpisodeStatusChanges
+                .Where(priceEpisodeChange =>  priceEpisodeChange.DataLock.Status != PriceEpisodeStatus.NoCHange)
+                .ToList();
         }
 
         private async Task<IEnumerable<DataLockEvent>> GetDataLocks(long jobId, long ukprn)
@@ -85,7 +96,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             return priceEpisodeStatus;
         }
 
-
+        //TODO: Why is this static
         private static List<(string identifier, PriceEpisodeStatus status)> CalculatePriceEpisodeStatus(
             IEnumerable<DataLockEvent> dataLocks, IEnumerable<CurrentPriceEpisode> currentPriceEpisodes)
         {
@@ -94,13 +105,29 @@ namespace SFA.DAS.Payments.DataLocks.Application.Services
             return changes;
         }
 
-        //private static List<(string identifier, PriceEpisodeStatus status)> CalculatePriceEpisodeStatus(
-        //    IEnumerable<DataLockEvent> dataLocks, List<PriceEpisodeStatusChange> currentPriceEpisodes)
-        //{
-        //    var calculator = new PriceEpisodeStatusCalculator();
-        //    var changes = calculator.Calculate(currentPriceEpisodes, dataLocks);
-        //    return changes;
-        //}
+        //TODO: Why is this static
+        private static List<(string identifier, PriceEpisodeStatus status)> CalculatePriceEpisodeStatus(
+            IEnumerable<DataLockEvent> dataLocks, List<PriceEpisodeStatusChange> previouStatusChanges)
+        {
+            var calculator = new PriceEpisodeStatusCalculator();
+            var changes = dataLocks
+                .SelectMany(dataLock => dataLock.PriceEpisodes,
+                    (dataLock, priceEpisode) => new { DataLock = dataLock, PriceEpisode = priceEpisode })
+                .Select(dataLockPriceEpisode => (dataLockPriceEpisode.PriceEpisode.Identifier,
+                    calculator.DetermineDataLockStatus(dataLockPriceEpisode.DataLock.CollectionYear,
+                        dataLockPriceEpisode.PriceEpisode, 
+                        dataLockPriceEpisode.DataLock.OnProgrammeEarnings, 
+                        previouStatusChanges)))
+                .ToList();
+
+            var removedPreviousPriceEpisodes = previouStatusChanges
+                .Select(previous => previous.DataLock.PriceEpisodeIdentifier)
+                .Distinct()
+                .Except(changes.Select(change => change.Identifier).Distinct())
+                .Select(removed => (removed, PriceEpisodeStatus.Removed));
+
+            return changes.Union(removedPreviousPriceEpisodes).ToList();
+        }
 
         private async Task<List<PriceEpisodeStatusChange>> CreateStatusChangedEvents(
             IEnumerable<DataLockEvent> dataLocks,

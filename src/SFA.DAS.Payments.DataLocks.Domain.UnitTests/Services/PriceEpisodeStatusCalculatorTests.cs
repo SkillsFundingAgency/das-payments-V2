@@ -54,7 +54,9 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
 
             };
 
-            calc.DetermineStatus(2324, priceEpisode, earnings, new List<PriceEpisodeStatusChange>()).Should().Be(PriceEpisodeStatus.New);
+            calc.DetermineDataLockStatus(2324, priceEpisode, earnings, new List<PriceEpisodeStatusChange>())
+                .Should()
+                .Be(PriceEpisodeStatus.New);
         }
 
         [Test]
@@ -94,7 +96,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                 }
             };
 
-            calc.DetermineStatus(2324,priceEpisode, earnings, previousPriceEpisodeStatuses).Should().Be(PriceEpisodeStatus.New);
+            calc.DetermineDataLockStatus(2324,priceEpisode, earnings, previousPriceEpisodeStatuses).Should().Be(PriceEpisodeStatus.New);
         }
 
         [Test]
@@ -135,7 +137,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                 }
             };
 
-            calc.DetermineStatus(2324, priceEpisode, earnings, previousPriceEpisodeStatuses).Should().Be(PriceEpisodeStatus.New);
+            calc.DetermineDataLockStatus(2324, priceEpisode, earnings, previousPriceEpisodeStatuses).Should().Be(PriceEpisodeStatus.New);
         }
 
         [Test]
@@ -176,7 +178,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                 }
             };
 
-            calc.DetermineStatus(2324, priceEpisode, earnings, previousPriceEpisodeStatuses).Should().Be(PriceEpisodeStatus.Updated);
+            calc.DetermineDataLockStatus(2324, priceEpisode, earnings, previousPriceEpisodeStatuses).Should().Be(PriceEpisodeStatus.Updated);
         }
 
         [Test]
@@ -235,7 +237,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                 }
             };
 
-            calc.DetermineStatus(DefaultAcademicYear, priceEpisode, earnings, previousPriceEpisodeStatuses).Should().Be(PriceEpisodeStatus.Updated);
+            calc.DetermineDataLockStatus(DefaultAcademicYear, priceEpisode, earnings, previousPriceEpisodeStatuses).Should().Be(PriceEpisodeStatus.Updated);
         }
 
         [Test]
@@ -292,7 +294,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                 }
             };
 
-            calc.DetermineStatus(DefaultAcademicYear, priceEpisode, earnings, previousPriceEpisodeStatuses).Should().Be(PriceEpisodeStatus.Updated);
+            calc.DetermineDataLockStatus(DefaultAcademicYear, priceEpisode, earnings, previousPriceEpisodeStatuses).Should().Be(PriceEpisodeStatus.Updated);
         }
 
         [Test]
@@ -353,7 +355,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
 
             };
 
-            calc.DetermineStatus(DefaultAcademicYear, priceEpisode, earnings, previousPriceEpisodeStatuses).Should().Be(PriceEpisodeStatus.Updated);
+            calc.DetermineDataLockStatus(DefaultAcademicYear, priceEpisode, earnings, previousPriceEpisodeStatuses).Should().Be(PriceEpisodeStatus.Updated);
         }
 
         [Test]
@@ -428,7 +430,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
 
             };
 
-            calc.DetermineStatus(DefaultAcademicYear, priceEpisode, earnings, previousPriceEpisodeStatuses).Should().Be(PriceEpisodeStatus.Updated);
+            calc.DetermineDataLockStatus(DefaultAcademicYear, priceEpisode, earnings, previousPriceEpisodeStatuses).Should().Be(PriceEpisodeStatus.Updated);
         }
 
         [Test]
@@ -503,7 +505,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
 
             };
 
-            calc.DetermineStatus(DefaultAcademicYear, priceEpisode, earnings, previousPriceEpisodeStatuses).Should().Be(PriceEpisodeStatus.NoCHange);
+            calc.DetermineDataLockStatus(DefaultAcademicYear, priceEpisode, earnings, previousPriceEpisodeStatuses).Should().Be(PriceEpisodeStatus.NoCHange);
         }
 
         [Test]
@@ -557,7 +559,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                 }
             };
 
-            calc.DetermineStatus(DefaultAcademicYear, priceEpisode, earnings, previousPriceEpisodeStatuses).Should().Be(PriceEpisodeStatus.NoCHange);
+            calc.DetermineDataLockStatus(DefaultAcademicYear, priceEpisode, earnings, previousPriceEpisodeStatuses).Should().Be(PriceEpisodeStatus.NoCHange);
         }
 
 
@@ -618,7 +620,7 @@ namespace SFA.DAS.Payments.DataLocks.Domain.UnitTests.Services
                 }
             };
 
-            calc.DetermineStatus(DefaultAcademicYear, priceEpisode, earnings, previousPriceEpisodeStatuses).Should().Be(PriceEpisodeStatus.Updated);
+            calc.DetermineDataLockStatus(DefaultAcademicYear, priceEpisode, earnings, previousPriceEpisodeStatuses).Should().Be(PriceEpisodeStatus.Updated);
         }
 
     }
