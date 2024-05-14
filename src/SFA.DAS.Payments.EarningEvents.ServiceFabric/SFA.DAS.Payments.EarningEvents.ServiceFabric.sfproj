@@ -34,8 +34,8 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.EarningEventsService2122\SFA.DAS.Payments.EarningEvents.EarningEventsService.csproj" />
-    <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.EarningEventsService\SFA.DAS.Payments.EarningEvents.EarningEventsService2223.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.EarningEventsService2324\SFA.DAS.Payments.EarningEvents.EarningEventsService2324.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.EarningEventsService2223\SFA.DAS.Payments.EarningEvents.EarningEventsService2223.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.ProcessLearnerProxyService\SFA.DAS.Payments.EarningEvents.ProcessLearnerProxyService.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.ProcessLearnerService\SFA.DAS.Payments.EarningEvents.ProcessLearnerService.csproj" />
   </ItemGroup>
