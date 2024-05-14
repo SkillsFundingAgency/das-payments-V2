@@ -6,10 +6,10 @@
     <Parameter Name="ProcessLearnerServiceActorService_PartitionCount" DefaultValue="10" />
     <Parameter Name="ProcessLearnerServiceActorService_MinReplicaSetSize" DefaultValue="3" />
     <Parameter Name="ProcessLearnerServiceActorService_TargetReplicaSetSize" DefaultValue="3" />
-    <Parameter Name="EarningEventsService_InstanceCount" DefaultValue="-1" />
-    <Parameter Name="EarningEventsService_EndpointName" DefaultValue="sfa-das-payments-earningevents" />
+    <Parameter Name="EarningEventsService2324_InstanceCount" DefaultValue="-1" />
+    <Parameter Name="EarningEventsService2324_EndpointName" DefaultValue="sfa-das-payments-earningevents2324" />
     <Parameter Name="EarningEventsService2223_EndpointName" DefaultValue="sfa-das-payments-earningevents2223" />
-    <Parameter Name="EarningEventsService_FailedMessagesQueue" DefaultValue="sfa-das-payments-earningevents-errors" />
+    <Parameter Name="EarningEventsService_FailedMessagesQueue" DefaultValue="sfa-das-payments-earningevents2324-errors" />
     <Parameter Name="EarningEventsService2223_FailedMessagesQueue" DefaultValue="sfa-das-payments-earningevents2223-errors" />
     <Parameter Name="ProcessLearnerService_EndpointName" DefaultValue="sfa-das-payments-earningevents-processlearner" />
     <Parameter Name="ProcessLearnerService_FailedMessagesQueue" DefaultValue="sfa-das-payments-earningevents-processlearner-errors" />
@@ -138,7 +138,7 @@
             <Parameter Name="PaymentsMonitoringConnectionString" Value="[PaymentsMonitoringConnectionString]" />
           </Section>
           <Section Name="Settings">
-            <Parameter Name="EndpointName" Value="[EarningEventsService_EndpointName]" />
+            <Parameter Name="EndpointName" Value="[EarningEventsService2324_EndpointName]" />
             <Parameter Name="ProcessLearnerEndpoint" Value="[ProcessLearnerService_EndpointName]" />
             <Parameter Name="FailedMessagesQueue" Value="[EarningEventsService_FailedMessagesQueue]" />
             <Parameter Name="AuditQueueName" Value="[AuditQueueName]" />
@@ -163,7 +163,7 @@
     </ConfigOverrides>
   </ServiceManifestImport>
   <ServiceManifestImport>
-    <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.EarningEvents.EarningEventsServicePkg" ServiceManifestVersion="1.0.0" />
+    <ServiceManifestRef ServiceManifestName="SFA.DAS.Payments.EarningEvents.EarningEventsService2324Pkg" ServiceManifestVersion="1.0.0" />
     <ConfigOverrides>
       <ConfigOverride Name="Config">
         <Settings>
@@ -178,7 +178,7 @@
             <Parameter Name="PaymentsMonitoringConnectionString" Value="[PaymentsMonitoringConnectionString]" />
           </Section>
           <Section Name="Settings">
-            <Parameter Name="EndpointName" Value="[EarningEventsService_EndpointName]" />
+            <Parameter Name="EndpointName" Value="[EarningEventsService2324_EndpointName]" />
             <Parameter Name="ProcessLearnerEndpoint" Value="[ProcessLearnerService_EndpointName]" />
             <Parameter Name="FailedMessagesQueue" Value="[EarningEventsService_FailedMessagesQueue]" />
             <Parameter Name="AuditQueueName" Value="[AuditQueueName]" />
@@ -220,8 +220,8 @@
         <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
       </StatelessService>
     </Service>
-    <Service Name="SFA.DAS.Payments.EarningEvents.EarningEventsService" ServicePackageActivationMode="ExclusiveProcess">
-      <StatelessService ServiceTypeName="SFA.DAS.Payments.EarningEvents.EarningEventsServiceType" InstanceCount="[EarningEventsService_InstanceCount]">
+    <Service Name="SFA.DAS.Payments.EarningEvents.EarningEventsService2324" ServicePackageActivationMode="ExclusiveProcess">
+      <StatelessService ServiceTypeName="SFA.DAS.Payments.EarningEvents.EarningEventsService2324Type" InstanceCount="[EarningEventsService2324_InstanceCount]">
         <SingletonPartition />
         <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
       </StatelessService>
