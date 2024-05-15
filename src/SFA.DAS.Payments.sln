@@ -91,7 +91,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.EarningEve
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.EarningEvents.Application", "SFA.DAS.Payments.EarningEvents.Application\SFA.DAS.Payments.EarningEvents.Application.csproj", "{89F379E2-032A-40EC-BDE6-B92EE08BC90F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.EarningEvents.EarningEventsService2223", "SFA.DAS.Payments.EarningEvents.EarningEventsService2223\SFA.DAS.Payments.EarningEvents.EarningEventsService2223.csproj", "{8484A105-4240-4CBA-AFB2-C0DA520E52BD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Payments.EarningEvents.EarningEventsService2425", "SFA.DAS.Payments.EarningEvents.EarningEventsService2425\SFA.DAS.Payments.EarningEvents.EarningEventsService2425.csproj", "{8484A105-4240-4CBA-AFB2-C0DA520E52BD}"
 EndProject
 Project("{A07B5EB6-E848-4116-A8D0-A826331D98C6}") = "SFA.DAS.Payments.EarningEvents.ServiceFabric", "SFA.DAS.Payments.EarningEvents.ServiceFabric\SFA.DAS.Payments.EarningEvents.ServiceFabric.sfproj", "{04E49931-8A26-4CB5-9716-A4253D518F4D}"
 EndProject

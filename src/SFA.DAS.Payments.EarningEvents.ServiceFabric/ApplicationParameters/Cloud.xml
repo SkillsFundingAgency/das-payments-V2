@@ -2,7 +2,6 @@
 <Application xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="fabric:/SFA.DAS.Payments.EarningEvents.ServiceFabric" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
     <Parameter Name="EarningEventsService2324_InstanceCount" Value="__EarningEventsService2324_InstanceCount__" />
-    <Parameter Name="EarningEventsService2223_InstanceCount" Value="__EarningEventsService2223_InstanceCount__" />
     <Parameter Name="ProcessLearnerProxyService_InstanceCount" Value="__ProcessLearnerProxyService_InstanceCount__" />
     <Parameter Name="ProcessLearnerServiceActorService_PartitionCount" Value="__ProcessLearnerActorService_PartitionCount__" />
     <Parameter Name="ProcessLearnerServiceActorService_MinReplicaSetSize" Value="__ProcessLearnerActorService_MinReplicaSetSize__" />
@@ -11,8 +10,6 @@
     <Parameter Name="MonitoringServiceBusConnectionString" Value="__MonitoringServiceBusConnectionString__" />
     <Parameter Name="DCServiceBusConnectionString" Value="__DCServiceBusConnectionString__" />
     <Parameter Name="EarningEventsService2324_EndpointName" Value="__EarningEventsService2324_EndpointName__" />
-    <Parameter Name="EarningEventsService2223_EndpointName" Value="__EarningEventsService2223_EndpointName__" />
-    <Parameter Name="EarningEventsService2223_FailedMessagesQueue" Value="__EarningEventsService2223_FailedMessagesQueue__" />
     <Parameter Name="ProcessLearnerService_EndpointName" Value="__ProcessLearnerService_EndpointName__" />
     <Parameter Name="ProcessLearnerService_FailedMessagesQueue" Value="__ProcessLearnerService_FailedMessagesQueue__" />
     <Parameter Name="SubscriptionName" Value="__SubscriptionName__" />
@@ -24,7 +21,7 @@
     <Parameter Name="PaymentsConnectionString" Value="__DasPaymentsConnectionStringRW__" />
     <Parameter Name="PaymentsMonitoringConnectionString" Value="__PaymentsMonitoringConnectionString__" />
     <Parameter Name="TopicName" Value="__TopicName__" />
-    <Parameter Name="TopicName2223" Value="__TopicName2223__" />
+    <Parameter Name="TopicName2324" Value="__TopicName2324__" />
     <Parameter Name="LogLevel" Value="__LogLevel__" />
     <Parameter Name="ProcessMessageSequentially" Value="false" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="__ApplicationInsights_InstrumentationKey__" />
