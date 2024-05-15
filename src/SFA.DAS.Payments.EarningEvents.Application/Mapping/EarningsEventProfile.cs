@@ -67,6 +67,10 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                 .Include<IntermediateLearningAim, Act2FunctionalSkillEarningsEvent>()
                 .ForMember(destinationMember => destinationMember.Earnings, opt => opt.ResolveUsing<FunctionalSkillsEarningValueResolver>())
                 .ForMember(destinationMember => destinationMember.StartDate, opt => opt.MapFrom(source => source.Aims.Min(aim => aim.LearningDeliveryValues.LearnStartDate)))
+                .ForMember(destinationMember => destinationMember.AgeAtStartOfLearning,
+                    opt => opt.MapFrom(source =>
+                        source.Aims.OrderBy(aim => aim.LearningDeliveryValues.LearnStartDate).First()
+                            .LearningDeliveryValues.AgeAtProgStart))
                 .Ignore(x => x.ContractType)
                 ;
 
@@ -91,6 +95,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
             CreateMap<FM36Learner, Learner>()
                 .ForMember(dest => dest.ReferenceNumber, opt => opt.MapFrom(source => source.LearnRefNumber))
                 .ForMember(dest => dest.Uln, opt => opt.MapFrom(source => source.ULN));
+
 
             CreateMap<IntermediateLearningAim, LearningAim>()
                 .ForMember(dest => dest.PathwayCode, opt => opt.MapFrom(source => source.Aims.First().LearningDeliveryValues.PwayCode))
