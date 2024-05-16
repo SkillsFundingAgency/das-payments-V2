@@ -9,7 +9,7 @@
     <Parameter Name="EarningEventsService2324_InstanceCount" DefaultValue="-1" />
     <Parameter Name="EarningEventsService2324_EndpointName" DefaultValue="sfa-das-payments-earningevents2324" />
     <Parameter Name="EarningEventsService2223_EndpointName" DefaultValue="sfa-das-payments-earningevents2223" />
-    <Parameter Name="EarningEventsService_FailedMessagesQueue" DefaultValue="sfa-das-payments-earningevents2324-errors" />
+    <Parameter Name="EarningEventsService2324_FailedMessagesQueue" DefaultValue="sfa-das-payments-earningevents2324-errors" />
     <Parameter Name="EarningEventsService2223_FailedMessagesQueue" DefaultValue="sfa-das-payments-earningevents2223-errors" />
     <Parameter Name="ProcessLearnerService_EndpointName" DefaultValue="sfa-das-payments-earningevents-processlearner" />
     <Parameter Name="ProcessLearnerService_FailedMessagesQueue" DefaultValue="sfa-das-payments-earningevents-processlearner-errors" />
@@ -24,8 +24,8 @@
     <Parameter Name="DcStorageConnectionString" DefaultValue="" />
     <Parameter Name="PaymentsConnectionString" DefaultValue="" />
     <Parameter Name="PaymentsMonitoringConnectionString" DefaultValue="" />
-    <Parameter Name="TopicName" DefaultValue="" />
     <Parameter Name="TopicName2223" DefaultValue="" />
+    <Parameter Name="TopicName2324" DefaultValue="" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" DefaultValue="" />
     <Parameter Name="LogLevel" DefaultValue="Debug" />
     <Parameter Name="ProcessMessageSequentially" DefaultValue="false" />
@@ -104,7 +104,7 @@
             <Parameter Name="AuditQueueName" Value="[AuditQueueName]" />
             <Parameter Name="SubscriptionName" Value="[SubscriptionName]" />
             <Parameter Name="JobStatusQueueName" Value="[JobStatusQueueName]" />
-            <Parameter Name="TopicName" Value="[TopicName]" />
+            <Parameter Name="TopicName" Value="[TopicName2324]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
             <Parameter Name="ProcessMessageSequentially" Value="[ProcessMessageSequentially]" />
@@ -140,11 +140,11 @@
           <Section Name="Settings">
             <Parameter Name="EndpointName" Value="[EarningEventsService2324_EndpointName]" />
             <Parameter Name="ProcessLearnerEndpoint" Value="[ProcessLearnerService_EndpointName]" />
-            <Parameter Name="FailedMessagesQueue" Value="[EarningEventsService_FailedMessagesQueue]" />
+            <Parameter Name="FailedMessagesQueue" Value="[EarningEventsService2324_FailedMessagesQueue]" />
             <Parameter Name="AuditQueueName" Value="[AuditQueueName]" />
             <Parameter Name="SubscriptionName" Value="[SubscriptionName]" />
             <Parameter Name="JobStatusQueueName" Value="[JobStatusQueueName]" />
-            <Parameter Name="TopicName" Value="[TopicName]" />
+            <Parameter Name="TopicName" Value="[TopicName2324]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
             <Parameter Name="ProcessMessageSequentially" Value="[ProcessMessageSequentially]" />
@@ -180,11 +180,11 @@
           <Section Name="Settings">
             <Parameter Name="EndpointName" Value="[EarningEventsService2324_EndpointName]" />
             <Parameter Name="ProcessLearnerEndpoint" Value="[ProcessLearnerService_EndpointName]" />
-            <Parameter Name="FailedMessagesQueue" Value="[EarningEventsService_FailedMessagesQueue]" />
+            <Parameter Name="FailedMessagesQueue" Value="[EarningEventsService2324_FailedMessagesQueue]" />
             <Parameter Name="AuditQueueName" Value="[AuditQueueName]" />
             <Parameter Name="SubscriptionName" Value="[SubscriptionName]" />
             <Parameter Name="JobStatusQueueName" Value="[JobStatusQueueName]" />
-            <Parameter Name="TopicName" Value="[TopicName]" />
+            <Parameter Name="TopicName" Value="[TopicName2324]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
             <Parameter Name="ProcessMessageSequentially" Value="[ProcessMessageSequentially]" />

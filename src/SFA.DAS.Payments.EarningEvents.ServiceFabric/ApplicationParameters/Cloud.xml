@@ -23,8 +23,8 @@
     <Parameter Name="DcStorageConnectionString" Value="__DcStorageConnectionString__" />
     <Parameter Name="PaymentsConnectionString" Value="__DasPaymentsConnectionStringRW__" />
     <Parameter Name="PaymentsMonitoringConnectionString" Value="__PaymentsMonitoringConnectionString__" />
-    <Parameter Name="TopicName" Value="__TopicName__" />
     <Parameter Name="TopicName2223" Value="__TopicName2223__" />
+    <Parameter Name="TopicName2324" Value="__TopicName2324__" />
     <Parameter Name="LogLevel" Value="__LogLevel__" />
     <Parameter Name="ProcessMessageSequentially" Value="false" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" Value="__ApplicationInsights_InstrumentationKey__" />
