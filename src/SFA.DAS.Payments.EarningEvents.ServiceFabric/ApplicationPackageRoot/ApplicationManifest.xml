@@ -24,8 +24,8 @@
     <Parameter Name="DcStorageConnectionString" DefaultValue="" />
     <Parameter Name="PaymentsConnectionString" DefaultValue="" />
     <Parameter Name="PaymentsMonitoringConnectionString" DefaultValue="" />
-    <Parameter Name="TopicName" DefaultValue="" />
     <Parameter Name="TopicName2324" DefaultValue="" />
+    <Parameter Name="TopicName2425" DefaultValue="" />
     <Parameter Name="ApplicationInsightsInstrumentationKey" DefaultValue="" />
     <Parameter Name="LogLevel" DefaultValue="Debug" />
     <Parameter Name="ProcessMessageSequentially" DefaultValue="false" />
@@ -65,7 +65,7 @@
             <Parameter Name="AuditQueueName" Value="[AuditQueueName]" />
             <Parameter Name="SubscriptionName" Value="[SubscriptionName]" />
             <Parameter Name="JobStatusQueueName" Value="[JobStatusQueueName]" />
-            <Parameter Name="TopicName" Value="[TopicName]" />
+            <Parameter Name="TopicName" Value="[TopicName2425]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
             <Parameter Name="ProcessMessageSequentially" Value="[ProcessMessageSequentially]" />
@@ -104,7 +104,7 @@
             <Parameter Name="AuditQueueName" Value="[AuditQueueName]" />
             <Parameter Name="SubscriptionName" Value="[SubscriptionName]" />
             <Parameter Name="JobStatusQueueName" Value="[JobStatusQueueName]" />
-            <Parameter Name="TopicName" Value="[TopicName]" />
+            <Parameter Name="TopicName" Value="[TopicName2425]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
             <Parameter Name="ProcessMessageSequentially" Value="[ProcessMessageSequentially]" />
@@ -144,7 +144,7 @@
             <Parameter Name="AuditQueueName" Value="[AuditQueueName]" />
             <Parameter Name="SubscriptionName" Value="[SubscriptionName]" />
             <Parameter Name="JobStatusQueueName" Value="[JobStatusQueueName]" />
-            <Parameter Name="TopicName" Value="[TopicName]" />
+            <Parameter Name="TopicName" Value="[TopicName2425]" />
             <Parameter Name="ApplicationInsightsInstrumentationKey" Value="[ApplicationInsightsInstrumentationKey]" />
             <Parameter Name="LogLevel" Value="[LogLevel]" />
             <Parameter Name="ProcessMessageSequentially" Value="[ProcessMessageSequentially]" />
