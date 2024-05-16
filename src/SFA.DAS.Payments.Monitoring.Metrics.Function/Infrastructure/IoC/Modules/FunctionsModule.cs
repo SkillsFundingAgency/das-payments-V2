@@ -77,7 +77,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Function.Infrastructure.IoC.Module
                 .Named<IDcMetricsDataContext>("DcEarnings2223DataContext")
                 .InstancePerDependency();
 
-            builder.Register((c, p) =>
+    builder.Register((c, p) =>
                 {
                     var configHelper = c.Resolve<IConfigurationHelper>();
                     var dbContextOptions = new DbContextOptionsBuilder().UseSqlServer(
