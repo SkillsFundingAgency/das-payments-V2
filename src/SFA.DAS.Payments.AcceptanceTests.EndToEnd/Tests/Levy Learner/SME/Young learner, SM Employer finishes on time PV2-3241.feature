@@ -12,15 +12,15 @@ Scenario Outline: Young learner, SM Employer finishes on time PV2-3241
 	Given the employer levy account balance in collection period <Collection_Period> is <Levy Balance>
 	# Commitment line
 	And the following commitments exist
-        | start date                   | end date                  | agreed price | Framework Code | Pathway Code | Programme Type | Employer Type |
-        | 01/Apr/Current Academic Year | 08/Mar/Next Academic Year | 15000        | 593            | 1            | 20             | Levy          |
+        | start date                   | end date                  | agreed price | Standard Code | Programme Type |  Employer Type |
+        | 01/Apr/Current Academic Year | 08/Mar/Next Academic Year | 15000        | 50            | 25             |  Levy          |
     And the provider is providing training for the following learners
-		| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                | SFA Contribution Percentage | Age At Start |
-		| 01/Apr/Current Academic Year | 12 months        | 15000                | 01/Apr/Current Academic Year        | 0                      | 01/Apr/Current Academic Year          | 12 months       | continuing        | Act1          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship (From May 2017) Levy Contract | 95%                         | 17           |
+		| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage | Age At Start |
+		| 01/Apr/Current Academic Year | 12 months        | 12000                | 01/Apr/Current Academic Year        | 3000                   | 01/Apr/Current Academic Year          |                 | continuing        | Act1          | 1                   | ZPROG001      | 50            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract | 95%                         | 17           |
 	# TODO: Simplify the step definitions to make it easier understand the business goal
 	And price details as follows		
         | Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
-        | pe-1             | 15000                | 01/Apr/Current Academic Year        |                        | 01/Sep/Last Academic Year             | Act1          | 1                   | 95%                         |
+        | pe-1             | 12000                | 01/Apr/Current Academic Year        | 3000                   | 01/Apr/Current Academic Year          | Act1          | 1                   | 95%                         |
 	When the ILR file is submitted for the learners for collection period <Collection_Period>
 	Then the following learner earnings should be generated
 		| Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |
@@ -40,9 +40,9 @@ Scenario Outline: Young learner, SM Employer finishes on time PV2-3241
     And at month end only the following payments will be calculated
         | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing |
         | R09/Current Academic Year | Apr/Current Academic Year | 1000         | 0          | 0         |
-        | R10/Current Academic Year | May/Current Academic Year | 1000            | 0       | 0         |
-        | R11/Current Academic Year | Jun/Current Academic Year | 1000            | 0       | 0         |
-        | R12/Current Academic Year | Jul/Current Academic Year | 1000            | 0       | 0         |
+        | R10/Current Academic Year | May/Current Academic Year | 1000         | 0          | 0         |
+        | R11/Current Academic Year | Jun/Current Academic Year | 1000         | 0          | 0         |
+        | R12/Current Academic Year | Jul/Current Academic Year | 1000         | 0          | 0         |
 	# Levy Payments
 	And only the following provider payments will be recorded
         | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Levy Payments | Transaction Type |
