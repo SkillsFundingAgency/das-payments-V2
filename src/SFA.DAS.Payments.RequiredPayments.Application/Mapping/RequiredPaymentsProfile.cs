@@ -117,6 +117,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .ForMember(requiredPayment => requiredPayment.LearningStartDate,
                     opt => opt.ResolveUsing(earning => 
                         earning.PriceEpisodes.FirstOrDefault(x => x.LearningAimSequenceNumber == earning.LearningAim.SequenceNumber)?.CourseStartDate ?? earning.LearningAim.StartDate))
+                
+
 
                 .Ignore(x => x.ApprenticeshipId)
                 .Ignore(x => x.ApprenticeshipPriceEpisodeId)
@@ -255,7 +257,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .ForMember(x => x.ApprenticeshipId, opt => opt.Ignore())
                 .ForMember(x => x.ApprenticeshipPriceEpisodeId, opt => opt.Ignore())
                 .ForMember(x => x.AgreedOnDate, opt => opt.Ignore())
-                .ForMember(x => x.AgeAtStartOfLearning, opt => opt.Ignore())
+                .ForMember(x => x.AgeAtStartOfLearning, opt => opt.MapFrom(source => source.AgeAtStartOfLearning))
                 .Ignore(x => x.ClawbackSourcePaymentEventId)
                 ;
             // End Earning Event --> Required Payment Event

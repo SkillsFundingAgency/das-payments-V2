@@ -63,11 +63,13 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.RequiredPaymentEvents
 
             CreateMap<CalculatedRequiredCoInvestedAmount, RequiredPaymentEventModel>()
                 .ForMember(dest => dest.ContractType, opt => opt.MapFrom(source => source.ContractType))
+                .ForMember(dest => dest.AgeAtStartOfLearning, opt => opt.MapFrom(source => source.AgeAtStartOfLearning))
                 ;
 
             CreateMap<CalculatedRequiredLevyAmount, RequiredPaymentEventModel>()
                 .ForMember(dest => dest.ContractType, opt => opt.UseValue(ContractType.Act1))
                 .ForMember(dest => dest.AgreementId, opt => opt.MapFrom(source => source.AgreementId))
+                .ForMember(dest => dest.AgeAtStartOfLearning, opt => opt.MapFrom(source => source.AgeAtStartOfLearning))
                 ;
 
             CreateMap<CompletionPaymentHeldBackEvent, RequiredPaymentEventModel>()
