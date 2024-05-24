@@ -12,8 +12,8 @@ Scenario Outline: Young learner, SM Employer finishes on time PV2-3241
 	Given the employer levy account balance in collection period <Collection_Period> is <Levy Balance>
 	# Commitment line
 	And the following commitments exist
-        | start date                   | end date                  | agreed price | Standard Code | Programme Type |  Employer Type |
-        | 01/Apr/Current Academic Year | 08/Mar/Next Academic Year | 15000        | 50            | 25             |  Levy          |
+        | start date                   | end date                  | agreed price | Standard Code | Programme Type | Employer Type |
+        | 01/Apr/Current Academic Year | 08/Mar/Next Academic Year | 15000        | 50            | 25             | Non Levy       |
     And the provider is providing training for the following learners
 		| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage | Age At Start |
 		| 01/Apr/Current Academic Year | 12 months        | 12000                | 01/Apr/Current Academic Year        | 3000                   | 01/Apr/Current Academic Year          |                 | continuing        | Act1          | 1                   | ZPROG001      | 50            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract | 95%                         | 17           |
