@@ -18,6 +18,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Data
                 new DataColumn("ApprenticeshipEmployerType", typeof(byte)),
                 new DataColumn("ReportingAimFundingLineType", typeof(string)),
                 new DataColumn("LearningAimSequenceNumber", typeof(long)),
+                new DataColumn("AgeAtStartOfLearning", typeof(byte)),
             });
         }
 
@@ -66,7 +67,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Data
             {
                 dataRow["LearningAimSequenceNumber"] = eventModel.LearningAimSequenceNumber.Value;
             }
-
+            dataRow["AgeAtStartOfLearning"] = eventModel.AgeAtStartOfLearning;
             return dataRow;
         }
 
