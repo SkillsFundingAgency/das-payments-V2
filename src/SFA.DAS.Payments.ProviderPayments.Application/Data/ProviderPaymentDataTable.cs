@@ -67,7 +67,16 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Data
             {
                 dataRow["LearningAimSequenceNumber"] = eventModel.LearningAimSequenceNumber.Value;
             }
-            dataRow["AgeAtStartOfLearning"] = eventModel.AgeAtStartOfLearning;
+
+            if (!eventModel.AgeAtStartOfLearning.HasValue)
+            {
+                dataRow["AgeAtStartOfLearning"] = DBNull.Value;
+            }
+            else
+            {
+                dataRow["AgeAtStartOfLearning"] = eventModel.AgeAtStartOfLearning;
+            }
+
             return dataRow;
         }
 
