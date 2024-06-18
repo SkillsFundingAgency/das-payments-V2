@@ -442,6 +442,41 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests.Mapping
         }
 
         [Test]
+        public void Maps_AgeAtStartOfLearning_From_Oldest_LearnStartDate()
+        {
+            // Arrange
+            var testLearner = new FM36Learner
+            {
+                LearningDeliveries = new List<LearningDelivery>
+                {
+                    new LearningDelivery
+                    {
+                        LearningDeliveryValues = new LearningDeliveryValues
+                            { LearnStartDate = DateTime.Now.AddDays(-10), AgeAtProgStart = 20 }
+                    },
+                    new LearningDelivery
+                    {
+                        LearningDeliveryValues = new LearningDeliveryValues
+                            { LearnStartDate = DateTime.Now.AddDays(-20), AgeAtProgStart = 25 }
+                    },
+                    new LearningDelivery
+                    {
+                        LearningDeliveryValues = new LearningDeliveryValues
+                            { LearnStartDate = DateTime.Now.AddDays(-5), AgeAtProgStart = 30 }
+                    }
+                }
+            };
+
+            var intermediateLearningAim = new IntermediateLearningAim(processLearnerCommand, new List<PriceEpisode>(),
+                testLearner.LearningDeliveries);
+
+            // Act
+            var mappedResult = Mapper.Map<ApprenticeshipContractType2EarningEvent>(intermediateLearningAim);
+
+            // Assert
+            mappedResult.AgeAtStartOfLearning.Should().Be(25);
+        }
+        [Test]
         public void Maps_LearnStartDate()
         {
             var earningEvent = Mapper.Instance.Map<IntermediateLearningAim, ApprenticeshipContractType2EarningEvent>(learningAim);

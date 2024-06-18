@@ -104,6 +104,10 @@ namespace SFA.DAS.Payments.Audit.Application.Mapping.EarningEvents
 
             CreateMap<EarningEventPeriodModel, EarningEventPeriodModel>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
+
+            CreateMap<ApprenticeshipContractTypeEarningsEvent, EarningEventModel>()
+                .ForMember(dest => dest.AgeAtStartOfLearning,
+                    opt => opt.MapFrom(source => source.AgeAtStartOfLearning));
         }
     }
 }

@@ -36,7 +36,8 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.DataLock
                 StartDate = DateTime.Today,
                 AgreementId = "A-100",
                 OnProgrammeEarnings = new List<OnProgrammeEarning> { new OnProgrammeEarning { Type = OnProgrammeEarningType.Learning, Periods = new List<EarningPeriod> { earningPeriod }.AsReadOnly() } },
-                IncentiveEarnings = new List<IncentiveEarning> { new IncentiveEarning { Type = IncentiveEarningType.Balancing16To18FrameworkUplift, Periods = new List<EarningPeriod> { earningPeriod }.AsReadOnly() } }
+                IncentiveEarnings = new List<IncentiveEarning> { new IncentiveEarning { Type = IncentiveEarningType.Balancing16To18FrameworkUplift, Periods = new List<EarningPeriod> { earningPeriod }.AsReadOnly() } },
+                AgeAtStartOfLearning = 17
             };
         }
 
@@ -71,6 +72,11 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.DataLock
             Mapper.Map<DataLockEventModel>(PaymentEvent).PayablePeriods.Count(npp => npp.TransactionType > TransactionType.Completion).Should().Be(1);
         }
 
+        [Test]
+        public void Maps_AgeAtStartOfLearning()
+        {
+            Mapper.Map<DataLockEventModel>(PaymentEvent).AgeAtStartOfLearning.Should().Be(17);
+        }
         [Test]
         public void Maps_Payable_OnProgramme_Periods()
         {

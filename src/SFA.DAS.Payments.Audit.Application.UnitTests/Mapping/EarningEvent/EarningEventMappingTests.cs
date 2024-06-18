@@ -22,6 +22,7 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.EarningEvent
         protected override void PopulateCommonProperties(TSource paymentEvent)
         {
             base.PopulateCommonProperties(paymentEvent);
+            paymentEvent.AgeAtStartOfLearning = 17;
             paymentEvent.PriceEpisodes = new List<PriceEpisode>
             {
                 new PriceEpisode
@@ -56,6 +57,13 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.Mapping.EarningEvent
             PaymentEvent.LearningAim.SequenceNumber = 101;
             var model = Mapper.Map<EarningEventModel>(PaymentEvent);
             model.LearningAimSequenceNumber.Should().Be(101);
+        }
+        [Test]
+        public void Maps_AgeAtStartOfLearning()
+        {
+            PaymentEvent.AgeAtStartOfLearning = 17;
+            var model = Mapper.Map<EarningEventModel>(PaymentEvent);
+            model.AgeAtStartOfLearning.Should().Be(17);
         }
     }
 }

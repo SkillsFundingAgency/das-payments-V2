@@ -23,7 +23,8 @@
 	JobId  BIGINT NOT NULL,
 	EventTime DATETIMEOFFSET NOT NULL,
 	CreationDate DATETIMEOFFSET NOT NULL,
-	DuplicateNumber INT NULL
+	DuplicateNumber INT NULL,
+	AgeAtStartOfLearning TINYINT NULL,
 )
 GO
 

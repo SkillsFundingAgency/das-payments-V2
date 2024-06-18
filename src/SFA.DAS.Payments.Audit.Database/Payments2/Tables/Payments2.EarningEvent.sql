@@ -24,6 +24,7 @@
 	SfaContributionPercentage DECIMAL(15, 5) NULL,
 	IlrFileName  NVARCHAR(400) NULL,
 	EventType NVARCHAR(4000) NULL,
+	AgeAtStartOfLearning TINYINT NULL,
 )
 GO
 

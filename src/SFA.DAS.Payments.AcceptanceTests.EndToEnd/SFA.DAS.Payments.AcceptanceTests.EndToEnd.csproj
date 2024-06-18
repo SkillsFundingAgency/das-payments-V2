@@ -578,6 +578,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="Tests\Levy Learner\SME\Young learner, SM Employer finishes on time PV2-3241.feature.cs">
+      <DependentUpon>Young learner, SM Employer finishes on time PV2-3241.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Tests\Mapping\PV2-2466-Levy-Learner-PriceEpisodeAimSeqNumber-IsMapped-FromILR-ToPaymentsTable.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -2591,6 +2596,10 @@
     <None Include="Tests\Levy Learner\Basic Day\One Levy Learner, levy available, finishes two months early PV2-276.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>One Levy Learner, levy available, finishes two months early PV2-276.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Levy Learner\SME\Young learner, SM Employer finishes on time PV2-3241.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Young learner, SM Employer finishes on time PV2-3241.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Mapping\PV2-2466-Non-Levy-Learner-PriceEpisodeAimSeqNumber-IsMapped-FromILR-ToPaymentsTable.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>

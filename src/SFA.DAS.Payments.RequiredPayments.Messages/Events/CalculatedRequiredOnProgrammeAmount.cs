@@ -8,6 +8,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Messages.Events
     {
         public decimal SfaContributionPercentage { get; set; }
         public OnProgrammeEarningType OnProgrammeEarningType { get; set; }
+        public int? AgeAtStartOfLearning { get; set; }
         public override TransactionType TransactionType => (TransactionType)OnProgrammeEarningType; 
     }
 }

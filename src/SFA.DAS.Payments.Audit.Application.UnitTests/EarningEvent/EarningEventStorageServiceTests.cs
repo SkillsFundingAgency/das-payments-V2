@@ -49,7 +49,8 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.EarningEvent
                 ContractType = ContractType.Act1,
                 JobId = 123,
                 PriceEpisodes = new List<EarningEventPriceEpisodeModel> { new EarningEventPriceEpisodeModel {Id  = 1, EarningEventId = eventId, CompletionAmount = 3000, InstalmentAmount = 1000 } },
-                Periods = new List<EarningEventPeriodModel> { new EarningEventPeriodModel { Id = 1, EarningEventId = eventId, PriceEpisodeIdentifier = "1/1/1234", TransactionType = TransactionType.Learning, Amount = 1000 } }
+                Periods = new List<EarningEventPeriodModel> { new EarningEventPeriodModel { Id = 1, EarningEventId = eventId, PriceEpisodeIdentifier = "1/1/1234", TransactionType = TransactionType.Learning, Amount = 1000 } }, 
+                AgeAtStartOfLearning = 17
             };
 
             var config = new MapperConfiguration(cfg => cfg.AddProfile<EarningEventProfile>());
@@ -72,6 +73,7 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.EarningEvent
             newEarning.Periods.First().EarningEventId.Should().Be(eventId);
             newEarning.Periods.First().PriceEpisodeIdentifier.Should().Be("1/1/1234");
             newEarning.Periods.First().TransactionType.Should().Be(TransactionType.Learning);
+            newEarning.AgeAtStartOfLearning.Should().Be(17);
         }
 
         [Test]

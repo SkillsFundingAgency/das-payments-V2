@@ -12,5 +12,6 @@ namespace SFA.DAS.Payments.ProviderPayments.Model
         public Guid? ClawbackSourcePaymentEventId { get; set; }
         public FundingSourceType FundingSource { get; set; }
         public string ReportingAimFundingLineType { get; set; }
+        public int? AgeAtStartOfLearning { get; set; }
     }
 }
