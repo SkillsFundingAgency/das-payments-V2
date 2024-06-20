@@ -11,15 +11,15 @@ using Microsoft.ServiceFabric.Services.Runtime;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.ServiceFabric.Core;
 
-namespace SFA.DAS.Payments.EarningEvents.EarningEventsService
+namespace SFA.DAS.Payments.EarningEvents.EarningEventsService2324
 {
-    public class EarningEventsService : StatelessService
+    public class EarningEventsService2324 : StatelessService
     {
         private readonly ILifetimeScope lifetimeScope;
         private IJobContextManager<JobContextMessage> jobContextManager;
         private readonly IPaymentLogger logger;
 
-        public EarningEventsService(StatelessServiceContext context, ILifetimeScope lifetimeScope, IPaymentLogger logger)
+        public EarningEventsService2324(StatelessServiceContext context, ILifetimeScope lifetimeScope, IPaymentLogger logger)
             : base(context)
         {
             this.lifetimeScope = lifetimeScope ?? throw new ArgumentNullException(nameof(lifetimeScope));
