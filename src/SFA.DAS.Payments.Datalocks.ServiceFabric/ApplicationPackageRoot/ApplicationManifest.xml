@@ -179,19 +179,19 @@
     </ConfigOverrides>
   </ServiceManifestImport>
   <DefaultServices>
-    <!--<Service Name="SFA.DAS.Payments.DataLocks.DataLockEventService" ServicePackageActivationMode="ExclusiveProcess">
+    <Service Name="SFA.DAS.Payments.DataLocks.DataLockEventService" ServicePackageActivationMode="ExclusiveProcess">
       <StatefulService ServiceTypeName="SFA.DAS.Payments.DataLocks.DataLockEventServiceType" TargetReplicaSetSize="[DataLockEventService_TargetReplicaSetSize]" MinReplicaSetSize="[DataLockEventService_MinReplicaSetSize]">
         <UniformInt64Partition PartitionCount="[DataLockEventService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
         <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
       </StatefulService>
-    </Service>-->
+    </Service>
     <Service Name="SFA.DAS.Payments.DataLocks.ApprovalsService" ServicePackageActivationMode="ExclusiveProcess">
       <StatelessService ServiceTypeName="SFA.DAS.Payments.DataLocks.ApprovalsServiceType" InstanceCount="[ApprovalsService_InstanceCount]">
         <SingletonPartition />
         <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
       </StatelessService>
     </Service>
-    <!--<Service Name="SFA.DAS.Payments.DataLocks.DataLockStatusChangedService" ServicePackageActivationMode="ExclusiveProcess">
+    <Service Name="SFA.DAS.Payments.DataLocks.DataLockStatusChangedService" ServicePackageActivationMode="ExclusiveProcess">
       <StatelessService ServiceTypeName="SFA.DAS.Payments.DataLocks.DataLockStatusChangedServiceType" InstanceCount="[DataLockStatusChangedService_InstanceCount]">
         <SingletonPartition />
         <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
@@ -202,7 +202,7 @@
         <SingletonPartition />
         <PlacementConstraints>[Placement_Constraints]</PlacementConstraints>
       </StatelessService>
-    </Service>-->
+    </Service>
     <Service Name="DataLockServiceActorService" GeneratedIdRef="102f2d7a-f636-463f-b5d0-f185f4768f72|Volatile">
       <StatefulService ServiceTypeName="DataLockServiceActorServiceType" TargetReplicaSetSize="[DataLockServiceActorService_TargetReplicaSetSize]" MinReplicaSetSize="[DataLockServiceActorService_MinReplicaSetSize]">
         <UniformInt64Partition PartitionCount="[DataLockServiceActorService_PartitionCount]" LowKey="-9223372036854775808" HighKey="9223372036854775807" />
