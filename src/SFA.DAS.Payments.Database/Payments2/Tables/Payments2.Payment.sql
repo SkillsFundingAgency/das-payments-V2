@@ -46,7 +46,8 @@ CREATE TABLE [Payments2].[Payment]
 	NonPaymentReason TINYINT NULL,
 	DuplicateNumber INT NULL,
 	LearningAimSequenceNumber BIGINT NULL,
-	AgeAtStartOfLearning TINYINT NULL
+	AgeAtStartOfLearning TINYINT NULL,
+	FundingPlatformType TINYINT NULL
 );
 GO
 
