@@ -47,7 +47,7 @@ CREATE TABLE [Payments2].[Payment]
 	DuplicateNumber INT NULL,
 	LearningAimSequenceNumber BIGINT NULL,
 	AgeAtStartOfLearning TINYINT NULL,
-	FundingPlatformType TINYINT NULL
+	FundingPlatformType TINYINT NULL DEFAULT(1)
 )
 GO
 

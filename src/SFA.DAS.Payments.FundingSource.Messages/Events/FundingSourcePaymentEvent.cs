@@ -19,7 +19,7 @@ namespace SFA.DAS.Payments.FundingSource.Messages.Events
         public FundingSourceType FundingSourceType { get; set; }
         public int? AgeAtStartOfLearning { get; set; }
 
-        public FundingPlatformType FundingPlatformType { get; set; }
+        public FundingPlatformType? FundingPlatformType { get; set; }
 
         private static Type[] inheritors;
         private static Type[] GetInheritors()
