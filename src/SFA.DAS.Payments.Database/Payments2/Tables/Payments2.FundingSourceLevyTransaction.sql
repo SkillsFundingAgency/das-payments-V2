@@ -30,7 +30,8 @@
 	[LearningStartDate] DATETIME2 NULL,
     [ApprenticeshipId] BIGINT NULL,
 	[ApprenticeshipEmployerType] TINYINT NULL,
-	[DuplicateNumber] INT NULL
+	[DuplicateNumber] INT NULL,
+	[FundingPlatform] TINYINT NULL DEFAULT(1)
 )
 GO
 
