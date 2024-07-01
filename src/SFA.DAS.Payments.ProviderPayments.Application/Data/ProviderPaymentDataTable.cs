@@ -19,6 +19,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Data
                 new DataColumn("ReportingAimFundingLineType", typeof(string)),
                 new DataColumn("LearningAimSequenceNumber", typeof(long)),
                 new DataColumn("AgeAtStartOfLearning", typeof(byte)),
+                new DataColumn("FundingPlatformType", typeof(byte)),
             });
         }
 
@@ -75,6 +76,15 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Data
             else
             {
                 dataRow["AgeAtStartOfLearning"] = eventModel.AgeAtStartOfLearning;
+            }
+
+            if (!eventModel.FundingPlatformType.HasValue)
+            {
+                dataRow["FundingPlatformType"] = DBNull.Value;
+            }
+            else
+            {
+                dataRow["FundingPlatformType"] = (byte)eventModel.FundingPlatformType;
             }
 
             return dataRow;
