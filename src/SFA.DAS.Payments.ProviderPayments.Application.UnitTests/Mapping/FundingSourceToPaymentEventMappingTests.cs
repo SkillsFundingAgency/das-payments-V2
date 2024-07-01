@@ -55,7 +55,8 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
                 ClawbackSourcePaymentEventId = Guid.NewGuid(),
                 AccountId = 123456789,
                 ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy,
-                AgeAtStartOfLearning = 17
+                AgeAtStartOfLearning = 17,
+                FundingPlatformType = FundingPlatformType.SubmitLearnerData
             };
             var payment = Mapper.Map<EmployerCoInvestedFundingSourcePaymentEvent, ProviderPaymentEventModel>(employerCoInvested);
             payment.Ukprn.Should().Be(employerCoInvested.Ukprn);
@@ -74,6 +75,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
             payment.RequiredPaymentEventId.Should().Be(employerCoInvested.RequiredPaymentEventId);
             payment.ClawbackSourcePaymentEventId.Should().Be(employerCoInvested.ClawbackSourcePaymentEventId);
             payment.AgeAtStartOfLearning.Should().Be(17);
+            payment.FundingPlatformType.Should().Be(FundingPlatformType.SubmitLearnerData);
         }
 
         [Test]
@@ -111,7 +113,8 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
                 ClawbackSourcePaymentEventId = Guid.NewGuid(),
                 AccountId = 123456789,
                 ApprenticeshipEmployerType = ApprenticeshipEmployerType.NonLevy,
-                AgeAtStartOfLearning = 17
+                AgeAtStartOfLearning = 17,
+                FundingPlatformType = FundingPlatformType.DigitalApprenticeshipService
             };
 
             var payment = Mapper.Map<ProviderPaymentEventModel>(levy);
@@ -131,6 +134,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
             payment.RequiredPaymentEventId.Should().Be(levy.RequiredPaymentEventId);
             payment.ClawbackSourcePaymentEventId.Should().Be(levy.ClawbackSourcePaymentEventId);
             payment.AgeAtStartOfLearning.Should().Be(17);
+            payment.FundingPlatformType.Should().Be(FundingPlatformType.DigitalApprenticeshipService);
         }
 
         [Test]
@@ -188,7 +192,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
             payment.RequiredPaymentEventId.Should().Be(transfer.RequiredPaymentEventId);
             payment.ClawbackSourcePaymentEventId.Should().Be(transfer.ClawbackSourcePaymentEventId);
             payment.AgeAtStartOfLearning.Should().Be(17);
-
+            payment.FundingPlatformType.Should().BeNull();
         }
 
         [Test]
