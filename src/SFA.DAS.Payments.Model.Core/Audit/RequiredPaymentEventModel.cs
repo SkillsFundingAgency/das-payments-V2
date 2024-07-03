@@ -45,6 +45,6 @@ namespace SFA.DAS.Payments.Model.Core.Audit
         public NonPaymentReason? NonPaymentReason { get; set; }
         public string EventType { get; set; }
         public int? AgeAtStartOfLearning { get; set; }
-
+        public FundingPlatformType? FundingPlatformType { get; set; }
     }
 }
