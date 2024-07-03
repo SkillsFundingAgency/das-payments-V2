@@ -119,7 +119,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                 LearningStartDate = levyAmount.LearningStartDate,
                 SfaContributionPercentage = levyAmount.SfaContributionPercentage,
                 TransactionType = (TransactionType)levyAmount.OnProgrammeEarningType,
-                FundingPlatform = (byte?)FundingPlatformType.DigitalApprenticeshipService // TODO: Verify
+                FundingPlatform = (byte?)levyAmount.FundingPlatform
             }).ToList();
             cancellationToken.ThrowIfCancellationRequested();
 
