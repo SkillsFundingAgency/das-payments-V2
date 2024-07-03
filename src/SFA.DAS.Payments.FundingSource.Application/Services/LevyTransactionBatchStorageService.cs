@@ -64,7 +64,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                 LearningStartDate = levyAmount.LearningStartDate,
                 SfaContributionPercentage = levyAmount.SfaContributionPercentage,
                 TransactionType = levyAmount.TransactionType,
-                FundingPlatform = (byte?)FundingPlatformType.SubmitLearnerData
+                FundingPlatformType = FundingPlatformType.SubmitLearnerData
             }).ToList();
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -119,7 +119,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                 LearningStartDate = levyAmount.LearningStartDate,
                 SfaContributionPercentage = levyAmount.SfaContributionPercentage,
                 TransactionType = (TransactionType)levyAmount.OnProgrammeEarningType,
-                FundingPlatform = (byte?)levyAmount.FundingPlatform
+                FundingPlatformType = levyAmount.FundingPlatformType
             }).ToList();
             cancellationToken.ThrowIfCancellationRequested();
 
