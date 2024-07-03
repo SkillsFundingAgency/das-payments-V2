@@ -1,5 +1,4 @@
 using System;
-using SFA.DAS.Payments.Messages.Core;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
@@ -32,5 +31,6 @@ namespace SFA.DAS.Payments.FundingSource.Messages.Commands
         public Learner Learner { get; set; }
         public LearningAim LearningAim { get; set; }
         public CollectionPeriod CollectionPeriod { get; set; }
+        public FundingPlatformType FundingPlatformType { get; set; }
     }
 }
