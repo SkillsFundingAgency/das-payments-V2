@@ -8,6 +8,7 @@ namespace SFA.DAS.Payments.FundingSource.Messages.Commands
 {
     public class CalculateOnProgrammePayment : ITransferAccountIdsMessage
     {
+        public long Ukprn { get; set; }
         public DateTime? AgreedOnDate { get; set; }
         public decimal SfaContributionPercentage { get; set; }
         public OnProgrammeEarningType OnProgrammeEarningType { get; set; }

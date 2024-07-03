@@ -32,16 +32,6 @@ namespace SFA.DAS.Payments.FundingSource.LevyTransactionService.Handlers
             logger.LogInfo($"CalculateOnProgrammePaymentHandlerReceived {messages.Count} messages");
             await levyTransactionBatchStorageService.StoreLevyTransactions(messages, cancellationToken)
                 .ConfigureAwait(false);
-
-            var monitoringClient = monitoringClientFactory.Create();
-            foreach (var calculatedRequiredLevyAmount in messages)
-            {
-                await monitoringClient.ProcessedJobMessage(-1,
-                    calculatedRequiredLevyAmount.EventId,
-                    calculatedRequiredLevyAmount.GetType().ToString(),
-                    new List<GeneratedMessage>()
-                );
-            }
         }
     }
 }
