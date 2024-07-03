@@ -94,7 +94,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                 CollectionPeriod = levyAmount.CollectionPeriod.Period,
                 AcademicYear = levyAmount.CollectionPeriod.AcademicYear,
                 JobId = -1, 
-                Ukprn = 0, // TODO: Verify
+                Ukprn = levyAmount.Ukprn,
                 Amount = levyAmount.AmountDue,
                 EarningEventId = Guid.Empty,
                 DeliveryPeriod = levyAmount.DeliveryPeriod,
