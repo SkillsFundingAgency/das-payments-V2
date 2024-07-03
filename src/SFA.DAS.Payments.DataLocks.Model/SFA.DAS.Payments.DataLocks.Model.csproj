@@ -6,7 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SFA.DAS.Payments.Model.Core\SFA.DAS.Payments.Model.Core.csproj" />
+    <PackageReference Include="SFA.DAS.Payments.Model.Core" Version="2.0.2" />
   </ItemGroup>
+
+  <!--<ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.Payments.Model.Core\SFA.DAS.Payments.Model.Core.csproj" />
+  </ItemGroup>-->
 
 </Project>
