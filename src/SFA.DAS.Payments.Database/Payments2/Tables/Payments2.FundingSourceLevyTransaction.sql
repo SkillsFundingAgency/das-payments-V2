@@ -31,7 +31,7 @@
     [ApprenticeshipId] BIGINT NULL,
 	[ApprenticeshipEmployerType] TINYINT NULL,
 	[DuplicateNumber] INT NULL,
-	[FundingPlatform] TINYINT NULL DEFAULT(1)
+	[FundingPlatformType] TINYINT NULL DEFAULT(1)
 )
 GO
 
