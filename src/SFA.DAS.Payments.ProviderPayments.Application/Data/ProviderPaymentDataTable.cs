@@ -77,16 +77,9 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Data
             {
                 dataRow["AgeAtStartOfLearning"] = eventModel.AgeAtStartOfLearning;
             }
-
-            if (!eventModel.FundingPlatformType.HasValue)
-            {
-                dataRow["FundingPlatformType"] = DBNull.Value;
-            }
-            else
-            {
-                dataRow["FundingPlatformType"] = (byte)eventModel.FundingPlatformType;
-            }
-
+            
+            dataRow["FundingPlatformType"] = (byte)eventModel.FundingPlatformType;
+        
             return dataRow;
         }
 

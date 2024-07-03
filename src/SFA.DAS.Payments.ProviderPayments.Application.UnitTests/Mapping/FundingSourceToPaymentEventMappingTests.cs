@@ -192,7 +192,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.UnitTests.Mapping
             payment.RequiredPaymentEventId.Should().Be(transfer.RequiredPaymentEventId);
             payment.ClawbackSourcePaymentEventId.Should().Be(transfer.ClawbackSourcePaymentEventId);
             payment.AgeAtStartOfLearning.Should().Be(17);
-            payment.FundingPlatformType.Should().BeNull();
+            payment.FundingPlatformType.Should().Be(0);
         }
 
         [Test]
