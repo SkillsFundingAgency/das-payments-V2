@@ -1,11 +1,12 @@
 using System;
+using SFA.DAS.Payments.Messages.Core;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 
 namespace SFA.DAS.Payments.FundingSource.Messages.Commands
 {
-    public class CalculateOnProgrammePayment
+    public class CalculateOnProgrammePayment : ITransferAccountIdsMessage
     {
         public DateTime? AgreedOnDate { get; set; }
         public decimal SfaContributionPercentage { get; set; }
@@ -13,7 +14,7 @@ namespace SFA.DAS.Payments.FundingSource.Messages.Commands
         public string PriceEpisodeIdentifier { get; set; }
         public decimal AmountDue { get; set; }
         public byte DeliveryPeriod { get; set; }
-        public long AccountId { get; set; }
+        public long? AccountId { get; set; }
         public long? TransferSenderAccountId { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime PlannedEndDate { get; set; }

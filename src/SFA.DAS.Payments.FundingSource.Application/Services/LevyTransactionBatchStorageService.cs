@@ -98,7 +98,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                 Amount = levyAmount.AmountDue,
                 EarningEventId = Guid.Empty,
                 DeliveryPeriod = levyAmount.DeliveryPeriod,
-                AccountId = levyAmount.AccountId,
+                AccountId = levyAmount.CalculateFundingAccountId(isReceiverTransferPayment),
                 RequiredPaymentEventId = levyAmount.EventId,
                 ClawbackSourcePaymentEventId = null,
                 TransferSenderAccountId = levyAmount.TransferSenderAccountId,
