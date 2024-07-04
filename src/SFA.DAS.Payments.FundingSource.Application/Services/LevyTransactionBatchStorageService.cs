@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.FundingSource.Messages.Commands;
+using SFA.DAS.Payments.Messages.Core;
 
 namespace SFA.DAS.Payments.FundingSource.Application.Services
 {
