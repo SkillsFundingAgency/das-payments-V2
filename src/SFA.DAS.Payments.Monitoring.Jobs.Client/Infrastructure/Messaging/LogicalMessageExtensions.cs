@@ -1,7 +1,7 @@
 ﻿using System;
 using NServiceBus.Pipeline;
-using SFA.DAS.Payments.Messages.Core.Commands;
-using SFA.DAS.Payments.Messages.Core.Events;
+using SFA.DAS.Payments.Messages.Common.Commands;
+using SFA.DAS.Payments.Messages.Common.Events;
 
 namespace SFA.DAS.Payments.Monitoring.Jobs.Client.Infrastructure.Messaging
 {

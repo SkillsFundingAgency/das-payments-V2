@@ -15,10 +15,13 @@
   
     <Folder Include="Infrastructure\Ioc\" />
   </ItemGroup>
-
+	<ItemGroup>
+		<PackageReference Include="SFA.DAS.Payments.Application" Version="2.0.2" />
+		<PackageReference Include="SFA.DAS.Payments.Messages.Common" Version="2.0.2" />
+	</ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SFA.DAS.Payments.Application\SFA.DAS.Payments.Application.csproj" />
-    <ProjectReference Include="..\SFA.DAS.Payments.Messages.Core\SFA.DAS.Payments.Messages.Core.csproj" />
+    <!--<ProjectReference Include="..\SFA.DAS.Payments.Application\SFA.DAS.Payments.Application.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Payments.Messages.Core\SFA.DAS.Payments.Messages.Core.csproj" />-->
     <ProjectReference Include="..\SFA.DAS.Payments.Monitoring.Jobs.Messages\SFA.DAS.Payments.Monitoring.Jobs.Messages.csproj" />
   </ItemGroup>
 

@@ -19,6 +19,8 @@
 
     <PackageReference Include="SFA.DAS.Payments.Application" Version="2.0.2" />
 
+    <PackageReference Include="SFA.DAS.Payments.EarningEvents.Messages" Version="2.0.0-prerelease-3" />
+
     <PackageReference Include="SFA.DAS.Payments.ServiceFabric.Core" Version="2.0.2" />
   </ItemGroup>
 
@@ -27,7 +29,7 @@
     <ProjectReference Include="..\SFA.DAS.Payments.DataLocks.Domain\SFA.DAS.Payments.DataLocks.Domain.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.DataLocks.Messages\SFA.DAS.Payments.DataLocks.Messages.csproj" />
     <ProjectReference Include="..\SFA.DAS.Payments.DataLocks.Model\SFA.DAS.Payments.DataLocks.Model.csproj" />
-    <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.Messages\SFA.DAS.Payments.EarningEvents.Messages.csproj" />
+    <!--<ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.Messages\SFA.DAS.Payments.EarningEvents.Messages.csproj" />-->
     <!--<ProjectReference Include="..\SFA.DAS.Payments.ServiceFabric.Core\SFA.DAS.Payments.ServiceFabric.Core.csproj" />-->
   </ItemGroup>
 
