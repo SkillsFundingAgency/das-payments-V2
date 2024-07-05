@@ -106,7 +106,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                 MessagePayload = levyAmount.ToJson(),
                 MessageType = levyAmount.GetType().FullName,
                 IlrSubmissionDateTime = new DateTime(1753, 1, 1),
-                FundingAccountId = 0, //TODO CHECK 
+                FundingAccountId = levyAmount.CalculateFundingAccountId(isReceiverTransferPayment),
                 ApprenticeshipEmployerType = levyAmount.ApprenticeshipEmployerType,
                 ApprenticeshipId = levyAmount.ApprenticeshipId,
                 LearnerUln = levyAmount.Learner.Uln,
