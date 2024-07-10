@@ -6,9 +6,6 @@ using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.FundingSource.Application.Services;
 using SFA.DAS.Payments.FundingSource.Messages.Commands;
-using SFA.DAS.Payments.Monitoring.Jobs.Client;
-using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
-using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 
 namespace SFA.DAS.Payments.FundingSource.LevyTransactionService.Handlers
 {
@@ -16,15 +13,12 @@ namespace SFA.DAS.Payments.FundingSource.LevyTransactionService.Handlers
     {
         private readonly IPaymentLogger logger;
         private readonly ILevyTransactionBatchStorageService levyTransactionBatchStorageService;
-        private readonly IJobMessageClientFactory monitoringClientFactory;
-
+        
         public CalculateOnProgrammePaymentHandler(IPaymentLogger logger,
-            ILevyTransactionBatchStorageService levyTransactionBatchStorageService,
-            IJobMessageClientFactory monitoringClientFactory)
+            ILevyTransactionBatchStorageService levyTransactionBatchStorageService)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.levyTransactionBatchStorageService = levyTransactionBatchStorageService ?? throw new ArgumentNullException(nameof(levyTransactionBatchStorageService));
-            this.monitoringClientFactory = monitoringClientFactory ?? throw new ArgumentNullException(nameof(monitoringClientFactory));
         }
 
         public async Task Handle(IList<CalculateOnProgrammePayment> messages, CancellationToken cancellationToken)
