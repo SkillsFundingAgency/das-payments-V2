@@ -4,6 +4,8 @@ parameters:
   location: 'West Europe'
   environmentName:
   deployFactory: false
+  datamartEnvironmentName:
+  datamartsqlprivateendpoint:
 
 jobs:
 - deployment: DeployADF
@@ -69,3 +71,6 @@ jobs:
                 keyVaultName: '${{ variables.keyVaultName }}'
                 sharedSqlPrivateEndpoint: '/subscriptions/$(subscriptionId)/resourceGroups/$(Service)-${{ parameters.environmentName }}-SqlServer/providers/Microsoft.Sql/servers/$(Service)-${{ parameters.environmentName }}-sqlserver-weu'
                 sharedSqlPrivateEndpointFqdns: '$(Service)-${{ parameters.environmentName }}-sqlserver-weu.database.windows.net'
+                DatamartStaginglinkedservices: '$(Service)-${{ parameters.datamartEnvironmentName }}-shared-sql.database.windows.net'
+                DatamartStaginglinkedDB: '$(Service)-${{ parameters.datamartEnvironmentName }}-datamgmt-staging-db'
+                DatamartSqlPrivateEndpoint: '${{ parameters.datamartsqlprivateendpoint }}'

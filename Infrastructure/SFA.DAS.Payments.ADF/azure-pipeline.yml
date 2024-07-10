@@ -40,85 +40,88 @@ stages:
       pool: DCT Build Pool
       environmentName: DAS
       azureSubscription: DCT-VSO
+      datamartEnvironmentName: at
+      datamartsqlprivateendpoint: /subscriptions/68208b91-0105-498e-a1bc-40d75596c01a/resourceGroups/das-at-shared-rg/providers/Microsoft.Sql/servers/das-at-shared-sql
 
-- stage: Deploy_DST
-  dependsOn: Publish_ADF
-  displayName: Deploy to DST
-  variables:
-  - name: tagEnvironment
-    value: Dev/Test
-  - group: DCOL-DST - Environment Key Vault Secrets
-  jobs:
-  - template: pipeline/deploy.yml
-    parameters:
-      pool: DCT Build Pool
-      environmentName: DST
-      azureSubscription: DCT-VSO
-      deployFactory: true
+#- stage: Deploy_DST
+#  dependsOn: Publish_ADF
+#  displayName: Deploy to DST
+#  variables:
+#  - name: tagEnvironment
+#    value: Dev/Test
+#  - group: DCOL-DST - Environment Key Vault Secrets
+#  jobs:
+#  - template: pipeline/deploy.yml
+#    parameters:
+#      pool: DCT Build Pool
+#      environmentName: DST
+#      azureSubscription: DCT-VSO
+#      deployFactory: true
 
-- stage: Deploy_SIT
-  dependsOn: 
-  - Publish_ADF
-  - Deploy_DST
-  displayName: Deploy to SIT
-  variables:
-  - name: tagEnvironment
-    value: Dev/Test
-  - group: DCOL-SIT - Environment Key Vault Secrets
-  jobs:
-  - template: pipeline/deploy.yml
-    parameters:
-      pool: DCT Build Pool
-      environmentName: SIT
-      azureSubscription: DCT-VSO
-      deployFactory: true
+#- stage: Deploy_SIT
+#  dependsOn: 
+#  - Publish_ADF
+#  - Deploy_DST
+#  displayName: Deploy to SIT
+#  variables:
+#  - name: tagEnvironment
+#    value: Dev/Test
+#  - group: DCOL-SIT - Environment Key Vault Secrets
+#  jobs:
+#  - template: pipeline/deploy.yml
+#    parameters:
+#      pool: DCT Build Pool
+#      environmentName: SIT
+#      azureSubscription: DCT-VSO
+#      deployFactory: true
 
-- stage: Deploy_SDW
-  dependsOn: 
-  - Publish_ADF
-  - Deploy_SIT
-  displayName: Deploy to SDW
-  variables:
-  - name: tagEnvironment
-    value: Dev/Test
-  - group: DCOL-SDW - Environment Key Vault Secrets
-  jobs:
-  - template: pipeline/deploy.yml
-    parameters:
-      pool: DCT Build Pool
-      environmentName: SDW
-      azureSubscription: DCOL-Shadow
-      deployFactory: true
-- stage: Deploy_MO
-  dependsOn: 
-  - Publish_ADF
-  - Deploy_SDW
-  displayName: Deploy to MO
-  variables:
-  - name: tagEnvironment
-    value: Dev/Test
-  - group: DCOL-MO - Environment Key Vault Secrets
-  jobs:
-  - template: pipeline/deploy.yml
-    parameters:
-      pool: DCT Build Pool
-      environmentName: MO
-      azureSubscription: DCOL-MO-VSTS
-      deployFactory: true
+#- stage: Deploy_SDW
+#  dependsOn: 
+#  - Publish_ADF
+#  - Deploy_SIT
+#  displayName: Deploy to SDW
+#  variables:
+#  - name: tagEnvironment
+#    value: Dev/Test
+#  - group: DCOL-SDW - Environment Key Vault Secrets
+#  jobs:
+#  - template: pipeline/deploy.yml
+#    parameters:
+#      pool: DCT Build Pool
+#      environmentName: SDW
+#      azureSubscription: DCOL-Shadow
+#      deployFactory: true
 
-- stage: Deploy_PD
-  dependsOn: 
-  - Publish_ADF
-  - Deploy_MO
-  displayName: Deploy to PD
-  variables:
-  - name: tagEnvironment
-    value: Production
-  - group: DCOL-PD - Environment Key Vault Secrets
-  jobs:
-  - template: pipeline/deploy.yml
-    parameters:
-      pool: DCT Build Pool
-      environmentName: PD
-      azureSubscription: DCOLPDVSTS
-      deployFactory: true
+#- stage: Deploy_MO
+#  dependsOn: 
+#  - Publish_ADF
+#  - Deploy_SDW
+#  displayName: Deploy to MO
+#  variables:
+#  - name: tagEnvironment
+#    value: Dev/Test
+#  - group: DCOL-MO - Environment Key Vault Secrets
+#  jobs:
+#  - template: pipeline/deploy.yml
+#    parameters:
+#      pool: DCT Build Pool
+#      environmentName: MO
+#      azureSubscription: DCOL-MO-VSTS
+#      deployFactory: true
+
+#- stage: Deploy_PD
+#  dependsOn: 
+#  - Publish_ADF
+#  - Deploy_MO
+#  displayName: Deploy to PD
+#  variables:
+#  - name: tagEnvironment
+#    value: Production
+#  - group: DCOL-PD - Environment Key Vault Secrets
+#  jobs:
+#  - template: pipeline/deploy.yml
+#    parameters:
+#      pool: DCT Build Pool
+#      environmentName: PD
+#      azureSubscription: DCOLPDVSTS
+#      deployFactory: true

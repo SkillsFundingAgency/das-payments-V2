@@ -1,5 +1,5 @@
 {
-    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
         "factoryName": {
@@ -19,11 +19,11 @@
             "type": "string",
             "defaultValue": "DASPaymentAuditDataFactoryConnectionString"
         },
-        "ADF_StagingDB_properties_typeProperties_server": {
+        "datamart_stagingDB_linkedservices_properties_typeProperties_server": {
             "type": "string",
             "defaultValue": "das-at-shared-sql.database.windows.net"
         },
-        "ADF_StagingDB_properties_typeProperties_database": {
+        "datamart_stagingDB_linkedservices_properties_typeProperties_database": {
             "type": "string",
             "defaultValue": "das-at-datamgmt-staging-db"
         },
@@ -41,15 +41,15 @@
                 "dcol-das-sqlserver-weu.database.windows.net"
             ]
         },
-        "DEV_ADF_STAGINGDB_properties_privateLinkResourceId": {
+        "datamart_sql_private_endpoint_properties_privateLinkResourceId": {
             "type": "string",
             "defaultValue": "/subscriptions/68208b91-0105-498e-a1bc-40d75596c01a/resourceGroups/das-at-shared-rg/providers/Microsoft.Sql/servers/das-at-shared-sql"
         },
-        "DEV_ADF_STAGINGDB_properties_groupId": {
+        "datamart_sql_private_endpoint_properties_groupId": {
             "type": "string",
             "defaultValue": "sqlServer"
         },
-        "DEV_ADF_STAGINGDB_properties_fqdns": {
+        "datamart_sql_private_endpoint_properties_fqdns": {
             "type": "array",
             "defaultValue": [
                 "das-at-shared-sql.database.windows.net"
@@ -130,7 +130,7 @@
             "apiVersion": "2018-06-01",
             "properties": {
                 "linkedServiceName": {
-                    "referenceName": "ADF_StagingDB",
+                    "referenceName": "datamart_stagingDB_linkedservices",
                     "type": "LinkedServiceReference"
                 },
                 "parameters": {
@@ -156,7 +156,7 @@
                 }
             },
             "dependsOn": [
-                "[concat(variables('factoryId'), '/linkedServices/ADF_StagingDB')]"
+                "[concat(variables('factoryId'), '/linkedServices/datamart_stagingDB_linkedservices')]"
             ]
         },
         {
@@ -256,15 +256,15 @@
             ]
         },
         {
-            "name": "[concat(parameters('factoryName'), '/ADF_StagingDB')]",
+            "name": "[concat(parameters('factoryName'), '/datamart_stagingDB_linkedservices')]",
             "type": "Microsoft.DataFactory/factories/linkedServices",
             "apiVersion": "2018-06-01",
             "properties": {
                 "annotations": [],
                 "type": "AzureSqlDatabase",
                 "typeProperties": {
-                    "server": "[parameters('ADF_StagingDB_properties_typeProperties_server')]",
-                    "database": "[parameters('ADF_StagingDB_properties_typeProperties_database')]",
+                    "server": "[parameters('datamart_stagingDB_linkedservices_properties_typeProperties_server')]",
+                    "database": "[parameters('datamart_stagingDB_linkedservices_properties_typeProperties_database')]",
                     "encrypt": "mandatory",
                     "trustServerCertificate": false,
                     "authenticationType": "SystemAssignedManagedIdentity"
@@ -6161,7 +6161,7 @@
                             }
                         },
                         "linkedServiceName": {
-                            "referenceName": "ADF_StagingDB",
+                            "referenceName": "datamart_stagingDB_linkedservices",
                             "type": "LinkedServiceReference"
                         }
                     },
@@ -6416,7 +6416,7 @@
                                         }
                                     },
                                     "linkedServiceName": {
-                                        "referenceName": "ADF_StagingDB",
+                                        "referenceName": "datamart_stagingDB_linkedservices",
                                         "type": "LinkedServiceReference"
                                     }
                                 }
@@ -6606,7 +6606,7 @@
                                         }
                                     },
                                     "linkedServiceName": {
-                                        "referenceName": "ADF_StagingDB",
+                                        "referenceName": "datamart_stagingDB_linkedservices",
                                         "type": "LinkedServiceReference"
                                     }
                                 },
@@ -6727,7 +6727,7 @@
                                         }
                                     },
                                     "linkedServiceName": {
-                                        "referenceName": "ADF_StagingDB",
+                                        "referenceName": "datamart_stagingDB_linkedservices",
                                         "type": "LinkedServiceReference"
                                     }
                                 }
@@ -7022,7 +7022,7 @@
                                         }
                                     },
                                     "linkedServiceName": {
-                                        "referenceName": "ADF_StagingDB",
+                                        "referenceName": "datamart_stagingDB_linkedservices",
                                         "type": "LinkedServiceReference"
                                     }
                                 }
@@ -7175,7 +7175,7 @@
                                         }
                                     },
                                     "linkedServiceName": {
-                                        "referenceName": "ADF_StagingDB",
+                                        "referenceName": "datamart_stagingDB_linkedservices",
                                         "type": "LinkedServiceReference"
                                     }
                                 },
@@ -7296,7 +7296,7 @@
                                         }
                                     },
                                     "linkedServiceName": {
-                                        "referenceName": "ADF_StagingDB",
+                                        "referenceName": "datamart_stagingDB_linkedservices",
                                         "type": "LinkedServiceReference"
                                     }
                                 }
@@ -7385,7 +7385,7 @@
                 "lastPublishTime": "2024-07-08T15:30:49Z"
             },
             "dependsOn": [
-                "[concat(variables('factoryId'), '/linkedServices/ADF_StagingDB')]",
+                "[concat(variables('factoryId'), '/linkedServices/datamart_stagingDB_linkedservices')]",
                 "[concat(variables('factoryId'), '/datasets/DataMart')]",
                 "[concat(variables('factoryId'), '/datasets/SrcPayments')]",
                 "[concat(variables('factoryId'), '/datasets/DestPaymentsArchive')]"
@@ -7405,13 +7405,13 @@
             ]
         },
         {
-            "name": "[concat(parameters('factoryName'), '/default/DEV_ADF_STAGINGDB')]",
+            "name": "[concat(parameters('factoryName'), '/default/datamart_sql_private_endpoint')]",
             "type": "Microsoft.DataFactory/factories/managedVirtualNetworks/managedPrivateEndpoints",
             "apiVersion": "2018-06-01",
             "properties": {
-                "privateLinkResourceId": "[parameters('DEV_ADF_STAGINGDB_properties_privateLinkResourceId')]",
-                "groupId": "[parameters('DEV_ADF_STAGINGDB_properties_groupId')]",
-                "fqdns": "[parameters('DEV_ADF_STAGINGDB_properties_fqdns')]"
+                "privateLinkResourceId": "[parameters('datamart_sql_private_endpoint_properties_privateLinkResourceId')]",
+                "groupId": "[parameters('datamart_sql_private_endpoint_properties_groupId')]",
+                "fqdns": "[parameters('datamart_sql_private_endpoint_properties_fqdns')]"
             },
             "dependsOn": [
                 "[concat(variables('factoryId'), '/managedVirtualNetworks/default')]"
