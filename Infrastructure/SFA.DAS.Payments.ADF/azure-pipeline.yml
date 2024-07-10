@@ -58,7 +58,7 @@ stages:
       azureSubscription: DCT-VSO
       deployFactory: true
       datamartEnvironmentName: at
-      datamartsqlprivateendpoint: /subscriptions/68208b91-0105-498e-a1bc-40d75596c01a/resourceGroups/das-at-shared-rg/providers/Microsoft.Sql/servers/das-at-shared-sql
+      datamartsqlprivateendpoint: '/subscriptions/68208b91-0105-498e-a1bc-40d75596c01a/resourceGroups/das-at-shared-rg/providers/Microsoft.Sql/servers/das-at-shared-sql'
 
 #- stage: Deploy_SIT
 #  dependsOn: 
