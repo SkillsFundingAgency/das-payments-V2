@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	  <!--<TargetFramework>netstandard2.0</TargetFramework>-->
-	  <TargetFrameworks>net472;net6</TargetFrameworks>  
+	  <TargetFramework>net6.0</TargetFramework>
+	  <!--<TargetFrameworks>net472;net6</TargetFrameworks> --> 
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,7 +17,7 @@
 
     <PackageReference Include="SFA.DAS.CommitmentsV2.Types" Version="4.1.70" />
 
-    <PackageReference Include="SFA.DAS.Payments.Application" Version="2.0.2" />
+    <PackageReference Include="SFA.DAS.Payments.Application" Version="2.0.3-prerelease-2" />
 
     <PackageReference Include="SFA.DAS.Payments.EarningEvents.Messages" Version="2.0.0-prerelease-3" />
 
