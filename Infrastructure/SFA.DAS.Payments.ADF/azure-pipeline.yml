@@ -27,21 +27,23 @@ stages:
   jobs:
   - template: pipeline/publish.yml
 
-#- stage: Deploy_DAS
-#  dependsOn: Publish_ADF
-#  displayName: Deploy to DAS
-#  variables:
-#  - name: tagEnvironment
-#    value: Dev/Test
-#  - group: DCOL-DAS - Environment Key Vault Secrets
-#  jobs:
-#  - template: pipeline/deploy.yml
-#    parameters:
-#      pool: DCT Build Pool
-#      environmentName: DAS
-#      azureSubscription: DCT-VSO
-#      datamartEnvironmentName: at
-#      datamartsqlprivateendpoint: /subscriptions/68208b91-0105-498e-a1bc-40d75596c01a/resourceGroups/das-at-shared-rg/providers/Microsoft.Sql/servers/das-at-shared-sql
+- stage: Deploy_DAS
+  dependsOn: Publish_ADF
+  displayName: Deploy to DAS
+  variables:
+  - name: tagEnvironment
+    value: Dev/Test
+  - group: DCOL-DAS - Environment Key Vault Secrets
+  jobs:
+  - template: pipeline/deploy.yml
+    parameters:
+      pool: DCT Build Pool
+      environmentName: DAS
+      azureSubscription: DCT-VSO
+      deployFactory: true
+      datamartEnvironmentName: at
+      datamartsqlprivateendpoint: /subscriptions/68208b91-0105-498e-a1bc-40d75596c01a/resourceGroups/das-at-shared-rg/providers/Microsoft.Sql/servers/das-at-shared-sql
+      
 
 - stage: Deploy_DST
   dependsOn: Publish_ADF
@@ -60,22 +62,24 @@ stages:
       datamartEnvironmentName: at
       datamartsqlprivateendpoint: '/subscriptions/68208b91-0105-498e-a1bc-40d75596c01a/resourceGroups/das-at-shared-rg/providers/Microsoft.Sql/servers/das-at-shared-sql'
 
-#- stage: Deploy_SIT
-#  dependsOn: 
-#  - Publish_ADF
-#  - Deploy_DST
-#  displayName: Deploy to SIT
-#  variables:
-#  - name: tagEnvironment
-#    value: Dev/Test
-#  - group: DCOL-SIT - Environment Key Vault Secrets
-#  jobs:
-#  - template: pipeline/deploy.yml
-#    parameters:
-#      pool: DCT Build Pool
-#      environmentName: SIT
-#      azureSubscription: DCT-VSO
-#      deployFactory: true
+- stage: Deploy_SIT
+  dependsOn: 
+  - Publish_ADF
+  - Deploy_DST
+  displayName: Deploy to SIT
+  variables:
+  - name: tagEnvironment
+    value: Dev/Test
+  - group: DCOL-SIT - Environment Key Vault Secrets
+  jobs:
+  - template: pipeline/deploy.yml
+    parameters:
+      pool: DCT Build Pool
+      environmentName: SIT
+      azureSubscription: DCT-VSO
+      deployFactory: true
+      datamartEnvironmentName: test
+      datamartsqlprivateendpoint: '/subscriptions/68208b91-0105-498e-a1bc-40d75596c01a/resourceGroups/das-test-shared-rg/providers/Microsoft.Sql/servers/das-test-shared-sql'
 
 #- stage: Deploy_SDW
 #  dependsOn: 
