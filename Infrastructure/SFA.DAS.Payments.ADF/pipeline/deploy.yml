@@ -71,6 +71,6 @@ jobs:
                 keyVaultName: '${{ variables.keyVaultName }}'
                 sharedSqlPrivateEndpoint: '/subscriptions/$(subscriptionId)/resourceGroups/$(Service)-${{ parameters.environmentName }}-SqlServer/providers/Microsoft.Sql/servers/$(Service)-${{ parameters.environmentName }}-sqlserver-weu'
                 sharedSqlPrivateEndpointFqdns: '$(Service)-${{ parameters.environmentName }}-sqlserver-weu.database.windows.net'
-                DatamartStaginglinkedservices: '$(Service)-${{ parameters.datamartEnvironmentName }}-shared-sql.database.windows.net'
-                DatamartStaginglinkedDB: '$(Service)-${{ parameters.datamartEnvironmentName }}-datamgmt-staging-db'
+                DatamartStaginglinkedservices: 'das-${{ parameters.datamartEnvironmentName }}-shared-sql.database.windows.net'
+                DatamartStaginglinkedDB: 'das-${{ parameters.datamartEnvironmentName }}-datamgmt-staging-db'
                 DatamartSqlPrivateEndpoint: '${{ parameters.datamartsqlprivateendpoint }}'
