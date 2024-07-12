@@ -266,6 +266,7 @@
     <Compile Include="Handlers\FundingSourcePaymentEventHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Steps\BindingBootstrapper.cs" />
+    <Compile Include="Steps\DasFundingPlatformSteps.cs" />
     <Compile Include="Steps\FundingSourceStepBase.cs" />
     <Compile Include="Steps\ACT2TransTypes1to3BasicTestsSteps.cs" />
     <Compile Include="Steps\FundingSourceSteps.cs" />
@@ -365,6 +366,7 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Fully funded - ALL TT1 TT2 and TT3.feature.cs</LastGenOutput>
     </None>
+    <None Include="Tests\DAS Funding Platform\Payment Received From DAS Funding Platform PV2-3294.feature" />
     <None Include="Tests\Non-Levy Learner - Basic Day\One Non-Levy Learner Finishes Late PV2-196.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>One Non-Levy Learner Finishes Late PV2-196.feature.cs</LastGenOutput>
@@ -467,6 +469,7 @@
   <ItemGroup>
     <Analyzer Include="..\packages\NServiceBus.7.1.5\analyzers\dotnet\cs\NServiceBus.Core.Analyzer.dll" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
