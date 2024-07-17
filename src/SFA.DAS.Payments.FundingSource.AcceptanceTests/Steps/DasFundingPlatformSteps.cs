@@ -20,6 +20,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
     {
         private IPaymentsHelper paymentsHelper;
         private IFundingSourceHelper fundingSourceHelper;
+        private CollectionPeriod collectionPeriod;
 
         private CalculateOnProgrammePayment calculatedOnProgrammePaymentCommand;
         
@@ -44,49 +45,50 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
         [Then("a funding source levy transaction is created for the calculated payment")]
         public async Task ThenAFundingSourceLevyTransactionIsCreated()
         {
-            //await WaitForIt(() => fundingSourceHelper.GetLevyTransactions(TestSession.Ukprn, TestSession.CollectionPeriod)
-            //        .Any(x => x.FundingPlatformType == calculatedOnProgrammePaymentCommand.FundingPlatformType),
-            //    "Failed to wait for levy account transactions with funding platform set to DAS");
-        }
-
-        [Then("a payment with a funding platform type of DasFundingPlatform is created for the calculated payment")]
-        public async Task ThenAPaymentWithAFundingPlatformTypeofDasFundingPlatformIsCreated()
-        {
-            //await WaitForIt(() => paymentsHelper.GetPayments(TestSession.Ukprn, TestSession.CollectionPeriod)
-            //        .Any(x => x.FundingPlatformType == calculatedOnProgrammePaymentCommand.FundingPlatformType),
-            //    "Failed to wait for payments with funding platform set to DAS");
+            await WaitForIt(() => fundingSourceHelper.GetLevyTransactions(TestSession.Ukprn, collectionPeriod)
+                    .Any(x => x.FundingPlatformType == calculatedOnProgrammePaymentCommand.FundingPlatformType),
+                "Failed to wait for levy account transactions with funding platform set to DAS");
         }
 
         private void SetupCalculateOnProgrammePaymentCommand()
         {
+            collectionPeriod = new CollectionPeriod { AcademicYear = 2324, Period = 1 };
+
             var learner = TestSession.GenerateLearner(TestSession.Ukprn);
             learner.LearnRefNumber = TestSession.LearnRefNumberGenerator.Generate(learner.Ukprn, TestSession.GenerateId().ToString());
             var learningAim = new Aim(new Training
             {
-                CompletionStatus = "continuing"
+                CompletionStatus = "continuing",
+                StartDate = DateTime.Today.AddDays(30).ToShortDateString(),
+                FrameworkCode = Convert.ToInt32(TestSession.GenerateId()),
+                FundingLineType = "19+ Apprenticeship (From May 2017) Levy Contract",
+                PathwayCode = Convert.ToInt32(TestSession.GenerateId()),
+                ProgrammeType = Convert.ToInt32(TestSession.GenerateId()),
+                AimReference = "ZPROG001",
+                StandardCode = Convert.ToInt32(TestSession.GenerateId())
             });
             
             calculatedOnProgrammePaymentCommand = new CalculateOnProgrammePayment
             {
                 Ukprn = TestSession.Provider.Ukprn,
-                AgreedOnDate = DateTime.Today.AddDays(-100), // TODO
+                AgreedOnDate = DateTime.Today.AddDays(-100),
                 SfaContributionPercentage = SfaContributionPercentage,
                 OnProgrammeEarningType = OnProgrammeEarningType.Learning,
-                PriceEpisodeIdentifier = "1", // TODO
-                AmountDue = 1000, // TODO
+                PriceEpisodeIdentifier = "1", 
+                AmountDue = 1000, 
                 DeliveryPeriod = 1,
                 AccountId = TestSession.Employer.AccountId,
                 TransferSenderAccountId = null,
-                StartDate = DateTime.Today.AddDays(-50), // TODO
+                StartDate = DateTime.Today.AddDays(-50), 
                 PlannedEndDate = DateTime.Today.AddDays(200),
                 ActualEndDate = null,
                 CompletionStatus = 0,
-                CompletionAmount = 2000, // TODO
-                InstalmentAmount = 1000, // TODO
-                NumberOfInstalments = 12, // TODO
-                LearningStartDate = DateTime.Today.AddDays(-40), // TODO
-                ApprenticeshipId = 1111, // TODO
-                ApprenticeshipPriceEpisodeId = 1234, // TODO
+                CompletionAmount = 2000, 
+                InstalmentAmount = 1000, 
+                NumberOfInstalments = 12, 
+                LearningStartDate = DateTime.Today.AddDays(-40), 
+                ApprenticeshipId = TestSession.GenerateId(),
+                ApprenticeshipPriceEpisodeId = TestSession.GenerateId(),
                 ApprenticeshipEmployerType = learner.IsLevyLearner
                     ? ApprenticeshipEmployerType.Levy
                     : ApprenticeshipEmployerType.NonLevy,
@@ -101,10 +103,10 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
                     PathwayCode = learningAim.PathwayCode,
                     ProgrammeType = learningAim.ProgrammeType,
                     Reference = learningAim.AimReference,
-                    SequenceNumber = 1, // TODO
+                    SequenceNumber = 1,
                     StandardCode = learningAim.StandardCode
                 },
-                CollectionPeriod = TestSession.CollectionPeriod,
+                CollectionPeriod = collectionPeriod,
                 FundingPlatformType = FundingPlatformType.DigitalApprenticeshipService
             };
         }

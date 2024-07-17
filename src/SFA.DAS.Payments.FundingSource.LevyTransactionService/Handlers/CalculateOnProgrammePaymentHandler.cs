@@ -23,7 +23,7 @@ namespace SFA.DAS.Payments.FundingSource.LevyTransactionService.Handlers
 
         public async Task Handle(IList<CalculateOnProgrammePayment> messages, CancellationToken cancellationToken)
         {
-            logger.LogInfo($"CalculateOnProgrammePaymentHandlerReceived {messages.Count} messages");
+            logger.LogInfo($"CalculateOnProgrammePaymentHandler Received {messages.Count} messages");
             await levyTransactionBatchStorageService.StoreLevyTransactions(messages, cancellationToken)
                 .ConfigureAwait(false);
         }

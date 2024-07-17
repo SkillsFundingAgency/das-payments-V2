@@ -8,4 +8,3 @@ Scenario: A calculate on programme payment message is received
 	And the SFA contribution percentage is 100%
 	When a calculate on programme payment command is received
 	Then a funding source levy transaction is created for the calculated payment
-	And a payment with a funding platform type of DasFundingPlatform is created for the calculated payment
