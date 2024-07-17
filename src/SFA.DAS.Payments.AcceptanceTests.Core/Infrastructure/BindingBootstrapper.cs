@@ -55,6 +55,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
             Builder.RegisterType<StorageService>().As<IStorageService>().InstancePerLifetimeScope();
             Builder.RegisterType<TdgService>().As<ITdgService>().InstancePerLifetimeScope();
             Builder.RegisterType<PaymentsHelper>().As<IPaymentsHelper>().InstancePerLifetimeScope();
+            Builder.RegisterType<FundingSourceHelper>().As<IFundingSourceHelper>().InstancePerLifetimeScope();
 
             if (config.ValidateDcAndDasServices)
             {
@@ -75,6 +76,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Infrastructure
                 var configHelper = c.Resolve<TestsConfiguration>();
                 return new TestPaymentsDataContext(configHelper.PaymentsConnectionString);
             }).As<TestPaymentsDataContext>().InstancePerDependency();
+
+            Builder.Register((c, p) =>
+            {
+                var configHelper = c.Resolve<TestsConfiguration>();
+                return new TestFundingSourceDataContext(configHelper.PaymentsConnectionString);
+            }).As<TestFundingSourceDataContext>().InstancePerDependency();
 
             Builder.Register((c, p) =>
             {

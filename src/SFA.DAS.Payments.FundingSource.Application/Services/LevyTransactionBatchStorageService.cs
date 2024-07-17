@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Payments.FundingSource.Messages.Commands;
+using SFA.DAS.Payments.Messages.Core;
 
 namespace SFA.DAS.Payments.FundingSource.Application.Services
 {
@@ -98,14 +99,14 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                 Amount = levyAmount.AmountDue,
                 EarningEventId = Guid.Empty,
                 DeliveryPeriod = levyAmount.DeliveryPeriod,
-                AccountId = levyAmount.AccountId,
+                AccountId = levyAmount.AccountId ?? 0,
                 RequiredPaymentEventId = levyAmount.EventId,
                 ClawbackSourcePaymentEventId = null,
                 TransferSenderAccountId = levyAmount.TransferSenderAccountId,
                 MessagePayload = levyAmount.ToJson(),
                 MessageType = levyAmount.GetType().FullName,
                 IlrSubmissionDateTime = new DateTime(1753, 1, 1),
-                FundingAccountId = 0, //TODO CHECK 
+                FundingAccountId = levyAmount.CalculateFundingAccountId(isReceiverTransferPayment),
                 ApprenticeshipEmployerType = levyAmount.ApprenticeshipEmployerType,
                 ApprenticeshipId = levyAmount.ApprenticeshipId,
                 LearnerUln = levyAmount.Learner.Uln,
