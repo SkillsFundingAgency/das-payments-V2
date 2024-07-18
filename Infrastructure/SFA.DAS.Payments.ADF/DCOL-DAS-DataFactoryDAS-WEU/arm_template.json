@@ -1,5 +1,5 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
         "factoryName": {
@@ -19,13 +19,21 @@
             "type": "string",
             "defaultValue": "DASPaymentAuditDataFactoryConnectionString"
         },
-        "datamart_stagingDB_linkedservices_properties_typeProperties_server": {
+        "ADF_StagingDB_properties_typeProperties_server": {
             "type": "string",
             "defaultValue": "das-at-shared-sql.database.windows.net"
         },
-        "datamart_stagingDB_linkedservices_properties_typeProperties_database": {
+        "ADF_StagingDB_properties_typeProperties_database": {
             "type": "string",
             "defaultValue": "das-at-datamgmt-staging-db"
+        },
+        "datamart_stagingDB_linkedservices_properties_typeProperties_server": {
+            "type": "string",
+            "defaultValue": "DCOL-at-shared-sql.database.windows.net"
+        },
+        "datamart_stagingDB_linkedservices_properties_typeProperties_database": {
+            "type": "string",
+            "defaultValue": "DCOL-at-datamgmt-staging-db"
         },
         "shared_sql_private_endpoint_properties_privateLinkResourceId": {
             "type": "string",
@@ -41,15 +49,15 @@
                 "dcol-das-sqlserver-weu.database.windows.net"
             ]
         },
-        "datamart_sql_private_endpoint_properties_privateLinkResourceId": {
+        "DEV_ADF_STAGINGDB_properties_privateLinkResourceId": {
             "type": "string",
             "defaultValue": "/subscriptions/68208b91-0105-498e-a1bc-40d75596c01a/resourceGroups/das-at-shared-rg/providers/Microsoft.Sql/servers/das-at-shared-sql"
         },
-        "datamart_sql_private_endpoint_properties_groupId": {
+        "DEV_ADF_STAGINGDB_properties_groupId": {
             "type": "string",
             "defaultValue": "sqlServer"
         },
-        "datamart_sql_private_endpoint_properties_fqdns": {
+        "DEV_ADF_STAGINGDB_properties_fqdns": {
             "type": "array",
             "defaultValue": [
                 "das-at-shared-sql.database.windows.net"
@@ -60,6 +68,155 @@
         "factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
     },
     "resources": [
+        {
+            "name": "[concat(parameters('factoryName'), '/AzureKeyVault1')]",
+            "type": "Microsoft.DataFactory/factories/linkedServices",
+            "apiVersion": "2018-06-01",
+            "properties": {
+                "annotations": [],
+                "type": "AzureKeyVault",
+                "typeProperties": {
+                    "baseUrl": "[parameters('AzureKeyVault1_properties_typeProperties_baseUrl')]"
+                }
+            },
+            "dependsOn": []
+        },
+        {
+            "name": "[concat(parameters('factoryName'), '/DASPayments')]",
+            "type": "Microsoft.DataFactory/factories/linkedServices",
+            "apiVersion": "2018-06-01",
+            "properties": {
+                "annotations": [],
+                "type": "AzureSqlDatabase",
+                "typeProperties": {
+                    "connectionString": {
+                        "type": "AzureKeyVaultSecret",
+                        "store": {
+                            "referenceName": "AzureKeyVault1",
+                            "type": "LinkedServiceReference"
+                        },
+                        "secretName": "[parameters('DASPayments_properties_typeProperties_connectionString_secretName')]"
+                    }
+                },
+                "connectVia": {
+                    "referenceName": "AzureVNETIntegrationRuntime",
+                    "type": "IntegrationRuntimeReference"
+                }
+            },
+            "dependsOn": [
+                "[concat(variables('factoryId'), '/integrationRuntimes/AzureVNETIntegrationRuntime')]",
+                "[concat(variables('factoryId'), '/linkedServices/AzureKeyVault1')]"
+            ]
+        },
+        {
+            "name": "[concat(parameters('factoryName'), '/DASPayments_Audit')]",
+            "type": "Microsoft.DataFactory/factories/linkedServices",
+            "apiVersion": "2018-06-01",
+            "properties": {
+                "annotations": [],
+                "type": "AzureSqlDatabase",
+                "typeProperties": {
+                    "connectionString": {
+                        "type": "AzureKeyVaultSecret",
+                        "store": {
+                            "referenceName": "AzureKeyVault1",
+                            "type": "LinkedServiceReference"
+                        },
+                        "secretName": "[parameters('DASPayments_Audit_properties_typeProperties_connectionString_secretName')]"
+                    }
+                },
+                "connectVia": {
+                    "referenceName": "AzureVNETIntegrationRuntime",
+                    "type": "IntegrationRuntimeReference"
+                }
+            },
+            "dependsOn": [
+                "[concat(variables('factoryId'), '/integrationRuntimes/AzureVNETIntegrationRuntime')]",
+                "[concat(variables('factoryId'), '/linkedServices/AzureKeyVault1')]"
+            ]
+        },
+        {
+            "name": "[concat(parameters('factoryName'), '/ADF_StagingDB')]",
+            "type": "Microsoft.DataFactory/factories/linkedServices",
+            "apiVersion": "2018-06-01",
+            "properties": {
+                "annotations": [],
+                "type": "AzureSqlDatabase",
+                "typeProperties": {
+                    "server": "[parameters('ADF_StagingDB_properties_typeProperties_server')]",
+                    "database": "[parameters('ADF_StagingDB_properties_typeProperties_database')]",
+                    "encrypt": "mandatory",
+                    "trustServerCertificate": false,
+                    "authenticationType": "SystemAssignedManagedIdentity"
+                },
+                "connectVia": {
+                    "referenceName": "AzureVNETIntegrationRuntime",
+                    "type": "IntegrationRuntimeReference"
+                }
+            },
+            "dependsOn": [
+                "[concat(variables('factoryId'), '/integrationRuntimes/AzureVNETIntegrationRuntime')]"
+            ]
+        },
+        {
+            "name": "[concat(parameters('factoryName'), '/datamart_stagingDB_linkedservices')]",
+            "type": "Microsoft.DataFactory/factories/linkedServices",
+            "apiVersion": "2018-06-01",
+            "properties": {
+                "annotations": [],
+                "type": "AzureSqlDatabase",
+                "typeProperties": {
+                    "server": "[parameters('datamart_stagingDB_linkedservices_properties_typeProperties_server')]",
+                    "database": "[parameters('datamart_stagingDB_linkedservices_properties_typeProperties_database')]",
+                    "encrypt": "mandatory",
+                    "trustServerCertificate": false,
+                    "authenticationType": "SystemAssignedManagedIdentity"
+                },
+                "connectVia": {
+                    "referenceName": "AzureVNETIntegrationRuntime",
+                    "type": "IntegrationRuntimeReference"
+                }
+            },
+            "dependsOn": [
+                "[concat(variables('factoryId'), '/integrationRuntimes/AzureVNETIntegrationRuntime')]"
+            ]
+        },
+        {
+            "name": "[concat(parameters('factoryName'), '/AzureVNETIntegrationRuntime')]",
+            "type": "Microsoft.DataFactory/factories/integrationRuntimes",
+            "apiVersion": "2018-06-01",
+            "properties": {
+                "type": "Managed",
+                "typeProperties": {
+                    "computeProperties": {
+                        "location": "West Europe",
+                        "dataFlowProperties": {
+                            "computeType": "General",
+                            "coreCount": 8,
+                            "timeToLive": 10,
+                            "cleanup": false
+                        },
+                        "pipelineExternalComputeScaleProperties": {
+                            "timeToLive": 60
+                        }
+                    }
+                },
+                "managedVirtualNetwork": {
+                    "type": "ManagedVirtualNetworkReference",
+                    "referenceName": "default"
+                }
+            },
+            "dependsOn": [
+                "[concat(variables('factoryId'), '/managedVirtualNetworks/default')]"
+            ]
+        },
+        {
+            "name": "[concat(parameters('factoryName'), '/default')]",
+            "type": "Microsoft.DataFactory/factories/managedVirtualNetworks",
+            "apiVersion": "2018-06-01",
+            "properties": {},
+            "dependsOn": []
+        },
         {
             "name": "[concat(parameters('factoryName'), '/SrcPayments')]",
             "type": "Microsoft.DataFactory/factories/datasets",
@@ -160,130 +317,30 @@
             ]
         },
         {
-            "name": "[concat(parameters('factoryName'), '/AzureVNETIntegrationRuntime')]",
-            "type": "Microsoft.DataFactory/factories/integrationRuntimes",
+            "name": "[concat(parameters('factoryName'), '/default/shared_sql_private_endpoint')]",
+            "type": "Microsoft.DataFactory/factories/managedVirtualNetworks/managedPrivateEndpoints",
             "apiVersion": "2018-06-01",
             "properties": {
-                "type": "Managed",
-                "typeProperties": {
-                    "computeProperties": {
-                        "location": "West Europe",
-                        "dataFlowProperties": {
-                            "computeType": "General",
-                            "coreCount": 8,
-                            "timeToLive": 10,
-                            "cleanup": false
-                        },
-                        "pipelineExternalComputeScaleProperties": {
-                            "timeToLive": 60
-                        }
-                    }
-                },
-                "managedVirtualNetwork": {
-                    "type": "ManagedVirtualNetworkReference",
-                    "referenceName": "default"
-                }
+                "privateLinkResourceId": "[parameters('shared_sql_private_endpoint_properties_privateLinkResourceId')]",
+                "groupId": "[parameters('shared_sql_private_endpoint_properties_groupId')]",
+                "fqdns": "[parameters('shared_sql_private_endpoint_properties_fqdns')]"
             },
             "dependsOn": [
                 "[concat(variables('factoryId'), '/managedVirtualNetworks/default')]"
             ]
         },
         {
-            "name": "[concat(parameters('factoryName'), '/AzureKeyVault1')]",
-            "type": "Microsoft.DataFactory/factories/linkedServices",
+            "name": "[concat(parameters('factoryName'), '/default/DEV_ADF_STAGINGDB')]",
+            "type": "Microsoft.DataFactory/factories/managedVirtualNetworks/managedPrivateEndpoints",
             "apiVersion": "2018-06-01",
             "properties": {
-                "annotations": [],
-                "type": "AzureKeyVault",
-                "typeProperties": {
-                    "baseUrl": "[parameters('AzureKeyVault1_properties_typeProperties_baseUrl')]"
-                }
-            },
-            "dependsOn": []
-        },
-        {
-            "name": "[concat(parameters('factoryName'), '/DASPayments')]",
-            "type": "Microsoft.DataFactory/factories/linkedServices",
-            "apiVersion": "2018-06-01",
-            "properties": {
-                "annotations": [],
-                "type": "AzureSqlDatabase",
-                "typeProperties": {
-                    "connectionString": {
-                        "type": "AzureKeyVaultSecret",
-                        "store": {
-                            "referenceName": "AzureKeyVault1",
-                            "type": "LinkedServiceReference"
-                        },
-                        "secretName": "[parameters('DASPayments_properties_typeProperties_connectionString_secretName')]"
-                    }
-                },
-                "connectVia": {
-                    "referenceName": "AzureVNETIntegrationRuntime",
-                    "type": "IntegrationRuntimeReference"
-                }
+                "privateLinkResourceId": "[parameters('DEV_ADF_STAGINGDB_properties_privateLinkResourceId')]",
+                "groupId": "[parameters('DEV_ADF_STAGINGDB_properties_groupId')]",
+                "fqdns": "[parameters('DEV_ADF_STAGINGDB_properties_fqdns')]"
             },
             "dependsOn": [
-                "[concat(variables('factoryId'), '/integrationRuntimes/AzureVNETIntegrationRuntime')]",
-                "[concat(variables('factoryId'), '/linkedServices/AzureKeyVault1')]"
+                "[concat(variables('factoryId'), '/managedVirtualNetworks/default')]"
             ]
-        },
-        {
-            "name": "[concat(parameters('factoryName'), '/DASPayments_Audit')]",
-            "type": "Microsoft.DataFactory/factories/linkedServices",
-            "apiVersion": "2018-06-01",
-            "properties": {
-                "annotations": [],
-                "type": "AzureSqlDatabase",
-                "typeProperties": {
-                    "connectionString": {
-                        "type": "AzureKeyVaultSecret",
-                        "store": {
-                            "referenceName": "AzureKeyVault1",
-                            "type": "LinkedServiceReference"
-                        },
-                        "secretName": "[parameters('DASPayments_Audit_properties_typeProperties_connectionString_secretName')]"
-                    }
-                },
-                "connectVia": {
-                    "referenceName": "AzureVNETIntegrationRuntime",
-                    "type": "IntegrationRuntimeReference"
-                }
-            },
-            "dependsOn": [
-                "[concat(variables('factoryId'), '/integrationRuntimes/AzureVNETIntegrationRuntime')]",
-                "[concat(variables('factoryId'), '/linkedServices/AzureKeyVault1')]"
-            ]
-        },
-        {
-            "name": "[concat(parameters('factoryName'), '/datamart_stagingDB_linkedservices')]",
-            "type": "Microsoft.DataFactory/factories/linkedServices",
-            "apiVersion": "2018-06-01",
-            "properties": {
-                "annotations": [],
-                "type": "AzureSqlDatabase",
-                "typeProperties": {
-                    "server": "[parameters('datamart_stagingDB_linkedservices_properties_typeProperties_server')]",
-                    "database": "[parameters('datamart_stagingDB_linkedservices_properties_typeProperties_database')]",
-                    "encrypt": "mandatory",
-                    "trustServerCertificate": false,
-                    "authenticationType": "SystemAssignedManagedIdentity"
-                },
-                "connectVia": {
-                    "referenceName": "AzureVNETIntegrationRuntime",
-                    "type": "IntegrationRuntimeReference"
-                }
-            },
-            "dependsOn": [
-                "[concat(variables('factoryId'), '/integrationRuntimes/AzureVNETIntegrationRuntime')]"
-            ]
-        },
-        {
-            "name": "[concat(parameters('factoryName'), '/default')]",
-            "type": "Microsoft.DataFactory/factories/managedVirtualNetworks",
-            "apiVersion": "2018-06-01",
-            "properties": {},
-            "dependsOn": []
         },
         {
             "name": "[concat(parameters('factoryName'), '/CopyPaymentsToArchive')]",
@@ -6105,6 +6162,84 @@
                                 }
                             }
                         ]
+                    },
+                    {
+                        "name": "ForEachAcYrPeriodForDatamartLoad",
+                        "type": "ForEach",
+                        "dependsOn": [
+                            {
+                                "activity": "Archive-Apprenticeship",
+                                "dependencyConditions": [
+                                    "Succeeded"
+                                ]
+                            },
+                            {
+                                "activity": "Archive-ApprenticeshipPause",
+                                "dependencyConditions": [
+                                    "Succeeded"
+                                ]
+                            },
+                            {
+                                "activity": "Archive-ApprenticeshipDuplicate",
+                                "dependencyConditions": [
+                                    "Succeeded"
+                                ]
+                            },
+                            {
+                                "activity": "Archive-ApprenticeshipPriceEpisode",
+                                "dependencyConditions": [
+                                    "Succeeded"
+                                ]
+                            },
+                            {
+                                "activity": "Archive-LevyAccount",
+                                "dependencyConditions": [
+                                    "Succeeded"
+                                ]
+                            },
+                            {
+                                "activity": "Archive-LevyAccountAudit",
+                                "dependencyConditions": [
+                                    "Succeeded"
+                                ]
+                            }
+                        ],
+                        "userProperties": [],
+                        "typeProperties": {
+                            "items": {
+                                "value": "@activity('GetAcYrPeriodToCopy').output.value",
+                                "type": "Expression"
+                            },
+                            "isSequential": true,
+                            "activities": [
+                                {
+                                    "name": "LoadPaymentsToDataMart",
+                                    "type": "ExecutePipeline",
+                                    "dependsOn": [],
+                                    "policy": {
+                                        "secureInput": false
+                                    },
+                                    "userProperties": [],
+                                    "typeProperties": {
+                                        "pipeline": {
+                                            "referenceName": "LoadPaymentsToDataMgmt",
+                                            "type": "PipelineReference"
+                                        },
+                                        "waitOnCompletion": true,
+                                        "parameters": {
+                                            "AcademicYear": {
+                                                "value": "@{item().AcademicYear}",
+                                                "type": "Expression"
+                                            },
+                                            "CollectionPeriod": {
+                                                "value": "@{item().Period}",
+                                                "type": "Expression"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
                     }
                 ],
                 "policy": {
@@ -6125,12 +6260,13 @@
                     }
                 },
                 "annotations": [],
-                "lastPublishTime": "2022-09-01T10:37:03Z"
+                "lastPublishTime": "2024-07-17T19:11:21Z"
             },
             "dependsOn": [
                 "[concat(variables('factoryId'), '/datasets/SrcPayments')]",
                 "[concat(variables('factoryId'), '/datasets/DestPaymentsArchive')]",
-                "[concat(variables('factoryId'), '/linkedServices/DASPayments')]"
+                "[concat(variables('factoryId'), '/linkedServices/DASPayments')]",
+                "[concat(variables('factoryId'), '/pipelines/LoadPaymentsToDataMgmt')]"
             ]
         },
         {
@@ -7382,39 +7518,13 @@
                     }
                 },
                 "annotations": [],
-                "lastPublishTime": "2024-07-08T15:30:49Z"
+                "lastPublishTime": "2024-07-11T14:06:02Z"
             },
             "dependsOn": [
                 "[concat(variables('factoryId'), '/linkedServices/datamart_stagingDB_linkedservices')]",
                 "[concat(variables('factoryId'), '/datasets/DataMart')]",
                 "[concat(variables('factoryId'), '/datasets/SrcPayments')]",
                 "[concat(variables('factoryId'), '/datasets/DestPaymentsArchive')]"
-            ]
-        },
-        {
-            "name": "[concat(parameters('factoryName'), '/default/shared_sql_private_endpoint')]",
-            "type": "Microsoft.DataFactory/factories/managedVirtualNetworks/managedPrivateEndpoints",
-            "apiVersion": "2018-06-01",
-            "properties": {
-                "privateLinkResourceId": "[parameters('shared_sql_private_endpoint_properties_privateLinkResourceId')]",
-                "groupId": "[parameters('shared_sql_private_endpoint_properties_groupId')]",
-                "fqdns": "[parameters('shared_sql_private_endpoint_properties_fqdns')]"
-            },
-            "dependsOn": [
-                "[concat(variables('factoryId'), '/managedVirtualNetworks/default')]"
-            ]
-        },
-        {
-            "name": "[concat(parameters('factoryName'), '/default/datamart_sql_private_endpoint')]",
-            "type": "Microsoft.DataFactory/factories/managedVirtualNetworks/managedPrivateEndpoints",
-            "apiVersion": "2018-06-01",
-            "properties": {
-                "privateLinkResourceId": "[parameters('datamart_sql_private_endpoint_properties_privateLinkResourceId')]",
-                "groupId": "[parameters('datamart_sql_private_endpoint_properties_groupId')]",
-                "fqdns": "[parameters('datamart_sql_private_endpoint_properties_fqdns')]"
-            },
-            "dependsOn": [
-                "[concat(variables('factoryId'), '/managedVirtualNetworks/default')]"
             ]
         }
     ]
