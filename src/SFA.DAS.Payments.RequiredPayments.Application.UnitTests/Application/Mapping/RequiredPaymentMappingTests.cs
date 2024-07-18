@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using AutoMapper;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Payments.DataLocks.Messages.Events;
+using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.RequiredPayments.Application.Mapping;
+using SFA.DAS.Payments.RequiredPayments.Application.UnitTests.TestHelpers;
 using SFA.DAS.Payments.RequiredPayments.Domain.Entities;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
 
@@ -64,7 +68,16 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Ma
             // Arrange
             var payableEarningEvent = new PayableEarningEvent
             {
-                AgeAtStartOfLearning = 25
+                AgeAtStartOfLearning = 25,
+                LearningAim = EarningEventDataHelper.CreateLearningAim(),
+                PriceEpisodes = new List<PriceEpisode>
+                {
+                    new PriceEpisode
+                    {
+                        LearningAimSequenceNumber = 1,
+                        Identifier = "1"
+                    }
+                }
             };
 
             var requiredPaymentEvent = Activator.CreateInstance(typeof(CalculatedRequiredCoInvestedAmount)) as CalculatedRequiredOnProgrammeAmount;
