@@ -80,22 +80,24 @@ stages:
       datamartEnvironmentName: test
       datamartsqlprivateendpoint: '/subscriptions/68208b91-0105-498e-a1bc-40d75596c01a/resourceGroups/das-test-shared-rg/providers/Microsoft.Sql/servers/das-test-shared-sql'
 
-#- stage: Deploy_SDW
-#  dependsOn: 
-#  - Publish_ADF
-#  - Deploy_SIT
-#  displayName: Deploy to SDW
-#  variables:
-#  - name: tagEnvironment
-#    value: Dev/Test
-#  - group: DCOL-SDW - Environment Key Vault Secrets
-#  jobs:
-#  - template: pipeline/deploy.yml
-#    parameters:
-#      pool: DCT Build Pool
-#      environmentName: SDW
-#      azureSubscription: DCOL-Shadow
-#      deployFactory: true
+- stage: Deploy_SDW
+  dependsOn: 
+  - Publish_ADF
+  - Deploy_SIT
+  displayName: Deploy to SDW
+  variables:
+  - name: tagEnvironment
+    value: Dev/Test
+  - group: DCOL-SDW - Environment Key Vault Secrets
+  jobs:
+  - template: pipeline/deploy.yml
+    parameters:
+      pool: DCT Build Pool
+      environmentName: SDW
+      azureSubscription: DCOL-Shadow
+      deployFactory: true
+      datamartEnvironmentName: dummy
+      datamartsqlprivateendpoint: 'dummy'
 
 #- stage: Deploy_MO
 #  dependsOn: 
