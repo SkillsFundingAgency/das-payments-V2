@@ -97,7 +97,7 @@ stages:
       azureSubscription: DCOL-Shadow
       deployFactory: true
       datamartEnvironmentName: dummy
-      datamartsqlprivateendpoint: 'dummy'
+      datamartsqlprivateendpoint: '/subscriptions/68208b91-0105-498e-a1bc-40d75596c01a/resourceGroups/das-test-shared-rg/providers/Microsoft.Sql/servers/das-test-shared-sql'
 
 #- stage: Deploy_MO
 #  dependsOn: 
