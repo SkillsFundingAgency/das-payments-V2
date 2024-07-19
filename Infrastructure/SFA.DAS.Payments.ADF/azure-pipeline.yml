@@ -99,36 +99,40 @@ stages:
       datamartEnvironmentName: dummy
       datamartsqlprivateendpoint: '/subscriptions/68208b91-0105-498e-a1bc-40d75596c01a/resourceGroups/das-test-shared-rg/providers/Microsoft.Sql/servers/das-test-shared-sql'
 
-#- stage: Deploy_MO
-#  dependsOn: 
-#  - Publish_ADF
-#  - Deploy_SDW
-#  displayName: Deploy to MO
-#  variables:
-#  - name: tagEnvironment
-#    value: Dev/Test
-#  - group: DCOL-MO - Environment Key Vault Secrets
-#  jobs:
-#  - template: pipeline/deploy.yml
-#    parameters:
-#      pool: DCT Build Pool
-#      environmentName: MO
-#      azureSubscription: DCOL-MO-VSTS
-#      deployFactory: true
+- stage: Deploy_MO
+  dependsOn: 
+  - Publish_ADF
+  - Deploy_SDW
+  displayName: Deploy to MO
+  variables:
+  - name: tagEnvironment
+    value: Dev/Test
+  - group: DCOL-MO - Environment Key Vault Secrets
+  jobs:
+  - template: pipeline/deploy.yml
+    parameters:
+      pool: DCT Build Pool
+      environmentName: MO
+      azureSubscription: DCOL-MO-VSTS
+      deployFactory: true
+      datamartEnvironmentName: mo
+      datamartsqlprivateendpoint: '/subscriptions/68ab4436-8f5b-4dff-8339-29959af2a674/resourceGroups/das-mo-shared-rg/providers/Microsoft.Sql/servers/das-mo-shared-sql'
 
-#- stage: Deploy_PD
-#  dependsOn: 
-#  - Publish_ADF
-#  - Deploy_MO
-#  displayName: Deploy to PD
-#  variables:
-#  - name: tagEnvironment
-#    value: Production
-#  - group: DCOL-PD - Environment Key Vault Secrets
-#  jobs:
-#  - template: pipeline/deploy.yml
-#    parameters:
-#      pool: DCT Build Pool
-#      environmentName: PD
-#      azureSubscription: DCOLPDVSTS
-#      deployFactory: true
+- stage: Deploy_PD
+  dependsOn: 
+  - Publish_ADF
+  - Deploy_MO
+  displayName: Deploy to PD
+  variables:
+  - name: tagEnvironment
+    value: Production
+  - group: DCOL-PD - Environment Key Vault Secrets
+  jobs:
+  - template: pipeline/deploy.yml
+    parameters:
+      pool: DCT Build Pool
+      environmentName: PD
+      azureSubscription: DCOLPDVSTS
+      deployFactory: true
+      datamartEnvironmentName: prd
+      datamartsqlprivateendpoint: '/subscriptions/6c93f7dc-6c36-4ea6-8de3-3f4574f88027/resourceGroups/das-prd-shared-rg/providers/Microsoft.Sql/servers/das-prd-shared-sql-we'
