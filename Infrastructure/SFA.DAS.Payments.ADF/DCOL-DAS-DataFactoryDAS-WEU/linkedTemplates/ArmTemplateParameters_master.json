@@ -14,6 +14,12 @@
         "DASPayments_Audit_properties_typeProperties_connectionString_secretName": {
             "value": "DASPaymentAuditDataFactoryConnectionString"
         },
+        "ADF_StagingDB_properties_typeProperties_server": {
+            "value": "das-at-shared-sql.database.windows.net"
+        },
+        "ADF_StagingDB_properties_typeProperties_database": {
+            "value": "das-at-datamgmt-staging-db"
+        },
         "shared_sql_private_endpoint_properties_privateLinkResourceId": {
             "value": "/subscriptions/12f72527-6622-45d3-90a4-0a5d3644c45c/resourceGroups/DCOL-DAS-SqlServer/providers/Microsoft.Sql/servers/dcol-das-sqlserver-weu"
         },
@@ -23,6 +29,17 @@
         "shared_sql_private_endpoint_properties_fqdns": {
             "value": [
                 "dcol-das-sqlserver-weu.database.windows.net"
+            ]
+        },
+        "DEV_ADF_STAGINGDB_properties_privateLinkResourceId": {
+            "value": "/subscriptions/68208b91-0105-498e-a1bc-40d75596c01a/resourceGroups/das-at-shared-rg/providers/Microsoft.Sql/servers/das-at-shared-sql"
+        },
+        "DEV_ADF_STAGINGDB_properties_groupId": {
+            "value": "sqlServer"
+        },
+        "DEV_ADF_STAGINGDB_properties_fqdns": {
+            "value": [
+                "das-at-shared-sql.database.windows.net"
             ]
         },
         "containerUri": {
