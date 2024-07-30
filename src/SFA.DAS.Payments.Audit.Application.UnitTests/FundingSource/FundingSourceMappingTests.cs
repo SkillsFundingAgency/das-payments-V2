@@ -234,6 +234,13 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.FundingSource
             Mapper.Map<FundingSourceEventModel>(PaymentEvent).AgeAtStartOfLearning.Should().Be(17);
         }
 
+        [TestCase(FundingPlatformType.SubmitLearnerData)]
+        [TestCase(FundingPlatformType.DigitalApprenticeshipService)]
+        public void Maps_FundingPlatformType(FundingPlatformType fundingPlatformType)
+        {
+            PaymentEvent.FundingPlatformType = fundingPlatformType;
+            Mapper.Map<FundingSourceEventModel>(PaymentEvent).FundingPlatformType.Should().Be(fundingPlatformType);
+        }
 
         protected virtual void PopulateCommonProperties(TSource paymentEvent)
         {

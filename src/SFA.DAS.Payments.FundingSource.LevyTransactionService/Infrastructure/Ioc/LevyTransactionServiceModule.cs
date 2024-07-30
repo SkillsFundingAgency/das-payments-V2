@@ -8,6 +8,7 @@ using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.FundingSource.LevyTransactionService.Handlers;
+using SFA.DAS.Payments.FundingSource.Messages.Commands;
 using SFA.DAS.Payments.Messaging.Serialization;
 using SFA.DAS.Payments.Monitoring.Jobs.Client;
 using SFA.DAS.Payments.Monitoring.Jobs.Messages.Commands;
@@ -39,6 +40,10 @@ namespace SFA.DAS.Payments.FundingSource.LevyTransactionService.Infrastructure.I
 
             builder.RegisterType<RecordLevyTransactionBatchHandler>()
                 .As<IHandleMessageBatches<CalculatedRequiredLevyAmount>>()
+                .InstancePerLifetimeScope();
+
+            builder.RegisterType<CalculateOnProgrammePaymentHandler>()
+                .As<IHandleMessageBatches<CalculateOnProgrammePayment>>()
                 .InstancePerLifetimeScope();
 
             builder.RegisterType<JobMessageClientFactory>().AsImplementedInterfaces().InstancePerLifetimeScope();
