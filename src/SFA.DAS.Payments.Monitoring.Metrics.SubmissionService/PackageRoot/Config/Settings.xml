@@ -14,8 +14,8 @@
     <Parameter Name="MonitoringServiceBusConnectionString" Value="" />
     <Parameter Name="PaymentsConnectionString" Value="" />
     <Parameter Name="PaymentsMonitoringConnectionString" Value="" />
-    <Parameter Name="DcEarnings2223ConnectionString" Value="" />
     <Parameter Name="DcEarnings2324ConnectionString" Value="" />
+    <Parameter Name="DcEarnings2425ConnectionString" Value="" />
     <Parameter Name="PaymentsMetricsConnectionString" Value="" />
   </Section>
   <Section Name="Settings">

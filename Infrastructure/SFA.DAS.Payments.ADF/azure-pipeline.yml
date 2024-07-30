@@ -40,6 +40,9 @@ stages:
       pool: DCT Build Pool
       environmentName: DAS
       azureSubscription: DCT-VSO
+      datamartEnvironmentName: at
+      datamartsqlprivateendpoint: /subscriptions/68208b91-0105-498e-a1bc-40d75596c01a/resourceGroups/das-at-shared-rg/providers/Microsoft.Sql/servers/das-at-shared-sql
+      
 
 - stage: Deploy_DST
   dependsOn: Publish_ADF
@@ -55,6 +58,8 @@ stages:
       environmentName: DST
       azureSubscription: DCT-VSO
       deployFactory: true
+      datamartEnvironmentName: at
+      datamartsqlprivateendpoint: '/subscriptions/68208b91-0105-498e-a1bc-40d75596c01a/resourceGroups/das-at-shared-rg/providers/Microsoft.Sql/servers/das-at-shared-sql'
 
 - stage: Deploy_SIT
   dependsOn: 
@@ -72,6 +77,8 @@ stages:
       environmentName: SIT
       azureSubscription: DCT-VSO
       deployFactory: true
+      datamartEnvironmentName: test
+      datamartsqlprivateendpoint: '/subscriptions/68208b91-0105-498e-a1bc-40d75596c01a/resourceGroups/das-test-shared-rg/providers/Microsoft.Sql/servers/das-test-shared-sql'
 
 - stage: Deploy_SDW
   dependsOn: 
@@ -89,6 +96,9 @@ stages:
       environmentName: SDW
       azureSubscription: DCOL-Shadow
       deployFactory: true
+      datamartEnvironmentName: dummy
+      datamartsqlprivateendpoint: '/subscriptions/68208b91-0105-498e-a1bc-40d75596c01a/resourceGroups/das-test-shared-rg/providers/Microsoft.Sql/servers/das-test-shared-sql'
+
 - stage: Deploy_MO
   dependsOn: 
   - Publish_ADF
@@ -105,6 +115,8 @@ stages:
       environmentName: MO
       azureSubscription: DCOL-MO-VSTS
       deployFactory: true
+      datamartEnvironmentName: mo
+      datamartsqlprivateendpoint: '/subscriptions/68ab4436-8f5b-4dff-8339-29959af2a674/resourceGroups/das-mo-shared-rg/providers/Microsoft.Sql/servers/das-mo-shared-sql'
 
 - stage: Deploy_PD
   dependsOn: 
@@ -122,3 +134,5 @@ stages:
       environmentName: PD
       azureSubscription: DCOLPDVSTS
       deployFactory: true
+      datamartEnvironmentName: prd
+      datamartsqlprivateendpoint: '/subscriptions/6c93f7dc-6c36-4ea6-8de3-3f4574f88027/resourceGroups/das-prd-shared-rg/providers/Microsoft.Sql/servers/das-prd-shared-sql-we'

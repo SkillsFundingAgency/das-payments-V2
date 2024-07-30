@@ -19,6 +19,14 @@
             "type": "string",
             "defaultValue": "DASPaymentAuditDataFactoryConnectionString"
         },
+        "ADF_StagingDB_properties_typeProperties_server": {
+            "type": "string",
+            "defaultValue": "das-at-shared-sql.database.windows.net"
+        },
+        "ADF_StagingDB_properties_typeProperties_database": {
+            "type": "string",
+            "defaultValue": "das-at-datamgmt-staging-db"
+        },
         "shared_sql_private_endpoint_properties_privateLinkResourceId": {
             "type": "string",
             "defaultValue": "/subscriptions/12f72527-6622-45d3-90a4-0a5d3644c45c/resourceGroups/DCOL-DAS-SqlServer/providers/Microsoft.Sql/servers/dcol-das-sqlserver-weu"
@@ -31,6 +39,20 @@
             "type": "array",
             "defaultValue": [
                 "dcol-das-sqlserver-weu.database.windows.net"
+            ]
+        },
+        "DEV_ADF_STAGINGDB_properties_privateLinkResourceId": {
+            "type": "string",
+            "defaultValue": "/subscriptions/68208b91-0105-498e-a1bc-40d75596c01a/resourceGroups/das-at-shared-rg/providers/Microsoft.Sql/servers/das-at-shared-sql"
+        },
+        "DEV_ADF_STAGINGDB_properties_groupId": {
+            "type": "string",
+            "defaultValue": "sqlServer"
+        },
+        "DEV_ADF_STAGINGDB_properties_fqdns": {
+            "type": "array",
+            "defaultValue": [
+                "das-at-shared-sql.database.windows.net"
             ]
         },
         "containerUri": {
@@ -63,12 +85,6 @@
                     "AzureKeyVault1_properties_typeProperties_baseUrl": {
                         "value": "[parameters('AzureKeyVault1_properties_typeProperties_baseUrl')]"
                     },
-                    "DASPayments_properties_typeProperties_connectionString_secretName": {
-                        "value": "[parameters('DASPayments_properties_typeProperties_connectionString_secretName')]"
-                    },
-                    "DASPayments_Audit_properties_typeProperties_connectionString_secretName": {
-                        "value": "[parameters('DASPayments_Audit_properties_typeProperties_connectionString_secretName')]"
-                    },
                     "shared_sql_private_endpoint_properties_privateLinkResourceId": {
                         "value": "[parameters('shared_sql_private_endpoint_properties_privateLinkResourceId')]"
                     },
@@ -77,6 +93,27 @@
                     },
                     "shared_sql_private_endpoint_properties_fqdns": {
                         "value": "[parameters('shared_sql_private_endpoint_properties_fqdns')]"
+                    },
+                    "DEV_ADF_STAGINGDB_properties_privateLinkResourceId": {
+                        "value": "[parameters('DEV_ADF_STAGINGDB_properties_privateLinkResourceId')]"
+                    },
+                    "DEV_ADF_STAGINGDB_properties_groupId": {
+                        "value": "[parameters('DEV_ADF_STAGINGDB_properties_groupId')]"
+                    },
+                    "DEV_ADF_STAGINGDB_properties_fqdns": {
+                        "value": "[parameters('DEV_ADF_STAGINGDB_properties_fqdns')]"
+                    },
+                    "DASPayments_properties_typeProperties_connectionString_secretName": {
+                        "value": "[parameters('DASPayments_properties_typeProperties_connectionString_secretName')]"
+                    },
+                    "DASPayments_Audit_properties_typeProperties_connectionString_secretName": {
+                        "value": "[parameters('DASPayments_Audit_properties_typeProperties_connectionString_secretName')]"
+                    },
+                    "ADF_StagingDB_properties_typeProperties_server": {
+                        "value": "[parameters('ADF_StagingDB_properties_typeProperties_server')]"
+                    },
+                    "ADF_StagingDB_properties_typeProperties_database": {
+                        "value": "[parameters('ADF_StagingDB_properties_typeProperties_database')]"
                     }
                 }
             },
