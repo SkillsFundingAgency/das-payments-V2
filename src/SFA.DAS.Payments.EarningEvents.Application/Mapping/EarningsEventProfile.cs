@@ -32,6 +32,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Mapping
                     opt => opt.MapFrom(source =>
                         source.Aims.OrderBy(aim => aim.LearningDeliveryValues.LearnStartDate).First()
                             .LearningDeliveryValues.AgeAtProgStart))
+                .ForMember(dest => dest.FundingPlatformType, opt => opt.Ignore())
                 .AfterMap((intermediateLearningAim, earningEvent) => earningEvent.PriceEpisodes.ForEach(pe =>
                     pe.CourseStartDate = intermediateLearningAim.Aims
                         .First(x => x.AimSeqNumber == pe.LearningAimSequenceNumber).LearningDeliveryValues
