@@ -51,7 +51,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Configuratio
                     .Include<CalculatedRequiredLevyAmount, SfaFullyFundedFundingSourcePaymentEvent>()
                     .ForMember(fundingSourcePaymentEvent => fundingSourcePaymentEvent.AmountDue, opt => opt.Ignore())
                     .ForMember(fundingSourcePaymentEvent => fundingSourcePaymentEvent.TransactionType, opt => opt.MapFrom(source => (TransactionType)source.OnProgrammeEarningType))
-                    .ForMember(fundingSourcePaymentEvent => fundingSourcePaymentEvent.AgeAtStartOfLearning, opt => opt.MapFrom(source => source.AgeAtStartOfLearning));
+                    .ForMember(fundingSourcePaymentEvent => fundingSourcePaymentEvent.AgeAtStartOfLearning, opt => opt.MapFrom(source => source.AgeAtStartOfLearning))
+                    .ForMember(fundingSourcePaymentEvent => fundingSourcePaymentEvent.FundingPlatformType, opt => opt.MapFrom(source => source.FundingPlatformType));
 
                 cfg.CreateMap<CalculatedRequiredCoInvestedAmount, EmployerCoInvestedFundingSourcePaymentEvent>();
                 cfg.CreateMap<CalculatedRequiredCoInvestedAmount, SfaCoInvestedFundingSourcePaymentEvent>();
