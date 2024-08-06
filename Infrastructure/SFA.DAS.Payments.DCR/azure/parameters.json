@@ -1,0 +1,12 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "dataCollectionRules_DCOL_SDW_ServiceFabric_DCR_name": {
+            "value": null
+        },
+        "workspaces_DCOL_SDW_OPS_WEU_Workspace_externalid": {
+            "value": null
+        }
+    }
+}
