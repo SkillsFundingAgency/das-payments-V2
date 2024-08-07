@@ -2,11 +2,11 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "dataCollectionRules_DCOL_SDW_ServiceFabric_DCR_name": {
+        "dataCollectionRules_DCOL_ServiceFabric_DCR_name": {
             "defaultValue": "DCOL-SDW-ServiceFabric-DCR",
             "type": "String"
         },
-        "workspaces_DCOL_SDW_OPS_WEU_Workspace_externalid": {
+        "workspaces_DCOL_OPS_WEU_Workspace_externalid": {
             "defaultValue": "/subscriptions/4ff47917-ac4e-432a-b314-a6525434afcb/resourceGroups/dcol-sdw-ops-weu/providers/Microsoft.OperationalInsights/workspaces/DCOL-SDW-OPS-WEU-Workspace",
             "type": "String"
         }
@@ -16,7 +16,7 @@
         {
             "type": "Microsoft.Insights/dataCollectionRules",
             "apiVersion": "2023-03-11",
-            "name": "[parameters('dataCollectionRules_DCOL_SDW_ServiceFabric_DCR_name')]",
+            "name": "[parameters('dataCollectionRules_DCOL_ServiceFabric_DCR_name')]",
             "location": "westeurope",
             "tags": {
                 "Environment": "Dev/Test",
@@ -87,7 +87,7 @@
                 "destinations": {
                     "logAnalytics": [
                         {
-                            "workspaceResourceId": "[parameters('workspaces_DCOL_SDW_OPS_WEU_Workspace_externalid')]",
+                            "workspaceResourceId": "[parameters('workspaces_DCOL_OPS_WEU_Workspace_externalid')]",
                             "name": "la--1544433382"
                         }
                     ]

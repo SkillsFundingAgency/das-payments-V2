@@ -46,34 +46,30 @@ stages:
       pool: DCT Build Pool
       environmentName: SDW
       azureSubscription: DCOL-Shadow
-      dataCollectionRules_DCOL_SDW_ServiceFabric_DCR_name: DCOL-SDW-ServiceFabric-DCR
-      workspaces_DCOL_SDW_OPS_WEU_Workspace_externalid: /subscriptions/4ff47917-ac4e-432a-b314-a6525434afcb/resourceGroups/dcol-sdw-ops-weu/providers/Microsoft.OperationalInsights/workspaces/DCOL-SDW-OPS-WEU-Workspace
+      dataCollectionRules_DCOL_ServiceFabric_DCR_name: DCOL-SDW-ServiceFabric-DCR
+      workspaces_DCOL_OPS_WEU_Workspace_externalid: /subscriptions/4ff47917-ac4e-432a-b314-a6525434afcb/resourceGroups/dcol-sdw-ops-weu/providers/Microsoft.OperationalInsights/workspaces/DCOL-SDW-OPS-WEU-Workspace
       
 
  
-#- stage: Deploy_MO
-#  dependsOn: 
-#  - Publish_SFClusterAlerts
-#  - Deploy_SDW
-#  displayName: Deploy to MO
-#  variables:
-#  - name: tagEnvironment
-#    value: Dev/Test
-#  - group: DCOL-MO - Environment Key Vault Secrets
-#  - group: Common - tags MO
-#  jobs:
-#  - template: pipeline/deploy.yml
-#    parameters:
-#      pool: DCT Build Pool
-#      environmentName: MO
-#      azureSubscription: DCOL-MO-VSTS
-#      metricAlerts_VM_CPU_Alert_name: VM-CPU-Alert-MO
-#      virtualMachineScaleSets_monitor_externalid: /subscriptions/2f538936-0715-4dfd-83da-6b8c5a399d6a/resourceGroups/dcol-mo-servicefabricdas-weu/providers/Microsoft.Compute/virtualMachineScaleSets/monitor
-#      actionGroups_dcol_dasalerts_actiongroup_externalid: /subscriptions/2f538936-0715-4dfd-83da-6b8c5a399d6a/resourceGroups/DCOL-MO-OPS-WEU/providers/microsoft.insights/actionGroups/SFA-FCS-MO-PV2
-#      metricAlerts_VM_Available_Memory_Alert_name: VM-Available-Memory-Alert-MO
-#      actiongroups_dcol_dasalerts_actiongroup_weu_externalid: /subscriptions/2f538936-0715-4dfd-83da-6b8c5a399d6a/resourceGroups/DCOL-MO-OPS-WEU/providers/microsoft.insights/actionGroups/SFA-FCS-MO-PV2
-#      metricAlerts_VM_Availability_Alert_name: VM-Availability-Alert-MO
-#      actionGroups_SFCluster_VMAlerts_externalid: /subscriptions/2f538936-0715-4dfd-83da-6b8c5a399d6a/resourceGroups/DCOL-MO-OPS-WEU/providers/microsoft.insights/actionGroups/SFA-FCS-MO-PV2
+- stage: Deploy_MO
+  dependsOn: 
+  - Publish_DCR_Rules
+  - Deploy_SDW
+  displayName: Deploy to MO
+  variables:
+  - name: tagEnvironment
+    value: Dev/Test
+  - group: DCOL-MO - Environment Key Vault Secrets
+  - group: Common - tags MO
+  jobs:
+  - template: pipeline/deploy.yml
+    parameters:
+      pool: DCT Build Pool
+      environmentName: MO
+      azureSubscription: DCOL-MO-VSTS
+      dataCollectionRules_DCOL_ServiceFabric_DCR_name: DCOL-MO-ServiceFabric-DCR
+      workspaces_DCOL_OPS_WEU_Workspace_externalid: /subscriptions/2f538936-0715-4dfd-83da-6b8c5a399d6a/resourceGroups/dcol-mo-ops-weu/providers/Microsoft.OperationalInsights/workspaces/DCOL-MO-OMS-WEU
+#      
 
 #- stage: Deploy_PP
 #  dependsOn: 
