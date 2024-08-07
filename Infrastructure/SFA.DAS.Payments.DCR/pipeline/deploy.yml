@@ -3,8 +3,8 @@ parameters:
   azureSubscription:
   location: 'westeurope'
   environmentName:
-  dataCollectionRules_DCOL_SDW_ServiceFabric_DCR_name:
-  workspaces_DCOL_SDW_OPS_WEU_Workspace_externalid:
+  dataCollectionRules_DCOL_ServiceFabric_DCR_name:
+  workspaces_DCOL_OPS_WEU_Workspace_externalid:
   
   
 
@@ -18,10 +18,10 @@ jobs:
   variables: 
     - name: resourceGroupName
       value: '$(Service)-${{ parameters.environmentName }}-ServiceFabricDAS-$(RegionPrimaryCode)'
-    - name: dataCollectionRules_DCOL_SDW_ServiceFabric_DCR_name
-      value: '${{ parameters.dataCollectionRules_DCOL_SDW_ServiceFabric_DCR_name }}'
-    - name: workspaces_DCOL_SDW_OPS_WEU_Workspace_externalid
-      value: ${{ parameters.workspaces_DCOL_SDW_OPS_WEU_Workspace_externalid }}
+    - name: dataCollectionRules_DCOL_ServiceFabric_DCR_name
+      value: '${{ parameters.dataCollectionRules_DCOL_ServiceFabric_DCR_name }}'
+    - name: workspaces_DCOL_OPS_WEU_Workspace_externalid
+      value: ${{ parameters.workspaces_DCOL_OPS_WEU_Workspace_externalid }}
     
     
     
@@ -56,5 +56,5 @@ jobs:
             location: '${{ parameters.location }}'
             csmFile: '$(Pipeline.Workspace)/drop/Infrastructure/SFA.DAS.Payments.DCR/azure/template.json'
             csmParametersFile: '$(Pipeline.Workspace)/drop/Infrastructure/SFA.DAS.Payments.DCR/azure/parameters.json'
-            overrideParameters: '-dataCollectionRules_DCOL_SDW_ServiceFabric_DCR_name "${{ variables.dataCollectionRules_DCOL_SDW_ServiceFabric_DCR_name }}" -workspaces_DCOL_SDW_OPS_WEU_Workspace_externalid "${{ variables.workspaces_DCOL_SDW_OPS_WEU_Workspace_externalid }}"'
+            overrideParameters: '-dataCollectionRules_DCOL_ServiceFabric_DCR_name "${{ variables.dataCollectionRules_DCOL_ServiceFabric_DCR_name }}" -workspaces_DCOL_OPS_WEU_Workspace_externalid "${{ variables.workspaces_DCOL_OPS_WEU_Workspace_externalid }}"'
             deploymentOutputs: armoutputs
