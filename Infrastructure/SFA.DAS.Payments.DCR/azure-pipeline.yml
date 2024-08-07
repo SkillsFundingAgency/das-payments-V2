@@ -23,7 +23,7 @@ trigger:
     - Infrastructure/SFA.DAS.Payments.SFCluster.Alerts
 
 stages:
-- stage: Publish_DCR.Rules
+- stage: Publish_DCR_Rules
   displayName: Publish DCR_Rules
 
   jobs:
@@ -33,7 +33,7 @@ stages:
 
 - stage: Deploy_SDW
   dependsOn: 
-  - Publish_DCR.Rules
+  - Publish_DCR_Rules
 
   displayName: Deploy to SDW
   variables:
