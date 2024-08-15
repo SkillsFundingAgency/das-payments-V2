@@ -19,6 +19,7 @@ namespace SFA.DAS.Payments.EarningEvents.Messages.Events
         public short CollectionYear { get; set; }
 
         private static Type[] inheritors;
+        public int? AgeAtStartOfLearning { get; set; }
         private static Type[] GetInheritors()
         {
             return inheritors ?? (inheritors = typeof(EarningEvent).Assembly.GetTypes()

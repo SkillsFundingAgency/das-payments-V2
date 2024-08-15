@@ -228,6 +228,12 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.FundingSource
             Mapper.Map<FundingSourceEventModel>(PaymentEvent).LearningAimStandardCode.Should().Be(PaymentEvent.LearningAim.StandardCode);
         }
 
+        [Test]
+        public void Maps_AgeAtStartOfLearning()
+        {
+            Mapper.Map<FundingSourceEventModel>(PaymentEvent).AgeAtStartOfLearning.Should().Be(17);
+        }
+
 
         protected virtual void PopulateCommonProperties(TSource paymentEvent)
         {
@@ -256,6 +262,7 @@ namespace SFA.DAS.Payments.Audit.Application.UnitTests.FundingSource
             paymentEvent.ApprenticeshipPriceEpisodeId = 600L;
             paymentEvent.RequiredPaymentEventId = Guid.NewGuid();
             paymentEvent.SfaContributionPercentage = .9M;
+            paymentEvent.AgeAtStartOfLearning = 17;
         }
     }
 }

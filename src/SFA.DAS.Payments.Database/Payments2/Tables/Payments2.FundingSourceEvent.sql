@@ -42,7 +42,8 @@ CREATE TABLE [Payments2].[FundingSourceEvent]
 	ApprenticeshipPriceEpisodeId BIGINT NULL,
 	ApprenticeshipEmployerType TINYINT NULL, 
 	NonPaymentReason TINYINT NULL,
-	DuplicateNumber INT NULL
+	DuplicateNumber INT NULL,
+	AgeAtStartOfLearning TINYINT NULL
 )
 GO
 

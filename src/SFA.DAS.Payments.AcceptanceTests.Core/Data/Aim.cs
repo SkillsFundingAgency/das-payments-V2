@@ -24,6 +24,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
             PathwayCode = training.PathwayCode;
             FundingLineType = training.FundingLineType;
             CompletionStatus = CompletionStatusFromString(training.CompletionStatus);
+            AgeAtProgrammeStart = training.AgeAtStart;
         }
 
         CompletionStatus CompletionStatusFromString(string completionStatus)
@@ -62,5 +63,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
         public int PathwayCode { get; set; }
 
         public bool IsMainAim => AimReference == "ZPROG001";
+
+        public int? AgeAtProgrammeStart { get; set; }
     }
 }
