@@ -179,7 +179,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Mapping
                 .ForMember(dest => dest.LearningAim, opt => opt.Ignore())
                 .ForMember(dest => dest.IncentiveEarnings, opt => opt.Ignore())
                 .ForMember(dest => dest.OnProgrammeEarnings, opt => opt.Ignore())
-                .ForMember(dest => dest.FundingPlatformType, opt => opt.Ignore());
+                ;
 
             CreateMap<EarningEventPeriodModel, EarningPeriod>()
                 .ForMember(dest => dest.PriceEpisodeIdentifier, opt => opt.MapFrom(source => source.PriceEpisodeIdentifier))
@@ -245,7 +245,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Mapping
                 .ForMember(dest => dest.Learner, opt => opt.Ignore())
                 .ForMember(dest => dest.LearningAim, opt => opt.Ignore())
                 .ForMember(dest => dest.Earnings, opt => opt.Ignore())
-                .ForMember(dest => dest.FundingPlatformType, opt => opt.Ignore());
+                ;
         }
     }
 }

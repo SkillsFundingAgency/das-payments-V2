@@ -5,7 +5,6 @@ using System.Runtime.Serialization;
 using SFA.DAS.Payments.Messages.Core;
 using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core;
-using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.EarningEvents.Messages.Events
 {
@@ -21,7 +20,6 @@ namespace SFA.DAS.Payments.EarningEvents.Messages.Events
         
         private static Type[] inheritors;
         public int? AgeAtStartOfLearning { get; set; }
-        public FundingPlatformType FundingPlatformType { get; set; }
         private static Type[] GetInheritors()
         {
             return inheritors ?? (inheritors = typeof(EarningEvent).Assembly.GetTypes()

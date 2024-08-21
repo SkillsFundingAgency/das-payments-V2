@@ -4,7 +4,6 @@ using System.Linq;
 using System.Runtime.Serialization;
 using SFA.DAS.Payments.Messages.Core.Events;
 using SFA.DAS.Payments.Model.Core;
-using SFA.DAS.Payments.Model.Core.Entities;
 using SFA.DAS.Payments.Model.Core.Incentives;
 using SFA.DAS.Payments.Model.Core.OnProgramme;
 
@@ -19,7 +18,6 @@ namespace SFA.DAS.Payments.DataLocks.Messages.Events
         public string AgreementId { get; set; }
         public List<OnProgrammeEarning> OnProgrammeEarnings { get; set; } 
         public List<IncentiveEarning> IncentiveEarnings { get; set; }
-        public FundingPlatformType FundingPlatformType { get; set; }
         private static Type[] inheritors;
         private static Type[] GetInheritors()
         {
