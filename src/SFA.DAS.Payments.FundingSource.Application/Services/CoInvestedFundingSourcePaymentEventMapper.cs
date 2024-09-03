@@ -40,7 +40,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
         private static CoInvestedFundingSourcePaymentEvent MapCommonCoInvestedPaymentEventData(FundingSourcePayment payment, CoInvestedFundingSourcePaymentEvent coInvestedPaymentEvent)
         {
             coInvestedPaymentEvent.AmountDue = payment.AmountDue;
-            coInvestedPaymentEvent.FundingPlatformType = payment.FundingPlatformType;
             return coInvestedPaymentEvent;
         }
     }
