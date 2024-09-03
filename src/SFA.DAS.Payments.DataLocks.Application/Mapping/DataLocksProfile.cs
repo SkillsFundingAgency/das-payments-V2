@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Fabric.Health;
 using AutoMapper;
 using SFA.DAS.CommitmentsV2.Messages.Events;
 using SFA.DAS.Payments.DataLocks.Domain.Models;
@@ -25,7 +24,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Mapping
                 .ForMember(destinationMember => destinationMember.EventId, opt => opt.Ignore())
                 .ForMember(destinationMember => destinationMember.AgeAtStartOfLearning,
                     opt => opt.MapFrom(source => source.AgeAtStartOfLearning));
-                
+
 
             CreateMap<ApprenticeshipContractType1EarningEvent, EarningFailedDataLockMatching>()
                 .ForMember(destinationMember => destinationMember.EarningEventId, opt => opt.MapFrom(source => source.EventId))
@@ -135,7 +134,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Mapping
                 .ForMember(dest => dest.CreationDate, opt => opt.Ignore())
                 .ForMember(dest => dest.ApprenticeshipPauses, opt => opt.Ignore())
                 ;
-            
+
             CreateMap<ApprenticeshipUpdatedApprovedEvent, UpdatedApprenticeshipApprovedModel>()
                 .ForMember(dest => dest.ApprenticeshipId, opt => opt.MapFrom(source => source.ApprenticeshipId))
                 .ForMember(dest => dest.StandardCode, opt => opt.MapFrom(source => source.TrainingCode.ToStandardCode(source.TrainingType)))
@@ -161,25 +160,19 @@ namespace SFA.DAS.Payments.DataLocks.Application.Mapping
             CreateMap<EarningEventModel, ApprenticeshipContractType1EarningEvent>()
                 .ForMember(dest => dest.AgreementId, opt => opt.MapFrom(source => source.AgreementId))
                 .ForMember(dest => dest.Ukprn, opt => opt.MapFrom(source => source.Ukprn))
-                .ForMember(dest => dest.CollectionPeriod,
-                    opt => opt.MapFrom(source =>
-                        CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(source.AcademicYear,
-                            source.CollectionPeriod)))
+                .ForMember(dest => dest.CollectionPeriod, opt => opt.MapFrom(source => CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(source.AcademicYear, source.CollectionPeriod)))
                 .ForMember(dest => dest.CollectionYear, opt => opt.MapFrom(source => source.AcademicYear))
                 .ForMember(dest => dest.EventId, opt => opt.MapFrom(source => source.EventId))
                 .ForMember(dest => dest.EventTime, opt => opt.MapFrom(source => source.EventTime))
-                .ForMember(dest => dest.IlrSubmissionDateTime,
-                    opt => opt.MapFrom(source => source.IlrSubmissionDateTime))
+                .ForMember(dest => dest.IlrSubmissionDateTime, opt => opt.MapFrom(source => source.IlrSubmissionDateTime))
                 .ForMember(dest => dest.JobId, opt => opt.MapFrom(source => source.JobId))
                 .ForMember(dest => dest.IlrFileName, opt => opt.MapFrom(source => source.IlrFileName))
-                .ForMember(dest => dest.SfaContributionPercentage,
-                    opt => opt.MapFrom(source => source.SfaContributionPercentage))
+                .ForMember(dest => dest.SfaContributionPercentage, opt => opt.MapFrom(source => source.SfaContributionPercentage))
                 .ForMember(dest => dest.PriceEpisodes, opt => opt.MapFrom(source => source.PriceEpisodes))
                 .ForMember(dest => dest.Learner, opt => opt.Ignore())
                 .ForMember(dest => dest.LearningAim, opt => opt.Ignore())
                 .ForMember(dest => dest.IncentiveEarnings, opt => opt.Ignore())
-                .ForMember(dest => dest.OnProgrammeEarnings, opt => opt.Ignore())
-                ;
+                .ForMember(dest => dest.OnProgrammeEarnings, opt => opt.Ignore());
 
             CreateMap<EarningEventPeriodModel, EarningPeriod>()
                 .ForMember(dest => dest.PriceEpisodeIdentifier, opt => opt.MapFrom(source => source.PriceEpisodeIdentifier))
@@ -198,7 +191,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Mapping
             CreateMap<EarningEventModel, Learner>()
                 .ForMember(dest => dest.ReferenceNumber, opt => opt.MapFrom(source => source.LearnerReferenceNumber))
                 .ForMember(dest => dest.Uln, opt => opt.MapFrom(source => source.LearnerUln));
-                
+
             CreateMap<EarningEventModel, LearningAim>()
                 .ForMember(dest => dest.Reference, opt => opt.MapFrom(source => source.LearningAimReference))
                 .ForMember(dest => dest.ProgrammeType, opt => opt.MapFrom(source => source.LearningAimProgrammeType))
@@ -244,8 +237,8 @@ namespace SFA.DAS.Payments.DataLocks.Application.Mapping
                 .ForMember(dest => dest.ContractType, opt => opt.UseValue(ContractType.Act1))
                 .ForMember(dest => dest.Learner, opt => opt.Ignore())
                 .ForMember(dest => dest.LearningAim, opt => opt.Ignore())
-                .ForMember(dest => dest.Earnings, opt => opt.Ignore())
-                ;
+                .ForMember(dest => dest.Earnings, opt => opt.Ignore());
+
         }
     }
 }
