@@ -93,6 +93,43 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
         }
 
         [Test]
+        public void ShouldMapToValidEmployerCoInvestedFundingSourcePaymentEvent()
+        {
+            //Arrange 
+            var coInvestedPayment = new EmployerCoInvestedPayment
+            {
+                AmountDue = 100.00m,
+                Type = FundingSourceType.CoInvestedEmployer
+            };
+
+            var expectedPayment = new EmployerCoInvestedFundingSourcePaymentEvent
+            {
+                EventId = Guid.NewGuid(),
+                RequiredPaymentEventId = requiredCoInvestedAmount.EventId,
+                AmountDue = 100.00m,
+                ContractType = ContractType.Act2,
+                SfaContributionPercentage = requiredCoInvestedAmount.SfaContributionPercentage,
+                CollectionPeriod = requiredCoInvestedAmount.CollectionPeriod,
+                DeliveryPeriod = requiredCoInvestedAmount.DeliveryPeriod,
+                EventTime = requiredCoInvestedAmount.EventTime,
+                JobId = requiredCoInvestedAmount.JobId,
+                Learner = requiredCoInvestedAmount.Learner,
+                TransactionType = (TransactionType)requiredCoInvestedAmount.OnProgrammeEarningType,
+                LearningAim = requiredCoInvestedAmount.LearningAim,
+                PriceEpisodeIdentifier = requiredCoInvestedAmount.PriceEpisodeIdentifier,
+                Ukprn = requiredCoInvestedAmount.Ukprn,
+                FundingSourceType = FundingSourceType.CoInvestedEmployer,
+                AccountId = 1000000,
+                ApprenticeshipEmployerType = requiredCoInvestedAmount.ApprenticeshipEmployerType,
+            };
+            
+            var actualEmployerCoInvestedPayment = coInvestedFundingMapper.MapToCoInvestedPaymentEvent(requiredCoInvestedAmount, coInvestedPayment);
+            expectedPayment.EventId = actualEmployerCoInvestedPayment.EventId;
+            expectedPayment.EventTime = actualEmployerCoInvestedPayment.EventTime;
+            actualEmployerCoInvestedPayment.Should().BeEquivalentTo(expectedPayment);
+        }
+
+        [Test]
         public void ShouldMapToValidRequiredCoInvestedPayment()
         {
             var expectedRequiredCoInvestedPayment = new RequiredCoInvestedPayment
