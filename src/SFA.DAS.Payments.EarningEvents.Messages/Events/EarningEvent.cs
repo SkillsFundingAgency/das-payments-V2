@@ -17,7 +17,7 @@ namespace SFA.DAS.Payments.EarningEvents.Messages.Events
         public List<PriceEpisode> PriceEpisodes { get; set; }
 
         public short CollectionYear { get; set; }
-
+        
         private static Type[] inheritors;
         public int? AgeAtStartOfLearning { get; set; }
         private static Type[] GetInheritors()

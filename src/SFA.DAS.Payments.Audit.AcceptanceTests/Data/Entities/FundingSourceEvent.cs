@@ -1,4 +1,5 @@
 ﻿using System;
+using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.Audit.AcceptanceTests.Data.Entities
 {
@@ -28,5 +29,6 @@ namespace SFA.DAS.Payments.Audit.AcceptanceTests.Data.Entities
         public DateTime IlrSubmissionDateTime { get; set; } // IlrSubmissionDateTime
         public long JobId { get; set; } // JobId
         public DateTimeOffset EventTime { get; set; } // EventTime
+        public FundingPlatformType FundingPlatformType { get; set; } 
     }
 }

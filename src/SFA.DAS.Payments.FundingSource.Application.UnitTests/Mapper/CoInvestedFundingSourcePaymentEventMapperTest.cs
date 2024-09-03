@@ -62,6 +62,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
             {
                 AmountDue = 900.00m,
                 Type = FundingSourceType.CoInvestedSfa,
+                FundingPlatformType = FundingPlatformType.SubmitLearnerData
             };
 
             var expectedPayment = new SfaCoInvestedFundingSourcePaymentEvent
@@ -81,7 +82,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
                 Ukprn = requiredCoInvestedAmount.Ukprn,
                 FundingSourceType = FundingSourceType.CoInvestedSfa,
                 AccountId = 1000000,
-                ApprenticeshipEmployerType = requiredCoInvestedAmount.ApprenticeshipEmployerType,
+                ApprenticeshipEmployerType = requiredCoInvestedAmount.ApprenticeshipEmployerType
             };
 
             var actualSfaCoInvestedPayment = coInvestedFundingMapper.MapToCoInvestedPaymentEvent(requiredCoInvestedAmount, coInvestedPayment);
@@ -90,7 +91,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
 
             actualSfaCoInvestedPayment.Should().BeEquivalentTo(expectedPayment);
         }
-
 
         [Test]
         public void ShouldMapToValidEmployerCoInvestedFundingSourcePaymentEvent()
@@ -122,9 +122,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
                 AccountId = 1000000,
                 ApprenticeshipEmployerType = requiredCoInvestedAmount.ApprenticeshipEmployerType,
             };
-
-
-
+            
             var actualEmployerCoInvestedPayment = coInvestedFundingMapper.MapToCoInvestedPaymentEvent(requiredCoInvestedAmount, coInvestedPayment);
             expectedPayment.EventId = actualEmployerCoInvestedPayment.EventId;
             expectedPayment.EventTime = actualEmployerCoInvestedPayment.EventTime;
