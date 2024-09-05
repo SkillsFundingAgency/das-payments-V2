@@ -34,5 +34,6 @@ namespace SFA.DAS.Payments.FundingSource.Messages.Commands
         public LearningAim LearningAim { get; set; }
         public CollectionPeriod CollectionPeriod { get; set; }
         public FundingPlatformType FundingPlatformType { get; set; }
+        public int AgeAtStartOfLearning { get; set; }
     }
 }

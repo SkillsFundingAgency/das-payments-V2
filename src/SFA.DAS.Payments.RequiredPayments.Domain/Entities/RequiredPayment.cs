@@ -15,6 +15,5 @@ namespace SFA.DAS.Payments.RequiredPayments.Domain.Entities
         public long? ApprenticeshipId { get; set; }
         public long? ApprenticeshipPriceEpisodeId { get; set; }
         public DateTime? LearningStartDate { get; set; }
-        public FundingPlatformType FundingPlatformType { get; set; }
     }
 }
