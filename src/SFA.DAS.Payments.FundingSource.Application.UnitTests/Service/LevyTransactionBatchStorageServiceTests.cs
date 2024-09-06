@@ -57,7 +57,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
         {
             await fixture.StoreLevyTransactionsFromDasPaymentPlatform();
 
-//            fixture.Verify_SaveLevyTransactionsIndividually_WasCalled_AndModelsMappedCorrectly();
             fixture.Verify_SaveLevyTransactions_FromDasPaymentPlatform_WasCalled_AndModelsMappedCorrectly();
         }
     }
@@ -178,7 +177,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 levyTransactionModel.DeliveryPeriod == calculatedOnProgrammePayment.DeliveryPeriod &&
                 (levyTransactionModel.AccountId == calculatedOnProgrammePayment.AccountId || levyTransactionModel.AccountId == 0) &&
                 levyTransactionModel.RequiredPaymentEventId == calculatedOnProgrammePayment.EventId &&
-                levyTransactionModel.ClawbackSourcePaymentEventId == null &&
+                levyTransactionModel.ClawbackSourcePaymentEventId == Guid.Empty &&
                 levyTransactionModel.TransferSenderAccountId == calculatedOnProgrammePayment.TransferSenderAccountId &&
                 //TODO: internally it now temporarily maps to the calculated required payment amount 
                 //levyTransactionModel.MessagePayload == calculatedOnProgrammePayment.ToJson() &&

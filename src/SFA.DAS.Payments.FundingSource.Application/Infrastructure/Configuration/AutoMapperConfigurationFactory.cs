@@ -134,6 +134,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Configuratio
                     .ForMember(dest => dest.ContractType, opt => opt.UseValue(ContractType.Act1))
                     .ForMember(dest => dest.JobId, opt => opt.UseValue(-1))
                     .ForMember(dest => dest.IlrSubmissionDateTime, opt => opt.UseValue(new DateTime(1753,1,1)))
+                    .ForMember(dest => dest.ClawbackSourcePaymentEventId, opt => opt.UseValue(Guid.Empty))
                     .ForMember(dest => dest.AgeAtStartOfLearning, opt => opt.MapFrom(source => source.AgeAtStartOfLearning))
                     .ForMember(dest => dest.FundingPlatformType, opt => opt.MapFrom(source => source.FundingPlatformType));
 
