@@ -68,7 +68,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                 LearningStartDate = levyAmount.LearningStartDate,
                 SfaContributionPercentage = levyAmount.SfaContributionPercentage,
                 TransactionType = levyAmount.TransactionType,
-                FundingPlatformType = FundingPlatformType.SubmitLearnerData
+                FundingPlatformType = levyAmount.FundingPlatformType
             }).ToList();
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -94,58 +94,11 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             logger.LogDebug($"Got {calculateOnProgrammePaymentCommands.Count} levy transactions.");
 
             //TODO: Update the LevyTransactionModel to hold all RequiredLevyAmountFields and stop storing required payments in the DB.  
-            var requiredLevyAmounts = calculateOnProgrammePaymentCommands.Select(command =>
+            var requiredLevyAmounts = calculateOnProgrammePaymentCommands.Select(command => 
                     mapper.Map<CalculateOnProgrammePayment, CalculatedRequiredLevyAmount>(command))
                 .ToList();
 
             await StoreLevyTransactions(requiredLevyAmounts, cancellationToken, isReceiverTransferPayment);
-
-            //var models = calculateOnProgrammePaymentCommands.Select(levyAmount => new LevyTransactionModel
-            //{
-            //    CollectionPeriod = levyAmount.CollectionPeriod.Period,
-            //    AcademicYear = levyAmount.CollectionPeriod.AcademicYear,
-            //    JobId = -1, 
-            //    Ukprn = levyAmount.Ukprn,
-            //    Amount = levyAmount.AmountDue,
-            //    EarningEventId = Guid.Empty,
-            //    DeliveryPeriod = levyAmount.DeliveryPeriod,
-            //    AccountId = levyAmount.AccountId ?? 0,
-            //    RequiredPaymentEventId = levyAmount.EventId,
-            //    ClawbackSourcePaymentEventId = null,
-            //    TransferSenderAccountId = levyAmount.TransferSenderAccountId,
-            //    MessagePayload = levyAmount.ToJson(),
-            //    MessageType = levyAmount.GetType().FullName,
-            //    IlrSubmissionDateTime = new DateTime(1753, 1, 1),
-            //    FundingAccountId = levyAmount.CalculateFundingAccountId(isReceiverTransferPayment),
-            //    ApprenticeshipEmployerType = levyAmount.ApprenticeshipEmployerType,
-            //    ApprenticeshipId = levyAmount.ApprenticeshipId,
-            //    LearnerUln = levyAmount.Learner.Uln,
-            //    LearnerReferenceNumber = levyAmount.Learner.ReferenceNumber,
-            //    LearningAimFrameworkCode = levyAmount.LearningAim.FrameworkCode,
-            //    LearningAimPathwayCode = levyAmount.LearningAim.PathwayCode,
-            //    LearningAimFundingLineType = levyAmount.LearningAim.FundingLineType,
-            //    LearningAimProgrammeType = levyAmount.LearningAim.ProgrammeType,
-            //    LearningAimReference = levyAmount.LearningAim.Reference,
-            //    LearningAimStandardCode = levyAmount.LearningAim.StandardCode,
-            //    LearningStartDate = levyAmount.LearningStartDate,
-            //    SfaContributionPercentage = levyAmount.SfaContributionPercentage,
-            //    TransactionType = (TransactionType)levyAmount.OnProgrammeEarningType,
-            //    FundingPlatformType = levyAmount.FundingPlatformType
-            //}).ToList();
-            //cancellationToken.ThrowIfCancellationRequested();
-
-            //try
-            //{
-            //    await levyTransactionRepository.SaveLevyTransactions(models, cancellationToken).ConfigureAwait(false);
-            //}
-            //catch (Exception e)
-            //{
-            //    if (!e.IsUniqueKeyConstraintException() && !e.IsDeadLockException()) throw;
-
-            //    logger.LogWarning($"Batch contained a duplicate LevyTransaction. Will store each individually and discard duplicate.");
-
-            //    await levyTransactionRepository.SaveLevyTransactionsIndividually(models, cancellationToken);
-            //}
 
             logger.LogInfo($"Saved levy transactions from CalculateOnProgrammePaymentCommands to the db for later processing. Duplicates skipped.");
         }
