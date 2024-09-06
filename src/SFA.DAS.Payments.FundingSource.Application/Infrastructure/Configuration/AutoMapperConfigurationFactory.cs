@@ -31,7 +31,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Configuratio
                     .ForMember(dest => dest.NumberOfInstalments, opt => opt.MapFrom(src => src.NumberOfInstalments))
                     .ForMember(dest => dest.ApprenticeshipId, opt => opt.MapFrom(src => src.ApprenticeshipId))
                     .ForMember(dest => dest.ApprenticeshipPriceEpisodeId,                         opt => opt.MapFrom(src => src.ApprenticeshipPriceEpisodeId))
-                    .ForMember(dest => dest.FundingPlatformType, opt => opt.Ignore());
+                    .ForMember(dest => dest.FundingPlatformType, opt => opt.UseValue(FundingPlatformType.SubmitLearnerData));  //For now the default mapping is Submit Learner, this may change if/when Flexi do incentives, redundancy and refunds
 
                 cfg.CreateMap<CalculatedRequiredLevyAmount, EmployerCoInvestedFundingSourcePaymentEvent>();
                 cfg.CreateMap<CalculatedRequiredLevyAmount, SfaCoInvestedFundingSourcePaymentEvent>();
@@ -66,18 +66,21 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Configuratio
                     .Include<CalculatedRequiredCoInvestedAmount, EmployerCoInvestedFundingSourcePaymentEvent>()
                     .ForMember(dest => dest.FundingSourceType, opt => opt.UseValue(FundingSourceType.CoInvestedEmployer))
                     .ForMember(dest => dest.AgeAtStartOfLearning, opt => opt.MapFrom(source => source.AgeAtStartOfLearning))
-                    .ForMember(dest => dest.FundingPlatformType, opt => opt.Ignore());
+                    //.ForMember(dest => dest.FundingPlatformType, opt => opt.Ignore())
+                    ;
 
                 cfg.CreateMap<CalculatedRequiredOnProgrammeAmount, SfaCoInvestedFundingSourcePaymentEvent>()
                     .Include<CalculatedRequiredCoInvestedAmount, SfaCoInvestedFundingSourcePaymentEvent>()
                     .ForMember(dest => dest.FundingSourceType, opt => opt.UseValue(FundingSourceType.CoInvestedSfa))
                     .ForMember(dest => dest.AgeAtStartOfLearning, opt => opt.MapFrom(source => source.AgeAtStartOfLearning))
-                    .ForMember(dest => dest.FundingPlatformType, opt => opt.Ignore());
+                    //.ForMember(dest => dest.FundingPlatformType, opt => opt.Ignore())
+                    ;
 
                 cfg.CreateMap<CalculatedRequiredOnProgrammeAmount, SfaFullyFundedFundingSourcePaymentEvent>()
                     .ForMember(dest => dest.FundingSourceType, opt => opt.UseValue(FundingSourceType.FullyFundedSfa))
                     .ForMember(dest => dest.AgeAtStartOfLearning, opt => opt.MapFrom(source => source.AgeAtStartOfLearning))
-                    .ForMember(dest => dest.FundingPlatformType, opt => opt.Ignore());
+                    //.ForMember(dest => dest.FundingPlatformType, opt => opt.Ignore())
+                    ;
 
                 cfg.CreateMap<CalculatedRequiredCoInvestedAmount, FundingSourcePaymentEvent>()
                     .Include<CalculatedRequiredCoInvestedAmount, EmployerCoInvestedFundingSourcePaymentEvent>()
@@ -89,7 +92,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Configuratio
                     .Include<CalculatedRequiredCoInvestedAmount, FundingSourcePaymentEvent>()
                     .ForMember(dest => dest.TransactionType, opt => opt.MapFrom(source => (TransactionType)source.OnProgrammeEarningType))
                     .ForMember(dest => dest.AgeAtStartOfLearning, opt => opt.MapFrom(source => source.AgeAtStartOfLearning))
-                    .ForMember(dest => dest.FundingPlatformType, opt => opt.Ignore());
+                    //.ForMember(dest => dest.FundingPlatformType, opt => opt.Ignore())
+                    ;
 
                 cfg.CreateMap<CalculatedRequiredLevyAmount, RequiredPayment>();
                 cfg.CreateMap<CalculatedRequiredCoInvestedAmount, RequiredCoInvestedPayment>();
@@ -97,7 +101,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Configuratio
                 cfg.CreateMap<CalculatedRequiredIncentiveAmount, SfaFullyFundedFundingSourcePaymentEvent>()
                     .ForMember(dest => dest.TransactionType, opt => opt.MapFrom(source => (TransactionType)source.Type))
                     .ForMember(dest => dest.FundingSourceType, opt => opt.UseValue(FundingSourceType.FullyFundedSfa))
-                    .ForMember(dest => dest.FundingPlatformType, opt => opt.Ignore());
+                    //.ForMember(dest => dest.FundingPlatformType, opt => opt.Ignore())
+                    ;
 
                 cfg.CreateMap<FundingSourcePayment, FundingSourcePaymentEvent>()
                     .Include<EmployerCoInvestedPayment, EmployerCoInvestedFundingSourcePaymentEvent>()
@@ -121,7 +126,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Infrastructure.Configuratio
                     .ForMember(dest => dest.AgreementId, opt => opt.Ignore())
                     .ForMember(dest => dest.EventId, opt => opt.MapFrom(src => src.RequiredPaymentEventId))
                     .ForMember(dest => dest.AgeAtStartOfLearning, opt => opt.MapFrom(source => source.AgeAtStartOfLearning))
-                    .ForMember(dest => dest.FundingPlatformType, opt => opt.Ignore());
+                    .ForMember(dest => dest.FundingPlatformType, opt => opt.MapFrom(source => source.FundingPlatformType));
 
                 cfg.CreateMap<LevyAccountModel, LevyAccountModel>();
 

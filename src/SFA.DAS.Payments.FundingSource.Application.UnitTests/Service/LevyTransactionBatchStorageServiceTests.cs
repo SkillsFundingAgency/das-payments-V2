@@ -154,20 +154,16 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 calculatedRequiredLevyAmount.ApprenticeshipId == levyTransactionModel.ApprenticeshipId &&
                 calculatedRequiredLevyAmount.Learner.Uln == levyTransactionModel.LearnerUln &&
                 calculatedRequiredLevyAmount.Learner.ReferenceNumber == levyTransactionModel.LearnerReferenceNumber &&
-                calculatedRequiredLevyAmount.LearningAim.FrameworkCode ==
-                levyTransactionModel.LearningAimFrameworkCode &&
+                calculatedRequiredLevyAmount.LearningAim.FrameworkCode == levyTransactionModel.LearningAimFrameworkCode &&
                 calculatedRequiredLevyAmount.LearningAim.PathwayCode == levyTransactionModel.LearningAimPathwayCode &&
-                calculatedRequiredLevyAmount.LearningAim.FundingLineType ==
-                levyTransactionModel.LearningAimFundingLineType &&
-                calculatedRequiredLevyAmount.LearningAim.ProgrammeType ==
-                levyTransactionModel.LearningAimProgrammeType &&
+                calculatedRequiredLevyAmount.LearningAim.FundingLineType == levyTransactionModel.LearningAimFundingLineType &&
+                calculatedRequiredLevyAmount.LearningAim.ProgrammeType == levyTransactionModel.LearningAimProgrammeType &&
                 calculatedRequiredLevyAmount.LearningAim.Reference == levyTransactionModel.LearningAimReference &&
                 calculatedRequiredLevyAmount.LearningAim.StandardCode == levyTransactionModel.LearningAimStandardCode &&
                 calculatedRequiredLevyAmount.LearningStartDate == levyTransactionModel.LearningStartDate &&
-                calculatedRequiredLevyAmount.SfaContributionPercentage ==
-                levyTransactionModel.SfaContributionPercentage &&
+                calculatedRequiredLevyAmount.SfaContributionPercentage == levyTransactionModel.SfaContributionPercentage &&
                 calculatedRequiredLevyAmount.TransactionType == levyTransactionModel.TransactionType &&
-                levyTransactionModel.FundingPlatformType == FundingPlatformType.SubmitLearnerData);
+                calculatedRequiredLevyAmount.FundingPlatformType == levyTransactionModel.FundingPlatformType );
         }
 
         private bool ValidateDasPaymentPlatformLevyTransactionModel(LevyTransactionModel levyTransactionModel)
