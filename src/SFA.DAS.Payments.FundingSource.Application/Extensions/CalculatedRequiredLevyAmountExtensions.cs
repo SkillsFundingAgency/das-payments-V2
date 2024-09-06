@@ -8,7 +8,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Extensions
 {
     public static class CalculatedRequiredLevyAmountExtensions
     {
-        public static bool IsTransfer(this ITransferAccountIdsMessage message)
+        public static bool IsTransfer(this CalculatedRequiredLevyAmount message)
         {
             if (!message.AccountId.HasValue)
                 throw new InvalidOperationException($"The account id of the levy message is invalid.");
@@ -37,7 +37,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.Extensions
                 .ToList();
         }
 
-        public static long CalculateFundingAccountId(this ITransferAccountIdsMessage levyTransaction, bool isReceiverTransferPayment)
+        public static long CalculateFundingAccountId(this CalculatedRequiredLevyAmount levyTransaction, bool isReceiverTransferPayment)
         {
             if (isReceiverTransferPayment)
                 return levyTransaction.AccountId.GetValueOrDefault();

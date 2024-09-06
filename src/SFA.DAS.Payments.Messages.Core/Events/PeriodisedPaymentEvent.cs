@@ -3,7 +3,7 @@ using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.Messages.Core.Events
 {
-    public abstract class PeriodisedPaymentEvent : PaymentsEvent, IPeriodisedPaymentEvent, ITransferAccountIdsMessage
+    public abstract class PeriodisedPaymentEvent : PaymentsEvent, IPeriodisedPaymentEvent
     {
         public Guid EarningEventId { get; set; }
         public Guid? ClawbackSourcePaymentEventId { get; set; }

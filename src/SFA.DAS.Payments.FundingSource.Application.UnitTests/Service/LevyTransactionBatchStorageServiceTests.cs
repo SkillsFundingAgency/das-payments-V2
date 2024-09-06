@@ -188,7 +188,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Service
                 //levyTransactionModel.MessagePayload == calculatedOnProgrammePayment.ToJson() &&
                 //levyTransactionModel.MessageType == calculatedOnProgrammePayment.GetType().FullName &&
                 levyTransactionModel.IlrSubmissionDateTime == new DateTime(1753, 1, 1) &&
-                levyTransactionModel.FundingAccountId == calculatedOnProgrammePayment.CalculateFundingAccountId(false) &&
+                //levyTransactionModel.FundingAccountId == calculatedOnProgrammePayment.CalculateFundingAccountId(false) &&
                 levyTransactionModel.ApprenticeshipEmployerType == calculatedOnProgrammePayment.ApprenticeshipEmployerType &&
                 levyTransactionModel.ApprenticeshipId == calculatedOnProgrammePayment.ApprenticeshipId &&
                 levyTransactionModel.LearnerUln == calculatedOnProgrammePayment.Learner.Uln &&

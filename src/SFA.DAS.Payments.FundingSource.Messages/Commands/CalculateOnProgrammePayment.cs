@@ -6,7 +6,7 @@ using SFA.DAS.Payments.Model.Core.OnProgramme;
 
 namespace SFA.DAS.Payments.FundingSource.Messages.Commands
 {
-    public class CalculateOnProgrammePayment : ITransferAccountIdsMessage
+    public class CalculateOnProgrammePayment
     {
         public long Ukprn { get; set; }
         public DateTime? AgreedOnDate { get; set; }
