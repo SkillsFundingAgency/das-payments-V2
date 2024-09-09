@@ -102,7 +102,7 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
             destination.Priority.Should().Be(0);
             destination.AgreementId.Should().BeNullOrEmpty();
             destination.EarningEventId.Should().BeEmpty();
-            destination.ClawbackSourcePaymentEventId.Should().BeNull();
+            destination.ClawbackSourcePaymentEventId.Should().BeEmpty();
             destination.ContractType.Should().Be(ContractType.Act1);
             destination.ReportingAimFundingLineType.Should().BeNullOrEmpty();
             destination.LearningAimSequenceNumber.Should().Be(0);
