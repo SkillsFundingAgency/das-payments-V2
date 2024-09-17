@@ -224,32 +224,44 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 
         public async Task<decimal> GetAlreadyPaidDataLocksAmount(long ukprn, long jobId, CancellationToken cancellationToken)
         {
-            var sql = @"
-				Select
-					@result = sum(p.Amount)
-			    from Payments2.dataLockEventNonPayablePeriod npp
-			    join Payments2.dataLockEvent dle on npp.DataLockEventId = dle.EventId 
-			    join Payments2.payment p on dle.ukprn = p.ukprn
-				    AND dle.LearningAimFrameworkCode = P.LearningAimFrameworkCode
-				    AND dle.LearningAimPathwayCode = P.LearningAimPathwayCode
-				    AND dle.LearningAimProgrammeType = P.LearningAimProgrammeType
-				    AND dle.LearningAimReference = P.LearningAimReference
-				    AND dle.LearningAimStandardCode = P.LearningAimStandardCode
-				    and dle.learnerreferencenumber = p.learnerreferencenumber
-				    and npp.deliveryperiod = p.deliveryperiod
-				    AND npp.TransactionType = p.TransactionType
-                    AND dle.AcademicYear = p.AcademicYear
-			    where 		
-				    dle.jobId = @jobid
-				    and dle.Ukprn = @ukprn
-				    and npp.Amount <> 0
-				    and dle.IsPayable = 0	
-				    and p.collectionperiod < dle.CollectionPeriod
-                    and p.ContractType = 1
-			";
-            var result = new SqlParameter("@result", SqlDbType.Decimal) { Direction = ParameterDirection.Output };
-            await Database.ExecuteSqlCommandAsync(sql, new[] { new SqlParameter("@jobid", jobId), new SqlParameter("@ukprn", ukprn), result }, cancellationToken);
-            return result.Value as decimal? ?? 0;
+            var alreadyPaidDataLocksAmount = (from npp in DataLockEventNonPayablePeriods
+                join dle in DataLockEvent on npp.DataLockEventId equals dle.EventId
+                join p in Payments on new
+                    {
+                        dle.Ukprn,
+                        dle.LearningAimFrameworkCode,
+                        dle.LearningAimPathwayCode,
+                        dle.LearningAimProgrammeType,
+                        dle.LearningAimReference,
+                        dle.LearningAimStandardCode,
+                        dle.LearnerReferenceNumber,
+                        npp.DeliveryPeriod,
+                        npp.TransactionType,
+                        dle.AcademicYear
+                    }
+                    equals new
+                    {
+                        p.Ukprn,
+                        p.LearningAimFrameworkCode,
+                        p.LearningAimPathwayCode,
+                        p.LearningAimProgrammeType,
+                        p.LearningAimReference,
+                        p.LearningAimStandardCode,
+                        p.LearnerReferenceNumber,
+                        p.DeliveryPeriod,
+                        p.TransactionType,
+                        p.CollectionPeriod.AcademicYear
+                    }
+                where dle.JobId == jobId
+                      && dle.Ukprn == ukprn
+                      && npp.Amount != 0
+                      && !dle.IsPayable
+                      && p.CollectionPeriod.Period < dle.CollectionPeriod
+                      && p.ContractType == ContractType.Act1
+                      && p.FundingPlatformType == FundingPlatformType.SubmitLearnerData
+                select p.Amount).Sum();
+
+            return alreadyPaidDataLocksAmount;
         }
 
         public async Task<DataLockTypeCounts> GetDataLockCounts(long ukprn, long jobId, CancellationToken cancellationToken)
