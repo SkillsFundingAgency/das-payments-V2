@@ -31,7 +31,6 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
                 CollectionPeriod = CollectionPeriodFactory.CreateFromAcademicYearAndPeriod(1819, 1),
                 DeliveryPeriod = 1,
                 EventTime = DateTime.UtcNow,
-                //JobId = 1,
                 Learner = new Learner
                 {
                     ReferenceNumber = "001",
@@ -45,17 +44,10 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
                 PriceEpisodeIdentifier = "1819-P01",
                 SfaContributionPercentage = 0.9m,
                 Ukprn = 10000,
-
-                //AgreementId = "11",
-                //Priority = 13,
                 EventId = Guid.NewGuid(),
                 AccountId = 1000000,
-                //IlrSubmissionDateTime = DateTime.Today,
-                //EarningEventId = Guid.NewGuid(),
-                //ContractType = ContractType.Act1,
                 ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy,
                 ApprenticeshipId = 12,
-                //AgeAtStartOfLearning = 17
                 TransferSenderAccountId = 1000000,
                 FundingPlatformType = FundingPlatformType.DigitalApprenticeshipService,
                 ActualEndDate = DateTime.Today,
