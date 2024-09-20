@@ -127,7 +127,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
                     }
 
                     telemetry.StopOperation(operation);
-                    if (fm36Output.Learners.Count(x => x.EarningsPlatform == (int)FundingPlatformType.SubmitLearnerData) == 0)
+                    if (fm36Output.Learners.Count(x => x.EarningsPlatform != (int)FundingPlatformType.DigitalApprenticeshipService) == 0)
                     {
                         logger.LogWarning($"Received ILR with 0 FM36 learners. Ukprn: {fm36Output.UKPRN}, job id: {message.JobId}.");
                         return true;
@@ -355,7 +355,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.Handlers
             var startTime = DateTimeOffset.UtcNow;
             var learners = fm36Output.Learners ?? new List<FM36Learner>();
             
-            var commands = learners.Where(x => x.EarningsPlatform == (int)FundingPlatformType.SubmitLearnerData)
+            var commands = learners.Where(x => x.EarningsPlatform != (int)FundingPlatformType.DigitalApprenticeshipService)
                 .Select(learner => Build(learner, message.JobId, message.SubmissionDateTimeUtc, short.Parse(fm36Output.Year), collectionPeriod, fm36Output.UKPRN, ilrFileName))
                 .ToList();
 
