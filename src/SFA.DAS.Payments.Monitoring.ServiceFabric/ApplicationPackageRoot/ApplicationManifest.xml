@@ -36,6 +36,7 @@
     <Parameter Name="TimeToWaitForPeriodEndRunJobToComplete" DefaultValue="01:00:00" />
     <Parameter Name="TimeToWaitForPeriodEndStartJobToComplete" DefaultValue="00:10:00" />
     <Parameter Name="TimeToWaitToReceivePeriodEndILRSubmissions" DefaultValue="00:10:00" />
+    <Parameter Name="TimeToWaitForPeriodEndArchiveJobToComplete" DefaultValue="05:30:00" />
     <Parameter Name="DasNServiceBusLicenseKey" DefaultValue="" />
     <Parameter Name="ImmediateMessageRetries" DefaultValue="1" />
     <Parameter Name="DelayedMessageRetries" DefaultValue="3" />
@@ -109,6 +110,7 @@
             <Parameter Name="TimeToWaitForPeriodEndRunJobToComplete" Value="[TimeToWaitForPeriodEndRunJobToComplete]" />
             <Parameter Name="TimeToWaitForPeriodEndStartJobToComplete" Value="[TimeToWaitForPeriodEndStartJobToComplete]" />
             <Parameter Name="TimeToWaitToReceivePeriodEndILRSubmissions" Value="[TimeToWaitToReceivePeriodEndILRSubmissions]" />
+            <Parameter Name="TimeToWaitForPeriodEndArchiveJobToComplete" Value="[TimeToWaitForPeriodEndArchiveJobToComplete]" />
             <Parameter Name="NumberOfNServiceBusThreads" Value="[NumberOfNServiceBusThreads]" />
             <Parameter Name="DasNServiceBusLicenseKey" Value="[DasNServiceBusLicenseKey]" />
             <Parameter Name="ImmediateMessageRetries" Value="[ImmediateMessageRetries]" />

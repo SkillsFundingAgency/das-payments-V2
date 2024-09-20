@@ -50,7 +50,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Ioc
                         TimeSpan.Parse(configHelper.GetSettingOrDefault("TimeToWaitToReceivePeriodEndILRSubmissions",
                             "00:10:00")),
                         TimeSpan.Parse(configHelper.GetSettingOrDefault("TimeToWaitForPeriodEndStartJobToComplete",
-                            "00:10:00"))
+                            "00:10:00")),
+                        TimeSpan.Parse(configHelper.GetSettingOrDefault("TimeToWaitForPeriodEndArchiveJobToComplete", 
+                            "05:30:00"))
                     );
                 })
                 .As<IJobServiceConfiguration>()
@@ -88,7 +90,9 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.Infrastructure.Ioc
             builder.RegisterType<PeriodEndArchiveStatusService>()
                 .As<IPeriodEndArchiveStatusService>()
                 .InstancePerLifetimeScope();
-
+            builder.RegisterType<PeriodEndArchiveFunctionHttpClient>()
+                .As<IPeriodEndArchiveFunctionHttpClient>()
+                .InstancePerLifetimeScope();
 
             builder.Register((c, p) => new MemoryCache(new MemoryCacheOptions()))
                 .As<IMemoryCache>()

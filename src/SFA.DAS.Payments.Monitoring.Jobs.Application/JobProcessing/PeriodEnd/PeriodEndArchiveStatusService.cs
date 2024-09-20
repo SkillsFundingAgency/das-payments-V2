@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Infrastructure.Telemetry;
@@ -26,16 +24,19 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
         private readonly IJobStorageService jobStorageService;
         private readonly IPaymentLogger logger;
         private readonly ITelemetry telemetry;
+        private readonly IPeriodEndArchiveFunctionHttpClient periodEndArchiveFunctionHttpClient;
 
         public PeriodEndArchiveStatusService(IJobStorageService jobStorageService, IPaymentLogger logger,
             ITelemetry telemetry, IJobServiceConfiguration config,
-            IPeriodEndArchiveConfiguration archiveConfiguration)
+            IPeriodEndArchiveConfiguration archiveConfiguration,
+            IPeriodEndArchiveFunctionHttpClient periodEndArchiveFunctionHttpClient)
         {
             archiveConfig = archiveConfiguration;
             this.jobStorageService = jobStorageService;
             this.logger = logger;
             this.telemetry = telemetry;
             this.config = config;
+            this.periodEndArchiveFunctionHttpClient = periodEndArchiveFunctionHttpClient;
         }
 
         public async Task<bool> ManageStatus(long jobId, CancellationToken cancellationToken)
@@ -106,7 +107,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
         {
             var timedOutTime = DateTimeOffset.UtcNow;
 
-            if (job.Status != JobStatus.InProgress || job.StartTime.Add(config.PeriodEndRunJobTimeout) >= timedOutTime)
+            if (job.Status != JobStatus.InProgress || job.StartTime.Add(config.TimeToWaitForPeriodEndArchiveJobToComplete) >= timedOutTime)
                 return false;
 
             var status = JobStatus.TimedOut;
@@ -162,17 +163,7 @@ namespace SFA.DAS.Payments.Monitoring.Jobs.Application.JobProcessing.PeriodEnd
 
         private async Task<string> CheckArchiveStatus(long jobId)
         {
-            var param = new Dictionary<string, string>
-            {
-                { "jobId", jobId.ToString() }
-            };
-            var uri = new Uri(QueryHelpers.AddQueryString(archiveConfig.ArchiveFunctionUrl, param)).ToString();
-
-            telemetry.TrackEvent(
-                $"PeriodEndArchiveStatusService: Checking current archiving status for jobId ${jobId}, Url: {uri}");
-            var result =
-                await new HttpClient { Timeout = TimeSpan.FromSeconds(archiveConfig.ArchiveTimeout) }.GetAsync(
-                    $"{uri}");
+            var result = await periodEndArchiveFunctionHttpClient.GetArchiveFunctionStatus(jobId);
 
             if (!result.IsSuccessStatusCode)
             {
