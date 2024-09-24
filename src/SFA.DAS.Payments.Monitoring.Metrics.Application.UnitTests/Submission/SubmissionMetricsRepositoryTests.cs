@@ -86,6 +86,22 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
             yearToDatePaymentsTotal.ContractType2.Should().Be(0);
         }
 
+        [Test]
+        public async Task GetYearToDatePaymentsTotal_Should_Treat_Null_Funding_PlatForm_Type_Payments_As_SLD()
+        {
+            var sldPayment = CreateHistoricalPayment(1, FundingPlatformType.SubmitLearnerData);
+
+            var oldSldPayment = CreateHistoricalPayment(2, null);
+
+            _dataContext.Payments.Add(sldPayment);
+            _dataContext.Payments.Add(oldSldPayment);
+            _dataContext.SaveChanges();
+
+            var yearToDatePaymentsTotal = await _sut.GetYearToDatePaymentsTotal(_ukprn, _academicYear, _currentCollectionPeriod, new CancellationToken());
+
+            yearToDatePaymentsTotal.ContractType1.Should().Be(sldPayment.Amount + oldSldPayment.Amount);
+        }
+
         private decimal SetupYearToDatePayments()
         {
             var historicalPayments = new List<PaymentModel>();
@@ -107,7 +123,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
                 .Sum(x => x.Amount);
         }
 
-        private PaymentModel CreateHistoricalPayment(byte period, FundingPlatformType fundingPlatformType)
+        private PaymentModel CreateHistoricalPayment(byte period, FundingPlatformType? fundingPlatformType)
         {
             var historicalPayment = CreateDefaultPaymentValues();
             historicalPayment.FundingPlatformType = fundingPlatformType;
