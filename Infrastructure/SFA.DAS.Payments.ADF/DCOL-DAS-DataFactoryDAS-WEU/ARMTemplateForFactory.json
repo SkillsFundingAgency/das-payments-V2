@@ -5,41 +5,7 @@
         "factoryName": {
             "type": "string",
             "metadata": "Data Factory name",
-            "defaultValue": "DCOL-DAS-DataFactoryDAS-WEU"
-        },
-        "AzureKeyVault1_properties_typeProperties_baseUrl": {
-            "type": "string",
-            "defaultValue": "https://DCOL-DAS-KeyVaultDAS-WEU.vault.azure.net/"
-        },
-        "DASPayments_properties_typeProperties_connectionString_secretName": {
-            "type": "string",
-            "defaultValue": "DASPaymentDataFactoryConnectionString"
-        },
-        "DASPayments_Audit_properties_typeProperties_connectionString_secretName": {
-            "type": "string",
-            "defaultValue": "DASPaymentAuditDataFactoryConnectionString"
-        },
-        "datamart_stagingDB_linkedservices_properties_typeProperties_server": {
-            "type": "string",
-            "defaultValue": "DCOL-at-shared-sql.database.windows.net"
-        },
-        "datamart_stagingDB_linkedservices_properties_typeProperties_database": {
-            "type": "string",
-            "defaultValue": "DCOL-at-datamgmt-staging-db"
-        },
-        "shared_sql_private_endpoint_properties_privateLinkResourceId": {
-            "type": "string",
-            "defaultValue": "/subscriptions/12f72527-6622-45d3-90a4-0a5d3644c45c/resourceGroups/DCOL-DAS-SqlServer/providers/Microsoft.Sql/servers/dcol-das-sqlserver-weu"
-        },
-        "shared_sql_private_endpoint_properties_groupId": {
-            "type": "string",
-            "defaultValue": "sqlServer"
-        },
-        "shared_sql_private_endpoint_properties_fqdns": {
-            "type": "array",
-            "defaultValue": [
-                "dcol-das-sqlserver-weu.database.windows.net"
-            ]
+            "defaultValue": "DCOL-DST-DataFactoryDAS-WEU"
         },
         "datamart_sql_private_endpoint_properties_privateLinkResourceId": {
             "type": "string",
@@ -54,44 +20,46 @@
             "defaultValue": [
                 "das-at-shared-sql.database.windows.net"
             ]
+        },
+        "shared_sql_private_endpoint_properties_privateLinkResourceId": {
+            "type": "string",
+            "defaultValue": "/subscriptions/12f72527-6622-45d3-90a4-0a5d3644c45c/resourceGroups/DCOL-DST-SqlServer/providers/Microsoft.Sql/servers/DCOL-DST-sqlserver-weu"
+        },
+        "shared_sql_private_endpoint_properties_groupId": {
+            "type": "string",
+            "defaultValue": "sqlServer"
+        },
+        "shared_sql_private_endpoint_properties_fqdns": {
+            "type": "array",
+            "defaultValue": [
+                "dcol-dst-sqlserver-weu.database.windows.net"
+            ]
+        },
+        "AzureKeyVault1_properties_typeProperties_baseUrl": {
+            "type": "string",
+            "defaultValue": "https://DCOL-DST-KeyVaultDAS-WEU.vault.azure.net/"
+        },
+        "DASPayments_Audit_properties_typeProperties_connectionString_secretName": {
+            "type": "string",
+            "defaultValue": "DASPaymentAuditDataFactoryConnectionString"
+        },
+        "DASPayments_properties_typeProperties_connectionString_secretName": {
+            "type": "string",
+            "defaultValue": "DASPaymentDataFactoryConnectionString"
+        },
+        "datamart_stagingDB_linkedservices_properties_typeProperties_server": {
+            "type": "string",
+            "defaultValue": "das-at-shared-sql.database.windows.net"
+        },
+        "datamart_stagingDB_linkedservices_properties_typeProperties_database": {
+            "type": "string",
+            "defaultValue": "das-at-datamgmt-staging-db"
         }
     },
     "variables": {
         "factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
     },
     "resources": [
-        {
-            "name": "[concat(parameters('factoryName'), '/SrcPayments')]",
-            "type": "Microsoft.DataFactory/factories/datasets",
-            "apiVersion": "2018-06-01",
-            "properties": {
-                "linkedServiceName": {
-                    "referenceName": "DASPayments",
-                    "type": "LinkedServiceReference"
-                },
-                "parameters": {
-                    "Table_Name": {
-                        "type": "string"
-                    }
-                },
-                "annotations": [],
-                "type": "AzureSqlTable",
-                "schema": [],
-                "typeProperties": {
-                    "schema": {
-                        "value": "Payments2",
-                        "type": "Expression"
-                    },
-                    "table": {
-                        "value": "@dataset().Table_Name",
-                        "type": "Expression"
-                    }
-                }
-            },
-            "dependsOn": [
-                "[concat(variables('factoryId'), '/linkedServices/DASPayments')]"
-            ]
-        },
         {
             "name": "[concat(parameters('factoryName'), '/DestPaymentsArchive')]",
             "type": "Microsoft.DataFactory/factories/datasets",
@@ -122,6 +90,38 @@
             },
             "dependsOn": [
                 "[concat(variables('factoryId'), '/linkedServices/DASPayments_Audit')]"
+            ]
+        },
+        {
+            "name": "[concat(parameters('factoryName'), '/SrcPayments')]",
+            "type": "Microsoft.DataFactory/factories/datasets",
+            "apiVersion": "2018-06-01",
+            "properties": {
+                "linkedServiceName": {
+                    "referenceName": "DASPayments",
+                    "type": "LinkedServiceReference"
+                },
+                "parameters": {
+                    "Table_Name": {
+                        "type": "string"
+                    }
+                },
+                "annotations": [],
+                "type": "AzureSqlTable",
+                "schema": [],
+                "typeProperties": {
+                    "schema": {
+                        "value": "Payments2",
+                        "type": "Expression"
+                    },
+                    "table": {
+                        "value": "@dataset().Table_Name",
+                        "type": "Expression"
+                    }
+                }
+            },
+            "dependsOn": [
+                "[concat(variables('factoryId'), '/linkedServices/DASPayments')]"
             ]
         },
         {
@@ -160,6 +160,68 @@
             ]
         },
         {
+            "name": "[concat(parameters('factoryName'), '/AzureVNETIntegrationRuntime')]",
+            "type": "Microsoft.DataFactory/factories/integrationRuntimes",
+            "apiVersion": "2018-06-01",
+            "properties": {
+                "type": "Managed",
+                "typeProperties": {
+                    "computeProperties": {
+                        "location": "West Europe",
+                        "dataFlowProperties": {
+                            "computeType": "General",
+                            "coreCount": 8,
+                            "timeToLive": 10,
+                            "cleanup": false
+                        },
+                        "pipelineExternalComputeScaleProperties": {
+                            "timeToLive": 60
+                        }
+                    }
+                },
+                "managedVirtualNetwork": {
+                    "type": "ManagedVirtualNetworkReference",
+                    "referenceName": "default"
+                }
+            },
+            "dependsOn": [
+                "[concat(variables('factoryId'), '/managedVirtualNetworks/default')]"
+            ]
+        },
+        {
+            "name": "[concat(parameters('factoryName'), '/default')]",
+            "type": "Microsoft.DataFactory/factories/managedVirtualNetworks",
+            "apiVersion": "2018-06-01",
+            "properties": {},
+            "dependsOn": []
+        },
+        {
+            "name": "[concat(parameters('factoryName'), '/default/datamart_sql_private_endpoint')]",
+            "type": "Microsoft.DataFactory/factories/managedVirtualNetworks/managedPrivateEndpoints",
+            "apiVersion": "2018-06-01",
+            "properties": {
+                "privateLinkResourceId": "[parameters('datamart_sql_private_endpoint_properties_privateLinkResourceId')]",
+                "groupId": "[parameters('datamart_sql_private_endpoint_properties_groupId')]",
+                "fqdns": "[parameters('datamart_sql_private_endpoint_properties_fqdns')]"
+            },
+            "dependsOn": [
+                "[concat(variables('factoryId'), '/managedVirtualNetworks/default')]"
+            ]
+        },
+        {
+            "name": "[concat(parameters('factoryName'), '/default/shared_sql_private_endpoint')]",
+            "type": "Microsoft.DataFactory/factories/managedVirtualNetworks/managedPrivateEndpoints",
+            "apiVersion": "2018-06-01",
+            "properties": {
+                "privateLinkResourceId": "[parameters('shared_sql_private_endpoint_properties_privateLinkResourceId')]",
+                "groupId": "[parameters('shared_sql_private_endpoint_properties_groupId')]",
+                "fqdns": "[parameters('shared_sql_private_endpoint_properties_fqdns')]"
+            },
+            "dependsOn": [
+                "[concat(variables('factoryId'), '/managedVirtualNetworks/default')]"
+            ]
+        },
+        {
             "name": "[concat(parameters('factoryName'), '/AzureKeyVault1')]",
             "type": "Microsoft.DataFactory/factories/linkedServices",
             "apiVersion": "2018-06-01",
@@ -171,33 +233,6 @@
                 }
             },
             "dependsOn": []
-        },
-        {
-            "name": "[concat(parameters('factoryName'), '/DASPayments')]",
-            "type": "Microsoft.DataFactory/factories/linkedServices",
-            "apiVersion": "2018-06-01",
-            "properties": {
-                "annotations": [],
-                "type": "AzureSqlDatabase",
-                "typeProperties": {
-                    "connectionString": {
-                        "type": "AzureKeyVaultSecret",
-                        "store": {
-                            "referenceName": "AzureKeyVault1",
-                            "type": "LinkedServiceReference"
-                        },
-                        "secretName": "[parameters('DASPayments_properties_typeProperties_connectionString_secretName')]"
-                    }
-                },
-                "connectVia": {
-                    "referenceName": "AzureVNETIntegrationRuntime",
-                    "type": "IntegrationRuntimeReference"
-                }
-            },
-            "dependsOn": [
-                "[concat(variables('factoryId'), '/integrationRuntimes/AzureVNETIntegrationRuntime')]",
-                "[concat(variables('factoryId'), '/linkedServices/AzureKeyVault1')]"
-            ]
         },
         {
             "name": "[concat(parameters('factoryName'), '/DASPayments_Audit')]",
@@ -214,6 +249,33 @@
                             "type": "LinkedServiceReference"
                         },
                         "secretName": "[parameters('DASPayments_Audit_properties_typeProperties_connectionString_secretName')]"
+                    }
+                },
+                "connectVia": {
+                    "referenceName": "AzureVNETIntegrationRuntime",
+                    "type": "IntegrationRuntimeReference"
+                }
+            },
+            "dependsOn": [
+                "[concat(variables('factoryId'), '/integrationRuntimes/AzureVNETIntegrationRuntime')]",
+                "[concat(variables('factoryId'), '/linkedServices/AzureKeyVault1')]"
+            ]
+        },
+        {
+            "name": "[concat(parameters('factoryName'), '/DASPayments')]",
+            "type": "Microsoft.DataFactory/factories/linkedServices",
+            "apiVersion": "2018-06-01",
+            "properties": {
+                "annotations": [],
+                "type": "AzureSqlDatabase",
+                "typeProperties": {
+                    "connectionString": {
+                        "type": "AzureKeyVaultSecret",
+                        "store": {
+                            "referenceName": "AzureKeyVault1",
+                            "type": "LinkedServiceReference"
+                        },
+                        "secretName": "[parameters('DASPayments_properties_typeProperties_connectionString_secretName')]"
                     }
                 },
                 "connectVia": {
@@ -247,35 +309,6 @@
             },
             "dependsOn": [
                 "[concat(variables('factoryId'), '/integrationRuntimes/AzureVNETIntegrationRuntime')]"
-            ]
-        },
-        {
-            "name": "[concat(parameters('factoryName'), '/AzureVNETIntegrationRuntime')]",
-            "type": "Microsoft.DataFactory/factories/integrationRuntimes",
-            "apiVersion": "2018-06-01",
-            "properties": {
-                "type": "Managed",
-                "typeProperties": {
-                    "computeProperties": {
-                        "location": "West Europe",
-                        "dataFlowProperties": {
-                            "computeType": "General",
-                            "coreCount": 8,
-                            "timeToLive": 10,
-                            "cleanup": false
-                        },
-                        "pipelineExternalComputeScaleProperties": {
-                            "timeToLive": 60
-                        }
-                    }
-                },
-                "managedVirtualNetwork": {
-                    "type": "ManagedVirtualNetworkReference",
-                    "referenceName": "default"
-                }
-            },
-            "dependsOn": [
-                "[concat(variables('factoryId'), '/managedVirtualNetworks/default')]"
             ]
         },
         {
@@ -1469,6 +1502,18 @@
                                                         "mappings": [
                                                             {
                                                                 "source": {
+                                                                    "name": "Id",
+                                                                    "type": "Int64",
+                                                                    "physicalType": "bigint"
+                                                                },
+                                                                "sink": {
+                                                                    "name": "Id",
+                                                                    "type": "Int64",
+                                                                    "physicalType": "bigint"
+                                                                }
+                                                            },
+                                                            {
+                                                                "source": {
                                                                     "name": "EventId",
                                                                     "type": "Guid",
                                                                     "physicalType": "uniqueidentifier"
@@ -1985,6 +2030,18 @@
                                                                     "name": "DuplicateNumber",
                                                                     "type": "Int32",
                                                                     "physicalType": "int"
+                                                                }
+                                                            },
+                                                            {
+                                                                "source": {
+                                                                    "name": "AgeAtStartOfLearning",
+                                                                    "type": "Byte",
+                                                                    "physicalType": "tinyint"
+                                                                },
+                                                                "sink": {
+                                                                    "name": "AgeAtStartOfLearning",
+                                                                    "type": "Byte",
+                                                                    "physicalType": "tinyint"
                                                                 }
                                                             }
                                                         ],
@@ -2114,6 +2171,18 @@
                                                         "mappings": [
                                                             {
                                                                 "source": {
+                                                                    "name": "Id",
+                                                                    "type": "Int64",
+                                                                    "physicalType": "bigint"
+                                                                },
+                                                                "sink": {
+                                                                    "name": "Id",
+                                                                    "type": "Int64",
+                                                                    "physicalType": "bigint"
+                                                                }
+                                                            },
+                                                            {
+                                                                "source": {
                                                                     "name": "EventId",
                                                                     "type": "Guid",
                                                                     "physicalType": "uniqueidentifier"
@@ -2618,6 +2687,18 @@
                                                                     "name": "DuplicateNumber",
                                                                     "type": "Int32",
                                                                     "physicalType": "int"
+                                                                }
+                                                            },
+                                                            {
+                                                                "source": {
+                                                                    "name": "AgeAtStartOfLearning",
+                                                                    "type": "Byte",
+                                                                    "physicalType": "tinyint"
+                                                                },
+                                                                "sink": {
+                                                                    "name": "AgeAtStartOfLearning",
+                                                                    "type": "Byte",
+                                                                    "physicalType": "tinyint"
                                                                 }
                                                             }
                                                         ],
@@ -2712,6 +2793,18 @@
                                                         "mappings": [
                                                             {
                                                                 "source": {
+                                                                    "name": "Id",
+                                                                    "type": "Int64",
+                                                                    "physicalType": "bigint"
+                                                                },
+                                                                "sink": {
+                                                                    "name": "Id",
+                                                                    "type": "Int64",
+                                                                    "physicalType": "bigint"
+                                                                }
+                                                            },
+                                                            {
+                                                                "source": {
                                                                     "name": "EventId",
                                                                     "type": "Guid",
                                                                     "physicalType": "uniqueidentifier"
@@ -2984,6 +3077,18 @@
                                                                     "name": "DuplicateNumber",
                                                                     "type": "Int32",
                                                                     "physicalType": "int"
+                                                                }
+                                                            },
+                                                            {
+                                                                "source": {
+                                                                    "name": "AgeAtStartOfLearning",
+                                                                    "type": "Byte",
+                                                                    "physicalType": "tinyint"
+                                                                },
+                                                                "sink": {
+                                                                    "name": "AgeAtStartOfLearning",
+                                                                    "type": "Byte",
+                                                                    "physicalType": "tinyint"
                                                                 }
                                                             }
                                                         ],
@@ -4037,6 +4142,18 @@
                                                         "mappings": [
                                                             {
                                                                 "source": {
+                                                                    "name": "Id",
+                                                                    "type": "Int64",
+                                                                    "physicalType": "bigint"
+                                                                },
+                                                                "sink": {
+                                                                    "name": "Id",
+                                                                    "type": "Int64",
+                                                                    "physicalType": "bigint"
+                                                                }
+                                                            },
+                                                            {
+                                                                "source": {
                                                                     "name": "EventId",
                                                                     "type": "Guid",
                                                                     "physicalType": "uniqueidentifier"
@@ -4589,6 +4706,18 @@
                                                                     "name": "LearningAimSequenceNumber",
                                                                     "type": "Int64",
                                                                     "physicalType": "bigint"
+                                                                }
+                                                            },
+                                                            {
+                                                                "source": {
+                                                                    "name": "AgeAtStartOfLearning",
+                                                                    "type": "Byte",
+                                                                    "physicalType": "tinyint"
+                                                                },
+                                                                "sink": {
+                                                                    "name": "AgeAtStartOfLearning",
+                                                                    "type": "Byte",
+                                                                    "physicalType": "tinyint"
                                                                 }
                                                             }
                                                         ],
@@ -6262,7 +6391,7 @@
                     }
                 },
                 "annotations": [],
-                "lastPublishTime": "2024-09-24T09:16:29Z"
+                "lastPublishTime": "2024-09-24T16:15:24Z"
             },
             "dependsOn": [
                 "[concat(variables('factoryId'), '/datasets/SrcPayments')]",
@@ -7520,46 +7649,13 @@
                     }
                 },
                 "annotations": [],
-                "lastPublishTime": "2024-07-11T14:06:02Z"
+                "lastPublishTime": "2024-09-24T15:04:10Z"
             },
             "dependsOn": [
                 "[concat(variables('factoryId'), '/linkedServices/datamart_stagingDB_linkedservices')]",
                 "[concat(variables('factoryId'), '/datasets/DataMart')]",
                 "[concat(variables('factoryId'), '/datasets/SrcPayments')]",
                 "[concat(variables('factoryId'), '/datasets/DestPaymentsArchive')]"
-            ]
-        },
-        {
-            "name": "[concat(parameters('factoryName'), '/default')]",
-            "type": "Microsoft.DataFactory/factories/managedVirtualNetworks",
-            "apiVersion": "2018-06-01",
-            "properties": {},
-            "dependsOn": []
-        },
-        {
-            "name": "[concat(parameters('factoryName'), '/default/shared_sql_private_endpoint')]",
-            "type": "Microsoft.DataFactory/factories/managedVirtualNetworks/managedPrivateEndpoints",
-            "apiVersion": "2018-06-01",
-            "properties": {
-                "privateLinkResourceId": "[parameters('shared_sql_private_endpoint_properties_privateLinkResourceId')]",
-                "groupId": "[parameters('shared_sql_private_endpoint_properties_groupId')]",
-                "fqdns": "[parameters('shared_sql_private_endpoint_properties_fqdns')]"
-            },
-            "dependsOn": [
-                "[concat(variables('factoryId'), '/managedVirtualNetworks/default')]"
-            ]
-        },
-        {
-            "name": "[concat(parameters('factoryName'), '/default/datamart_sql_private_endpoint')]",
-            "type": "Microsoft.DataFactory/factories/managedVirtualNetworks/managedPrivateEndpoints",
-            "apiVersion": "2018-06-01",
-            "properties": {
-                "privateLinkResourceId": "[parameters('datamart_sql_private_endpoint_properties_privateLinkResourceId')]",
-                "groupId": "[parameters('datamart_sql_private_endpoint_properties_groupId')]",
-                "fqdns": "[parameters('datamart_sql_private_endpoint_properties_fqdns')]"
-            },
-            "dependsOn": [
-                "[concat(variables('factoryId'), '/managedVirtualNetworks/default')]"
             ]
         }
     ]
