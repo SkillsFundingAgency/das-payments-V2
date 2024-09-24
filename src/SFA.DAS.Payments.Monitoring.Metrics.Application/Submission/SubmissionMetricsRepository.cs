@@ -172,7 +172,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                                  rp.ClawbackSourcePaymentEventId != Guid.Empty && 
                                  rp.ClawbackSourcePaymentEventId != null && 
                                  clawBackFundingSource.Contains(rp.FundingSource) &&
-                                 rp.FundingPlatformType == FundingPlatformType.SubmitLearnerData)
+                                 rp.FundingPlatformType != FundingPlatformType.DigitalApprenticeshipService)
                     .GroupBy(rp => new { rp.ContractType, rp.TransactionType })
                     .Select(group => new
                     {
@@ -226,7 +226,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Submission
                     .Where(p => p.Ukprn == ukprn &&
                                 p.CollectionPeriod.AcademicYear == academicYear &&
                                 p.CollectionPeriod.Period < currentCollectionPeriod &&
-                                p.FundingPlatformType == FundingPlatformType.SubmitLearnerData)
+                                p.FundingPlatformType != FundingPlatformType.DigitalApprenticeshipService)
                     .GroupBy(p => p.ContractType)
                     .Select(g => new { ContractType = g.Key, Amount = g.Sum(p => p.Amount) })
                     .ToListAsync(cancellationToken)

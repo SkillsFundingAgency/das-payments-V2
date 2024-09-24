@@ -149,7 +149,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
                           .FirstOrDefault()
                       && p.CollectionPeriod.Period < dle.CollectionPeriod
                       && p.ContractType == ContractType.Act1
-                      && p.FundingPlatformType == FundingPlatformType.SubmitLearnerData
+                      && p.FundingPlatformType != FundingPlatformType.DigitalApprenticeshipService
                 select new 
                 {
                     Ukprn = dle.Ukprn,
