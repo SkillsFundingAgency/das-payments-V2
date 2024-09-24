@@ -461,6 +461,48 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
             ukprnYearToDatePayments.ContractType2.Should().Be(0);
         }
 
+
+        [Test]
+        public async Task WhenCallingGetYearToDatePayments_ThenSLDPaymentsWithoutFundingPlatformTypeAreInclude()
+        {
+            var ukprn = _fixture.Create<long>();
+            short academicYear = 2324;
+            byte collectionPeriod = 12;
+            var sldPayments = new List<PaymentModel>();
+            var oldSldPayments = new List<PaymentModel>();
+
+            for (byte period = 1; period < collectionPeriod; period++)
+            {
+                var payment = CreateDefaultPaymentValues(ukprn);
+                payment.TransactionType = TransactionType.Learning;
+                payment.FundingPlatformType = FundingPlatformType.SubmitLearnerData;
+                payment.CollectionPeriod = new CollectionPeriod { AcademicYear = academicYear, Period = period };
+                payment.ContractType = ContractType.Act1;
+                sldPayments.Add(payment);
+            }
+
+            for (byte period = 1; period < collectionPeriod; period++)
+            {
+                var payment = CreateDefaultPaymentValues(ukprn);
+                payment.TransactionType = TransactionType.Learning;
+                payment.FundingPlatformType = null;
+                payment.CollectionPeriod = new CollectionPeriod { AcademicYear = academicYear, Period = period };
+                payment.ContractType = ContractType.Act1;
+                oldSldPayments.Add(payment);
+            }
+
+            _dataContext.AddRange(sldPayments);
+            _dataContext.AddRange(oldSldPayments);
+            await _dataContext.SaveChangesAsync();
+
+            var yearToDateAmounts = await _sut.GetYearToDatePayments(academicYear, collectionPeriod, new CancellationToken());
+
+            var ukprnYearToDatePayments = yearToDateAmounts.First(x => x.Ukprn == ukprn);
+
+            ukprnYearToDatePayments.ContractType1.Should().Be(sldPayments.Sum(x => x.Amount) + oldSldPayments.Sum(x => x.Amount));
+            ukprnYearToDatePayments.ContractType2.Should().Be(0);
+        }
+
         [Test]
         public async Task WhenCallingGetInLearningCount_ThenDASPlatformPaymentsAreExcluded()
         {
