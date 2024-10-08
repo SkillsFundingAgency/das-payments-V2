@@ -207,7 +207,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
                                         ? null : apprenticeship?.Id,
                     ApprenticeshipPriceEpisodeId = missingApprenticeshipId && (providerPayment.LevyPayments < 0 ||  providerPayment.SfaCoFundedPayments < 0 || providerPayment.EmployerCoFundedPayments < 0) 
                         ? null : apprenticeship?.ApprenticeshipPriceEpisodes.First().Id,
-
+                    FundingPlatformType = FundingPlatformType.SubmitLearnerData
                 };
 
                 if (providerPayment.LevyPayments != 0)
