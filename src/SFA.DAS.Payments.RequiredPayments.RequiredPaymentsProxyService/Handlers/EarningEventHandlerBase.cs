@@ -61,16 +61,29 @@ namespace SFA.DAS.Payments.RequiredPayments.RequiredPaymentsProxyService.Handler
                 actorId);
             IReadOnlyCollection<PeriodisedRequiredPaymentEvent> requiredPaymentEvent;
 
-            requiredPaymentEvent = await HandleEarningEvent(message, actor).ConfigureAwait(false);
+            try
+            {
+                requiredPaymentEvent = await HandleEarningEvent(message, actor).ConfigureAwait(false);
 
-            if (requiredPaymentEvent != null)
-                await Task.WhenAll(requiredPaymentEvent.Select(context.Publish)).ConfigureAwait(false);
+                if (requiredPaymentEvent != null)
+                    await Task.WhenAll(requiredPaymentEvent.Select(context.Publish)).ConfigureAwait(false);
 
-            paymentLogger.LogInfo("Successfully processed RequiredPaymentsProxyService event for Actor for " + 
-            $"jobId:{message.JobId}, learnerRef:{message.Learner.ReferenceNumber}, frameworkCode:{message.LearningAim.FrameworkCode}, " +
-            $"pathwayCode:{message.LearningAim.PathwayCode}, programmeType:{message.LearningAim.ProgrammeType}, " +
-            $"standardCode:{message.LearningAim.StandardCode}, learningAimReference:{message.LearningAim.Reference}, " +
-            $"academicYear:{message.CollectionPeriod.AcademicYear}, contractType:{contractType}");
+                paymentLogger.LogInfo("Successfully processed RequiredPaymentsProxyService event for Actor for " +
+                                      $"jobId:{message.JobId}, learnerRef:{message.Learner.ReferenceNumber}, frameworkCode:{message.LearningAim.FrameworkCode}, " +
+                                      $"pathwayCode:{message.LearningAim.PathwayCode}, programmeType:{message.LearningAim.ProgrammeType}, " +
+                                      $"standardCode:{message.LearningAim.StandardCode}, learningAimReference:{message.LearningAim.Reference}, " +
+                                      $"academicYear:{message.CollectionPeriod.AcademicYear}, contractType:{contractType}");
+
+            }
+            catch (Exception ex)
+            {
+                paymentLogger.LogError("Failed to process Payable Earnings event for Actor for " +
+                                      $"jobId:{message.JobId}, learnerRef:{message.Learner.ReferenceNumber}, frameworkCode:{message.LearningAim.FrameworkCode}, " +
+                                      $"pathwayCode:{message.LearningAim.PathwayCode}, programmeType:{message.LearningAim.ProgrammeType}, " +
+                                      $"standardCode:{message.LearningAim.StandardCode}, learningAimReference:{message.LearningAim.Reference}, " +
+                                      $"academicYear:{message.CollectionPeriod.AcademicYear}, contractType:{contractType}");
+                throw;
+            }
         }
 
         private ContractType GetContractTypeFromMessage(T message)

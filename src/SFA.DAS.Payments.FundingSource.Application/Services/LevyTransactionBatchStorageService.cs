@@ -9,23 +9,29 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoMapper;
+using SFA.DAS.Payments.FundingSource.Messages.Commands;
+using SFA.DAS.Payments.Messages.Core;
 
 namespace SFA.DAS.Payments.FundingSource.Application.Services
 {
     public interface ILevyTransactionBatchStorageService
     {
         Task StoreLevyTransactions(IList<CalculatedRequiredLevyAmount> levyTransactions, CancellationToken cancellationToken, bool isReceiverTransferPayment = false);
+        Task StoreLevyTransactions(IList<CalculateOnProgrammePayment> levyTransactions, CancellationToken cancellationToken, bool isReceiverTransferPayment = false);
     }
 
     public class LevyTransactionBatchStorageService : ILevyTransactionBatchStorageService
     {
         private readonly IPaymentLogger logger;
         private readonly ILevyTransactionRepository levyTransactionRepository;
+        private readonly IMapper mapper;
 
-        public LevyTransactionBatchStorageService(IPaymentLogger logger, ILevyTransactionRepository levyTransactionRepository)
+        public LevyTransactionBatchStorageService(IPaymentLogger logger, ILevyTransactionRepository levyTransactionRepository, IMapper mapper)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.levyTransactionRepository = levyTransactionRepository ?? throw new ArgumentNullException(nameof(levyTransactionRepository));
+            this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         public async Task StoreLevyTransactions(IList<CalculatedRequiredLevyAmount> calculatedRequiredLevyAmounts, CancellationToken cancellationToken, bool isReceiverTransferPayment = false)
@@ -61,7 +67,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
                 LearningAimStandardCode = levyAmount.LearningAim.StandardCode,
                 LearningStartDate = levyAmount.LearningStartDate,
                 SfaContributionPercentage = levyAmount.SfaContributionPercentage,
-                TransactionType = levyAmount.TransactionType
+                TransactionType = levyAmount.TransactionType,
+                FundingPlatformType = levyAmount.FundingPlatformType
             }).ToList();
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -79,6 +86,21 @@ namespace SFA.DAS.Payments.FundingSource.Application.Services
             }
 
             logger.LogInfo($"Saved levy transactions to db. Duplicates skipped.");
+        }
+
+
+        public async Task StoreLevyTransactions(IList<CalculateOnProgrammePayment> calculateOnProgrammePaymentCommands, CancellationToken cancellationToken, bool isReceiverTransferPayment = false)
+        {
+            logger.LogDebug($"Got {calculateOnProgrammePaymentCommands.Count} levy transactions.");
+
+            //TODO: Update the LevyTransactionModel to hold all RequiredLevyAmountFields and stop storing required payments in the DB.  
+            var requiredLevyAmounts = calculateOnProgrammePaymentCommands.Select(command => 
+                    mapper.Map<CalculateOnProgrammePayment, CalculatedRequiredLevyAmount>(command))
+                .ToList();
+
+            await StoreLevyTransactions(requiredLevyAmounts, cancellationToken, isReceiverTransferPayment);
+
+            logger.LogInfo($"Saved levy transactions from CalculateOnProgrammePaymentCommands to the db for later processing. Duplicates skipped.");
         }
     }
 }

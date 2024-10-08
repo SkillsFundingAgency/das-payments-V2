@@ -132,7 +132,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 SfaContributionPercentage = 17,
                 TransactionType = TransactionType.Learning,
                 TransferSenderAccountId = 18,
-                Ukprn = 19
+                Ukprn = 19,
+                FundingPlatformType = FundingPlatformType.SubmitLearnerData
             };
 
             var originalEventId = Guid.NewGuid();
@@ -153,6 +154,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 IlrSubmissionDateTime = DateTime.Now.AddDays(-1),
                 JobId = 10,
                 TransactionType = TransactionType.Learning,
+                FundingPlatformType = FundingPlatformType.SubmitLearnerData
             };
 
             paymentClawbackRepository.Setup(x => x.GetReadOnlyLearnerPaymentHistory(
@@ -574,6 +576,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             listOfCalculatedRequiredLevyAmounts.TransactionType.Should().Be(historicalPayment.TransactionType);
             listOfCalculatedRequiredLevyAmounts.TransferSenderAccountId.Should().Be(historicalPayment.TransferSenderAccountId);
             listOfCalculatedRequiredLevyAmounts.Ukprn.Should().Be(historicalPayment.Ukprn);
+            listOfCalculatedRequiredLevyAmounts.FundingPlatformType.Should().Be(historicalPayment.FundingPlatformType);
         }
 
         private static bool AssertPaymentModel(PaymentModel actualPayment, IdentifiedRemovedLearningAim message, Guid originalEventId, DateTimeOffset originalEventTime)
@@ -589,7 +592,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                    && actualPayment.EventTime != originalEventTime
                    && actualPayment.RequiredPaymentEventId == Guid.Empty
                    && actualPayment.EarningEventId == Guid.Empty
-                   && actualPayment.FundingSourceEventId == Guid.Empty;
+                   && actualPayment.FundingSourceEventId == Guid.Empty
+                   && actualPayment.FundingPlatformType == FundingPlatformType.SubmitLearnerData;
         }
     }
 }

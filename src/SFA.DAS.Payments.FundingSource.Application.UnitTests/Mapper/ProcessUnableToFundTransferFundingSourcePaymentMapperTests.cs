@@ -70,7 +70,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
                 PlannedEndDate = utcNow,
                 ApprenticeshipPriceEpisodeId = 1,
                 TransferSenderAccountId = 10,
-                ReportingAimFundingLineType = "Test"
+                ReportingAimFundingLineType = "Test",
+                FundingPlatformType = FundingPlatformType.SubmitLearnerData
             };
             
             expectedEvent = new CalculatedRequiredLevyAmount
@@ -114,7 +115,8 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
                 ApprenticeshipPriceEpisodeId = 1,
                 OnProgrammeEarningType = OnProgrammeEarningType.Balancing,
                 TransferSenderAccountId = 10,
-                ReportingAimFundingLineType = "Test"
+                ReportingAimFundingLineType = "Test",
+                FundingPlatformType = FundingPlatformType.SubmitLearnerData
             };
             
             mapperConfiguration = AutoMapperConfigurationFactory.CreateMappingConfig();
@@ -139,6 +141,19 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
             
             //RequiredPaymentEventId
             actualEvent.EventId.Should().Be(expectedEvent.EventId);
+        }
+
+        [TestCase(FundingPlatformType.SubmitLearnerData)]
+        [TestCase(FundingPlatformType.DigitalApprenticeshipService)]
+        public void Maps_Funding_Platform_Correctly(FundingPlatformType fundingPlatformType)
+        {
+            unableToFundTransferFundingSourcePayment.FundingPlatformType = fundingPlatformType;
+
+            // act
+            var actualEvent = autoMapper.Map<CalculatedRequiredLevyAmount>(unableToFundTransferFundingSourcePayment);
+
+            // assert
+            actualEvent.FundingPlatformType.Should().Be(fundingPlatformType);
         }
     }
 }

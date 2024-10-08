@@ -6,5 +6,6 @@ namespace SFA.DAS.Payments.FundingSource.Domain.Models
     {
         public decimal AmountDue { get; set; }
         public FundingSourceType Type { get; set; }
+        public FundingPlatformType FundingPlatformType { get; set; }
     }
 }

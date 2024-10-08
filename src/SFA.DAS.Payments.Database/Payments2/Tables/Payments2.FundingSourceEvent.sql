@@ -43,7 +43,8 @@ CREATE TABLE [Payments2].[FundingSourceEvent]
 	ApprenticeshipEmployerType TINYINT NULL, 
 	NonPaymentReason TINYINT NULL,
 	DuplicateNumber INT NULL,
-	AgeAtStartOfLearning TINYINT NULL
+	AgeAtStartOfLearning TINYINT NULL,
+	FundingPlatformType TINYINT NULL CONSTRAINT DF_FundingSource__FundingPlatformType DEFAULT(1)
 )
 GO
 

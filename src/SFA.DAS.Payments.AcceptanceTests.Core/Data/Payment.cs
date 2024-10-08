@@ -11,5 +11,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
         public string FundingSource { get; set; }
         public byte DeliveryPeriod { get; set; }
         public decimal Amount { get; set; }
+        public FundingPlatformType FundingPlatformType { get; set;}
     }
 }
