@@ -112,7 +112,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
                 CollectionPeriod = new CollectionPeriod { AcademicYear = 1920, Period = 1 },
                 Amount = 11000,
                 TransactionType = TransactionType.Learning,
-                ContractType = ContractType.Act1,
+                ContractType = ContractType.Act1
             });
 
             await inMemoryMetricsQueryDataContext.RequiredPaymentEvents.AddAsync(new RequiredPaymentEventModel
@@ -139,6 +139,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
                 TransactionType = TransactionType.Learning,
                 ContractType = ContractType.Act1,
                 ClawbackSourcePaymentEventId = Guid.NewGuid(),
+                FundingPlatformType = FundingPlatformType.SubmitLearnerData
             });
 
             await inMemoryMetricsQueryDataContext.Payments.AddAsync(new PaymentModel
@@ -153,6 +154,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
                 TransactionType = TransactionType.Learning,
                 ContractType = ContractType.Act2,
                 ClawbackSourcePaymentEventId = Guid.NewGuid(),
+                FundingPlatformType = FundingPlatformType.SubmitLearnerData
             });
 
             await inMemoryMetricsQueryDataContext.Payments.AddAsync(new PaymentModel
@@ -167,6 +169,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
                 TransactionType = TransactionType.Learning,
                 ContractType = ContractType.Act1,
                 ClawbackSourcePaymentEventId = Guid.NewGuid(),
+                FundingPlatformType = FundingPlatformType.SubmitLearnerData
             });
 
             await inMemoryMetricsQueryDataContext.SaveChangesAsync();
