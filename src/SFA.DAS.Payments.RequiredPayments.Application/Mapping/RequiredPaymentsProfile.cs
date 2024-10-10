@@ -71,7 +71,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .ForMember(dest => dest.TransactionType, opt => opt.MapFrom(s => s.TransactionType))
                 .ForMember(dest => dest.TransferSenderAccountId, opt => opt.MapFrom(s => s.TransferSenderAccountId))
                 .ForMember(dest => dest.Ukprn, opt => opt.MapFrom(s => s.Ukprn))
-
+                .ForMember(dest => dest.FundingPlatformType, opt => opt.MapFrom(source => source.FundingPlatformType))
                 ;
 
             CreateMap<PaymentHistoryEntity, Payment>()
