@@ -98,6 +98,11 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
             //NOTE: DO NOT CHANGE THE ORDER OF ASSIGNMENT BELLOW
             clawbackPayment.ClawbackSourcePaymentEventId = clawbackPayment.EventId;
             clawbackPayment.EventId = Guid.NewGuid();
+
+            if (!clawbackPayment.FundingPlatformType.HasValue) // cater for historical payments being refunded
+            {
+                clawbackPayment.FundingPlatformType = FundingPlatformType.SubmitLearnerData;
+            }
         }
 
         private List<CalculatedRequiredLevyAmount> GetCalculatedRequiredLevyAmountEvents(IEnumerable<PaymentModel> paymentToClawback)
