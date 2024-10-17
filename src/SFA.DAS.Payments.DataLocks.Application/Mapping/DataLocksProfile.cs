@@ -24,7 +24,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Mapping
                 .ForMember(destinationMember => destinationMember.EventId, opt => opt.Ignore())
                 .ForMember(destinationMember => destinationMember.AgeAtStartOfLearning,
                     opt => opt.MapFrom(source => source.AgeAtStartOfLearning));
-                
+
 
             CreateMap<ApprenticeshipContractType1EarningEvent, EarningFailedDataLockMatching>()
                 .ForMember(destinationMember => destinationMember.EarningEventId, opt => opt.MapFrom(source => source.EventId))
@@ -134,7 +134,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Mapping
                 .ForMember(dest => dest.CreationDate, opt => opt.Ignore())
                 .ForMember(dest => dest.ApprenticeshipPauses, opt => opt.Ignore())
                 ;
-            
+
             CreateMap<ApprenticeshipUpdatedApprovedEvent, UpdatedApprenticeshipApprovedModel>()
                 .ForMember(dest => dest.ApprenticeshipId, opt => opt.MapFrom(source => source.ApprenticeshipId))
                 .ForMember(dest => dest.StandardCode, opt => opt.MapFrom(source => source.TrainingCode.ToStandardCode(source.TrainingType)))
@@ -173,7 +173,7 @@ namespace SFA.DAS.Payments.DataLocks.Application.Mapping
                 .ForMember(dest => dest.LearningAim, opt => opt.Ignore())
                 .ForMember(dest => dest.IncentiveEarnings, opt => opt.Ignore())
                 .ForMember(dest => dest.OnProgrammeEarnings, opt => opt.Ignore());
-          
+
             CreateMap<EarningEventPeriodModel, EarningPeriod>()
                 .ForMember(dest => dest.PriceEpisodeIdentifier, opt => opt.MapFrom(source => source.PriceEpisodeIdentifier))
                 .ForMember(dest => dest.Period, opt => opt.MapFrom(source => source.DeliveryPeriod))

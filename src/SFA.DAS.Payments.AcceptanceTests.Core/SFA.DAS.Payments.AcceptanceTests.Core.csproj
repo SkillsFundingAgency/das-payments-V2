@@ -385,7 +385,9 @@
     <Compile Include="Automation\DcHelper.cs" />
     <Compile Include="Automation\DcNullHelper.cs" />
     <Compile Include="Automation\EmployerMonthEndHelper.cs" />
+    <Compile Include="Automation\FundingSourceHelper.cs" />
     <Compile Include="Automation\IDcHelper.cs" />
+    <Compile Include="Automation\IFundingSourceHelper.cs" />
     <Compile Include="Automation\IPaymentsHelper.cs" />
     <Compile Include="Automation\LearnRefNumberGenerator.cs" />
     <Compile Include="Automation\PaymentsHelper.cs" />
@@ -403,6 +405,7 @@
     <Compile Include="Data\Price.cs" />
     <Compile Include="Data\Provider.cs" />
     <Compile Include="Data\SubmissionDataContext.cs" />
+    <Compile Include="Data\TestFundingSourceDataContext.cs" />
     <Compile Include="Data\TestPaymentsDataContext.cs" />
     <Compile Include="Data\Training.cs" />
     <Compile Include="Extensions.cs" />
@@ -443,6 +446,10 @@
     <ProjectReference Include="..\SFA.DAS.Payments.EarningEvents.Messages.Internal\SFA.DAS.Payments.EarningEvents.Messages.Internal.csproj">
       <Project>{B5FF4D1A-925D-4979-9363-4C8298C483B8}</Project>
       <Name>SFA.DAS.Payments.EarningEvents.Messages.Internal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SFA.DAS.Payments.FundingSource.Application\SFA.DAS.Payments.FundingSource.Application.csproj">
+      <Project>{cda84663-1871-4464-bb23-e9665f216c49}</Project>
+      <Name>SFA.DAS.Payments.FundingSource.Application</Name>
     </ProjectReference>
     <ProjectReference Include="..\SFA.DAS.Payments.FundingSource.Messages.Internal\SFA.DAS.Payments.FundingSource.Messages.Internal.csproj">
       <Project>{95F83345-7AD6-477C-A271-3C7F8CA0529B}</Project>

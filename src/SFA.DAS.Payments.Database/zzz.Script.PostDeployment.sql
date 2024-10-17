@@ -239,3 +239,11 @@ WHEN NOT MATCHED BY TARGET THEN
 WHEN NOT MATCHED BY SOURCE THEN 
  DELETE;
  GO
+
+IF NOT EXISTS (SELECT * FROM [Payments2].[FundingPlatformType]  WHERE [Id] = 1)
+	INSERT INTO [Payments2].[FundingPlatformType]  values (1,'SubmitLearnerData')
+GO	
+
+IF NOT EXISTS (SELECT * FROM [Payments2].[FundingPlatformType]  WHERE [Id] = 2)
+	INSERT INTO [Payments2].[FundingPlatformType]  values (2,'DigitalApprenticeshipService')
+GO	

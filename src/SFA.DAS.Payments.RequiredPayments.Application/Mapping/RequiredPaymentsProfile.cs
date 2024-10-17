@@ -71,7 +71,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .ForMember(dest => dest.TransactionType, opt => opt.MapFrom(s => s.TransactionType))
                 .ForMember(dest => dest.TransferSenderAccountId, opt => opt.MapFrom(s => s.TransferSenderAccountId))
                 .ForMember(dest => dest.Ukprn, opt => opt.MapFrom(s => s.Ukprn))
-
+                .ForMember(dest => dest.FundingPlatformType, opt => opt.MapFrom(source => source.FundingPlatformType))
                 ;
 
             CreateMap<PaymentHistoryEntity, Payment>()
@@ -115,9 +115,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .ForMember(requiredPayment => requiredPayment.EventId, opt => opt.Ignore())
                 //pull start date from price episode if available (in the case of on prog earnings) or from the aim if not (in the case of functional skills)
                 .ForMember(requiredPayment => requiredPayment.LearningStartDate,
-                    opt => opt.ResolveUsing(earning => 
+                    opt => opt.ResolveUsing(earning =>
                         earning.PriceEpisodes.FirstOrDefault(x => x.LearningAimSequenceNumber == earning.LearningAim.SequenceNumber)?.CourseStartDate ?? earning.LearningAim.StartDate))
-                
+
 
 
                 .Ignore(x => x.ApprenticeshipId)
@@ -259,6 +259,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .ForMember(x => x.AgreedOnDate, opt => opt.Ignore())
                 .ForMember(x => x.AgeAtStartOfLearning, opt => opt.MapFrom(source => source.AgeAtStartOfLearning))
                 .Ignore(x => x.ClawbackSourcePaymentEventId)
+                .Ignore(x => x.FundingPlatformType)
                 ;
             // End Earning Event --> Required Payment Event
 
@@ -293,6 +294,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .ForMember(requiredPayment => requiredPayment.AgreedOnDate, opt => opt.MapFrom(period => period.AgreedOnDate))
                 .ForMember(x => x.AgreementId, opt => opt.Ignore())
                 .Ignore(x => x.ClawbackSourcePaymentEventId)
+                .Ignore(x => x.FundingPlatformType)
                 ;
 
             CreateMap<EarningPeriod, CalculatedRequiredIncentiveAmount>()
@@ -356,6 +358,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.AgreedOnDate)
                 .Ignore(x => x.ClawbackSourcePaymentEventId)
                 .Ignore(x => x.AgeAtStartOfLearning)
+                .Ignore(x => x.FundingPlatformType)
                 ;
 
             CreateMap<IdentifiedRemovedLearningAim, PeriodisedRequiredPaymentEvent>()
@@ -409,6 +412,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.OnProgrammeEarningType)
                 .Ignore(x => x.AgreedOnDate)
                 .Ignore(x => x.AgeAtStartOfLearning)
+                .Ignore(x => x.FundingPlatformType)
                 ;
 
             CreateMap<PaymentHistoryEntity, PeriodisedRequiredPaymentEvent>()
@@ -457,6 +461,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.OnProgrammeEarningType)
                 .Ignore(x => x.AgreedOnDate)
                 .Ignore(x => x.AgeAtStartOfLearning)
+                .Ignore(x => x.FundingPlatformType)
                 ;
 
             CreateMap<PriceEpisode, LearningAim>()
