@@ -179,3 +179,9 @@ INCLUDE
 )
 WITH (ONLINE = ON)
 GO
+
+CREATE NONCLUSTERED INDEX [IX_Payment__FundingPlatformType]
+ON [Payments2].[Payment] ([CollectionPeriod],[AcademicYear])
+INCLUDE ([Ukprn],[Amount],[ContractType],[TransactionType],[FundingPlatformType])
+
+GO
