@@ -2729,18 +2729,6 @@
                                                         "mappings": [
                                                             {
                                                                 "source": {
-                                                                    "name": "Id",
-                                                                    "type": "Int64",
-                                                                    "physicalType": "bigint"
-                                                                },
-                                                                "sink": {
-                                                                    "name": "Id",
-                                                                    "type": "Int64",
-                                                                    "physicalType": "bigint"
-                                                                }
-                                                            },
-                                                            {
-                                                                "source": {
                                                                     "name": "EventId",
                                                                     "type": "Guid",
                                                                     "physicalType": "uniqueidentifier"
@@ -6287,7 +6275,7 @@
                     }
                 },
                 "annotations": [],
-                "lastPublishTime": "2024-10-28T13:59:13Z"
+                "lastPublishTime": "2024-10-28T15:03:08Z"
             },
             "dependsOn": [
                 "[concat(variables('factoryId'), '/datasets/SrcPayments')]",
@@ -7545,7 +7533,7 @@
                     }
                 },
                 "annotations": [],
-                "lastPublishTime": "2024-10-28T13:59:13Z"
+                "lastPublishTime": "2024-10-28T15:03:07Z"
             },
             "dependsOn": [
                 "[concat(variables('factoryId'), '/linkedServices/datamart_stagingDB_linkedservices')]",
