@@ -257,6 +257,35 @@
             "dependsOn": []
         },
         {
+            "name": "[concat(parameters('factoryName'), '/AzureVNETIntegrationRuntime')]",
+            "type": "Microsoft.DataFactory/factories/integrationRuntimes",
+            "apiVersion": "2018-06-01",
+            "properties": {
+                "type": "Managed",
+                "typeProperties": {
+                    "computeProperties": {
+                        "location": "West Europe",
+                        "dataFlowProperties": {
+                            "computeType": "General",
+                            "coreCount": 8,
+                            "timeToLive": 10,
+                            "cleanup": false
+                        },
+                        "pipelineExternalComputeScaleProperties": {
+                            "timeToLive": 60
+                        }
+                    }
+                },
+                "managedVirtualNetwork": {
+                    "type": "ManagedVirtualNetworkReference",
+                    "referenceName": "default"
+                }
+            },
+            "dependsOn": [
+                "[concat(variables('factoryId'), '/managedVirtualNetworks/default')]"
+            ]
+        },
+        {
             "name": "[concat(parameters('factoryName'), '/CopyPaymentsToArchive')]",
             "type": "Microsoft.DataFactory/factories/pipelines",
             "apiVersion": "2018-06-01",
@@ -1433,18 +1462,6 @@
                                                         "mappings": [
                                                             {
                                                                 "source": {
-                                                                    "name": "Id",
-                                                                    "type": "Int64",
-                                                                    "physicalType": "bigint"
-                                                                },
-                                                                "sink": {
-                                                                    "name": "Id",
-                                                                    "type": "Int64",
-                                                                    "physicalType": "bigint"
-                                                                }
-                                                            },
-                                                            {
-                                                                "source": {
                                                                     "name": "EventId",
                                                                     "type": "Guid",
                                                                     "physicalType": "uniqueidentifier"
@@ -2100,18 +2117,6 @@
                                                     "translator": {
                                                         "type": "TabularTranslator",
                                                         "mappings": [
-                                                            {
-                                                                "source": {
-                                                                    "name": "Id",
-                                                                    "type": "Int64",
-                                                                    "physicalType": "bigint"
-                                                                },
-                                                                "sink": {
-                                                                    "name": "Id",
-                                                                    "type": "Int64",
-                                                                    "physicalType": "bigint"
-                                                                }
-                                                            },
                                                             {
                                                                 "source": {
                                                                     "name": "EventId",
@@ -4071,18 +4076,6 @@
                                                     "translator": {
                                                         "type": "TabularTranslator",
                                                         "mappings": [
-                                                            {
-                                                                "source": {
-                                                                    "name": "Id",
-                                                                    "type": "Int64",
-                                                                    "physicalType": "bigint"
-                                                                },
-                                                                "sink": {
-                                                                    "name": "Id",
-                                                                    "type": "Int64",
-                                                                    "physicalType": "bigint"
-                                                                }
-                                                            },
                                                             {
                                                                 "source": {
                                                                     "name": "EventId",
@@ -6294,7 +6287,7 @@
                     }
                 },
                 "annotations": [],
-                "lastPublishTime": "2024-09-25T14:42:56Z"
+                "lastPublishTime": "2024-10-28T13:59:13Z"
             },
             "dependsOn": [
                 "[concat(variables('factoryId'), '/datasets/SrcPayments')]",
@@ -7552,42 +7545,13 @@
                     }
                 },
                 "annotations": [],
-                "lastPublishTime": "2024-09-25T14:22:46Z"
+                "lastPublishTime": "2024-10-28T13:59:13Z"
             },
             "dependsOn": [
                 "[concat(variables('factoryId'), '/linkedServices/datamart_stagingDB_linkedservices')]",
                 "[concat(variables('factoryId'), '/datasets/DataMart')]",
                 "[concat(variables('factoryId'), '/datasets/SrcPayments')]",
                 "[concat(variables('factoryId'), '/datasets/DestPaymentsArchive')]"
-            ]
-        },
-        {
-            "name": "[concat(parameters('factoryName'), '/AzureVNETIntegrationRuntime')]",
-            "type": "Microsoft.DataFactory/factories/integrationRuntimes",
-            "apiVersion": "2018-06-01",
-            "properties": {
-                "type": "Managed",
-                "typeProperties": {
-                    "computeProperties": {
-                        "location": "West Europe",
-                        "dataFlowProperties": {
-                            "computeType": "General",
-                            "coreCount": 8,
-                            "timeToLive": 10,
-                            "cleanup": false
-                        },
-                        "pipelineExternalComputeScaleProperties": {
-                            "timeToLive": 60
-                        }
-                    }
-                },
-                "managedVirtualNetwork": {
-                    "type": "ManagedVirtualNetworkReference",
-                    "referenceName": "default"
-                }
-            },
-            "dependsOn": [
-                "[concat(variables('factoryId'), '/managedVirtualNetworks/default')]"
             ]
         },
         {
