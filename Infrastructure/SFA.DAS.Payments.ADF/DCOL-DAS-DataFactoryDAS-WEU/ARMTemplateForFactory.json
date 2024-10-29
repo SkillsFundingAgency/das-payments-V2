@@ -250,13 +250,6 @@
             ]
         },
         {
-            "name": "[concat(parameters('factoryName'), '/default')]",
-            "type": "Microsoft.DataFactory/factories/managedVirtualNetworks",
-            "apiVersion": "2018-06-01",
-            "properties": {},
-            "dependsOn": []
-        },
-        {
             "name": "[concat(parameters('factoryName'), '/AzureVNETIntegrationRuntime')]",
             "type": "Microsoft.DataFactory/factories/integrationRuntimes",
             "apiVersion": "2018-06-01",
@@ -284,6 +277,13 @@
             "dependsOn": [
                 "[concat(variables('factoryId'), '/managedVirtualNetworks/default')]"
             ]
+        },
+        {
+            "name": "[concat(parameters('factoryName'), '/default')]",
+            "type": "Microsoft.DataFactory/factories/managedVirtualNetworks",
+            "apiVersion": "2018-06-01",
+            "properties": {},
+            "dependsOn": []
         },
         {
             "name": "[concat(parameters('factoryName'), '/CopyPaymentsToArchive')]",
@@ -433,18 +433,6 @@
                                                     "translator": {
                                                         "type": "TabularTranslator",
                                                         "mappings": [
-                                                            {
-                                                                "source": {
-                                                                    "name": "Id",
-                                                                    "type": "Int64",
-                                                                    "physicalType": "bigint"
-                                                                },
-                                                                "sink": {
-                                                                    "name": "Id",
-                                                                    "type": "Int64",
-                                                                    "physicalType": "bigint"
-                                                                }
-                                                            },
                                                             {
                                                                 "source": {
                                                                     "name": "EventId",
@@ -6275,7 +6263,7 @@
                     }
                 },
                 "annotations": [],
-                "lastPublishTime": "2024-10-28T15:03:08Z"
+                "lastPublishTime": "2024-10-29T12:51:54Z"
             },
             "dependsOn": [
                 "[concat(variables('factoryId'), '/datasets/SrcPayments')]",
@@ -7533,7 +7521,7 @@
                     }
                 },
                 "annotations": [],
-                "lastPublishTime": "2024-10-28T15:03:07Z"
+                "lastPublishTime": "2024-10-29T12:51:53Z"
             },
             "dependsOn": [
                 "[concat(variables('factoryId'), '/linkedServices/datamart_stagingDB_linkedservices')]",
