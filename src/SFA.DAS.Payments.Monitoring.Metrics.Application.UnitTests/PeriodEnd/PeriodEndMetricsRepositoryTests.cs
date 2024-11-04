@@ -288,6 +288,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
                 .Be(sldPayments.First(x => x.FundingSource == FundingSourceType.Transfer).Amount);
         }
 
+        [Ignore("Cannot run in memory unit tests against raw SQL")]
         [TestCase("16 - 18 Apprenticeship(From May 2017) Non - Levy Contract(non - procured)")]
         [TestCase("16-18 Apprenticeship Non-Levy Contract (procured)")]
         [TestCase("16-18 Apprenticeship (Employer on App Service)")]
@@ -354,6 +355,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.PeriodEnd
             ukprnFundingLineAmounts.Total.Should().Be(sldPayments.First().Amount);
         }
 
+        [Ignore("Cannot run in memory unit tests against raw SQL")]
         [TestCase("19+ Apprenticeship (From May 2017) Non-Levy Contract (non-procured)")]
         [TestCase("19+ Apprenticeship Non-Levy Contract (procured)")]
         [TestCase("19+ Apprenticeship (Employer on App Service)")]

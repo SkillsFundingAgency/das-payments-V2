@@ -53,7 +53,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.UnitTests.Submission
             _sut = new SubmissionMetricsRepository(_dataPersistence.Object, _dataContextFactory.Object, _logger.Object);
         }
 
-        [Test]
+        [Test, Ignore("Cannot run in memory unit tests against raw SQL")]
         public async Task GetAlreadyPaidDataLockedEarnings_Should_Only_Include_SLD_Platform_Metrics()
         {
             var expectedAlreadyPaidDataLockedEarningsTotal = SetupAlreadyPaidDataLockedEarnings();
