@@ -1,0 +1,109 @@
+variables:
+- group: Common - Project Level
+- group: Common - Connection String
+- group: Common - Database Names
+- group: Common - Database Usernames
+
+resources:
+  repositories:
+  - repository: self
+
+trigger:
+  branches:
+    include:
+    - master
+
+  batch: true
+  paths:
+    include:
+    - Infrastructure/SFA.DAS.Payments.DCR
+    exclude:
+    - Infrastructure/SFA.DAS.Payments.ADF
+    - Infrastructure/SFA.DAS.Payments.Monitoring.Metrics
+    - Infrastructure/SFA.DAS.Payments.SFCluster.Alerts
+
+stages:
+- stage: Publish_DCR_Rules
+  displayName: Publish DCR_Rules
+
+  jobs:
+  - template: pipeline/publish.yml
+
+ 
+
+- stage: Deploy_SDW
+  dependsOn: 
+  - Publish_DCR_Rules
+
+  displayName: Deploy to SDW
+  variables:
+  - name: tagEnvironment
+    value: Dev/Test
+  - group: DCOL-SDW - Environment Key Vault Secrets
+  jobs:
+  - template: pipeline/deploy.yml
+    parameters:
+      pool: DCT Build Pool
+      environmentName: SDW
+      azureSubscription: DCOL-Shadow
+      dataCollectionRules_DCOL_ServiceFabric_DCR_name: DCOL-SDW-ServiceFabric-DCR
+      workspaces_DCOL_OPS_WEU_Workspace_externalid: /subscriptions/4ff47917-ac4e-432a-b314-a6525434afcb/resourceGroups/dcol-sdw-ops-weu/providers/Microsoft.OperationalInsights/workspaces/DCOL-SDW-OPS-WEU-Workspace
+      
+
+ 
+- stage: Deploy_MO
+  dependsOn: 
+  - Publish_DCR_Rules
+  - Deploy_SDW
+  displayName: Deploy to MO
+  variables:
+  - name: tagEnvironment
+    value: Dev/Test
+  - group: DCOL-MO - Environment Key Vault Secrets
+  - group: Common - tags MO
+  jobs:
+  - template: pipeline/deploy.yml
+    parameters:
+      pool: DCT Build Pool
+      environmentName: MO
+      azureSubscription: DCOL-MO-VSTS
+      dataCollectionRules_DCOL_ServiceFabric_DCR_name: DCOL-MO-ServiceFabric-DCR
+      workspaces_DCOL_OPS_WEU_Workspace_externalid: /subscriptions/2f538936-0715-4dfd-83da-6b8c5a399d6a/resourceGroups/dcol-mo-ops-weu/providers/Microsoft.OperationalInsights/workspaces/DCOL-MO-OMS-WEU
+#      
+
+- stage: Deploy_PP
+  dependsOn: 
+  - Publish_DCR_Rules
+  - Deploy_MO
+  displayName: Deploy to PP
+  variables:
+  - name: tagEnvironment
+    value: Pre-Production
+  - group: DCOL-PP - Environment Key Vault Secrets
+  jobs:
+  - template: pipeline/deploy.yml
+    parameters:
+      pool: DCT Build Pool
+      environmentName: PP
+      azureSubscription: DCOLPPVSTS
+      dataCollectionRules_DCOL_ServiceFabric_DCR_name: DCOL-PP-ServiceFabric-DCR
+      workspaces_DCOL_OPS_WEU_Workspace_externalid: /subscriptions/931bc9f6-359c-4f65-a753-1ee191a1fd6c/resourceGroups/dcol-pp-ops-weu/providers/Microsoft.OperationalInsights/workspaces/DCOL-PP-OMS-WEU
+
+- stage: Deploy_PD
+  dependsOn: 
+  - Publish_DCR_Rules
+  - Deploy_PP
+  displayName: Deploy to PD
+  variables:
+  - name: tagEnvironment
+    value: Production
+  - group: DCOL-PD - Environment Key Vault Secrets
+  jobs:
+  - template: pipeline/deploy.yml
+    parameters:
+      pool: DCT Build Pool
+      environmentName: PD
+      azureSubscription: DCOLPDVSTS
+      dataCollectionRules_DCOL_ServiceFabric_DCR_name: DCOL-PD-ServiceFabric-DCR
+      workspaces_DCOL_OPS_WEU_Workspace_externalid: /subscriptions/6c93f7dc-6c36-4ea6-8de3-3f4574f88027/resourceGroups/dcol-pd-ops-weu/providers/Microsoft.OperationalInsights/workspaces/DCOL-PD-OMS-WEU
+      

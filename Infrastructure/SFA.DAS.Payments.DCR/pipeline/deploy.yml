@@ -1,0 +1,60 @@
+parameters:
+  pool:
+  azureSubscription:
+  location: 'westeurope'
+  environmentName:
+  dataCollectionRules_DCOL_ServiceFabric_DCR_name:
+  workspaces_DCOL_OPS_WEU_Workspace_externalid:
+  
+  
+
+jobs:
+- deployment: DeployDCRRules
+  pool:
+    name: ${{ parameters.pool }}
+    demands:
+    - ReleaseEnvironment -equals ${{ parameters.environmentName }}
+  environment: ${{ parameters.environmentName }}
+  variables: 
+    - name: resourceGroupName
+      value: '$(Service)-${{ parameters.environmentName }}-ServiceFabricDAS-$(RegionPrimaryCode)'
+    - name: dataCollectionRules_DCOL_ServiceFabric_DCR_name
+      value: '${{ parameters.dataCollectionRules_DCOL_ServiceFabric_DCR_name }}'
+    - name: workspaces_DCOL_OPS_WEU_Workspace_externalid
+      value: ${{ parameters.workspaces_DCOL_OPS_WEU_Workspace_externalid }}
+    
+    
+    
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+        - task: AzurePowerShell@5
+          displayName: Create solution resource group
+          inputs:
+            azureSubscription: '${{ parameters.azureSubscription }}'
+            ScriptType: 'InlineScript'
+            Inline: 'New-AzResourceGroup -Name ${{ variables.resourceGroupName }} -Location "${{ parameters.location }}" -Tag $(tags) -Force'
+            azurePowerShellVersion: 'LatestVersion'
+
+        - task: AzurePowerShell@5
+          displayName: Set subscription id variable
+          inputs:
+            azureSubscription: '${{ parameters.azureSubscription }}'
+            ScriptType: 'InlineScript'
+            Inline: |
+              $subscriptionId = (Get-AzSubscription).SubscriptionId
+              Write-Host "variable=subscriptionId: $subscriptionId"
+              Write-Host "##vso[task.setvariable variable=subscriptionId;]$subscriptionId"
+            azurePowerShellVersion: 'LatestVersion'
+
+        - task: AzureResourceGroupDeployment@2
+          displayName: Deploy Solution Resources
+          inputs:
+            azureSubscription: '${{ parameters.azureSubscription }}'
+            resourceGroupName: '${{ variables.resourceGroupName }}'
+            location: '${{ parameters.location }}'
+            csmFile: '$(Pipeline.Workspace)/drop/Infrastructure/SFA.DAS.Payments.DCR/azure/template.json'
+            csmParametersFile: '$(Pipeline.Workspace)/drop/Infrastructure/SFA.DAS.Payments.DCR/azure/parameters.json'
+            overrideParameters: '-dataCollectionRules_DCOL_ServiceFabric_DCR_name "${{ variables.dataCollectionRules_DCOL_ServiceFabric_DCR_name }}" -workspaces_DCOL_OPS_WEU_Workspace_externalid "${{ variables.workspaces_DCOL_OPS_WEU_Workspace_externalid }}"'
+            deploymentOutputs: armoutputs
