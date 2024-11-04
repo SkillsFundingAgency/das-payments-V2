@@ -46,5 +46,6 @@ namespace SFA.DAS.Payments.Model.Core.Audit
         public long? ApprenticeshipPriceEpisodeId { get; set; }
         public ApprenticeshipEmployerType ApprenticeshipEmployerType { get; set; }
         public int? AgeAtStartOfLearning { get; set; }
+        public FundingPlatformType FundingPlatformType { get; set; }
     }
 }

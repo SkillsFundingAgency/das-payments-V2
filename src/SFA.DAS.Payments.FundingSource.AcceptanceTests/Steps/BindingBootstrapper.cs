@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using NServiceBus;
 using SFA.DAS.Payments.AcceptanceTests.Core;
+using SFA.DAS.Payments.FundingSource.Messages.Commands;
 using SFA.DAS.Payments.FundingSource.Messages.Events;
 using SFA.DAS.Payments.Messages.Core;
 using SFA.DAS.Payments.RequiredPayments.Messages.Events;
@@ -19,6 +20,7 @@ namespace SFA.DAS.Payments.FundingSource.AcceptanceTests.Steps
             var routing = transportConfig.Routing();
             routing.RouteToEndpoint(typeof(CalculatedRequiredCoInvestedAmount), EndpointNames.NonLevyFundedPaymentsService);
             routing.RouteToEndpoint(typeof(CalculatedRequiredIncentiveAmount), EndpointNames.NonLevyFundedPaymentsService);
+            routing.RouteToEndpoint(typeof(CalculateOnProgrammePayment), EndpointNames.LevyFundedPaymentsService);
         }
     }
 }

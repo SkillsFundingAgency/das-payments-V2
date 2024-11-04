@@ -132,7 +132,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 SfaContributionPercentage = 17,
                 TransactionType = TransactionType.Learning,
                 TransferSenderAccountId = 18,
-                Ukprn = 19
+                Ukprn = 19,
+                FundingPlatformType = FundingPlatformType.SubmitLearnerData
             };
 
             var originalEventId = Guid.NewGuid();
@@ -153,6 +154,102 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                 IlrSubmissionDateTime = DateTime.Now.AddDays(-1),
                 JobId = 10,
                 TransactionType = TransactionType.Learning,
+                FundingPlatformType = FundingPlatformType.SubmitLearnerData
+            };
+
+            paymentClawbackRepository.Setup(x => x.GetReadOnlyLearnerPaymentHistory(
+                    It.IsAny<long>(),
+                    It.IsAny<ContractType>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>(),
+                    It.IsAny<int>(),
+                    It.IsAny<int>(),
+                    It.IsAny<int>(),
+                    It.IsAny<int>(),
+                    It.IsAny<short>(),
+                    It.IsAny<byte>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<PaymentModel> { historicalPayment, historicalPayment2 });
+
+            var listOfCalculatedRequiredLevyAmounts = await sut.GenerateClawbackForRemovedLearnerAim(message, CancellationToken.None);
+
+            listOfCalculatedRequiredLevyAmounts.Count.Should().Be(1);
+
+            AssertCalculatedRequiredLevyAmountEvent(listOfCalculatedRequiredLevyAmounts.First(), historicalPayment, message);
+
+            paymentClawbackRepository.Verify(r =>
+                r.SaveClawbackPayments(It.Is<IEnumerable<PaymentModel>>(p =>
+                AssertPaymentModel(p.Single(), message, originalEventId, originalEventTime)), It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Test]
+        public async Task GivenClawbackGeneratedThenRequiredLevyAmountEventIsMappedCorrectlyFromPaymentModeWhenFundingPlatformTypeNotPopulated()
+        {
+            var historicalPayment = new PaymentModel
+            {
+                AccountId = 1,
+                ActualEndDate = DateTime.Today,
+                AgreementId = "AgreementId",
+                ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy,
+                Amount = 100,
+                ApprenticeshipId = 2,
+                ApprenticeshipPriceEpisodeId = 3,
+                CollectionPeriod = new CollectionPeriod { AcademicYear = 2021, Period = 1 },
+                ClawbackSourcePaymentEventId = null,
+                CompletionAmount = 5,
+                CompletionStatus = 6,
+                ContractType = ContractType.Act1,
+                DeliveryPeriod = 7,
+                EarningEventId = Guid.NewGuid(),
+                EventId = Guid.NewGuid(),
+                EventTime = DateTimeOffset.Now.AddDays(-1),
+                FundingSource = FundingSourceType.Levy,
+                FundingSourceEventId = Guid.NewGuid(),
+                Id = 8,
+                IlrSubmissionDateTime = DateTime.Today.AddDays(-1),
+                InstalmentAmount = 9,
+                JobId = 10,
+                LearnerReferenceNumber = "LearnerReferenceNumber",
+                LearnerUln = 11,
+                LearningAimFrameworkCode = 12,
+                LearningAimFundingLineType = "LearningAimFundingLineType",
+                LearningAimPathwayCode = 13,
+                LearningAimProgrammeType = 14,
+                LearningAimReference = "LearningAimReference",
+                LearningAimStandardCode = 15,
+                LearningStartDate = DateTime.Today,
+                NumberOfInstalments = 16,
+                PlannedEndDate = DateTime.Today,
+                PriceEpisodeIdentifier = "PriceEpisodeIdentifier",
+                ReportingAimFundingLineType = "ReportingAimFundingLineType",
+                RequiredPaymentEventId = Guid.NewGuid(),
+                StartDate = DateTime.Today,
+                SfaContributionPercentage = 17,
+                TransactionType = TransactionType.Learning,
+                TransferSenderAccountId = 18,
+                Ukprn = 19,
+                FundingPlatformType = null
+            };
+
+            var originalEventId = Guid.NewGuid();
+            var originalEventTime = DateTimeOffset.Now.AddDays(-1);
+
+            var historicalPayment2 = new PaymentModel
+            {
+                Amount = 100,
+                CollectionPeriod = new CollectionPeriod { AcademicYear = 2021, Period = 1 },
+                ClawbackSourcePaymentEventId = null,
+                ContractType = ContractType.Act2,
+                EarningEventId = Guid.NewGuid(),
+                EventId = originalEventId,
+                EventTime = originalEventTime,
+                FundingSource = FundingSourceType.CoInvestedEmployer,
+                FundingSourceEventId = Guid.NewGuid(),
+                Id = 8,
+                IlrSubmissionDateTime = DateTime.Now.AddDays(-1),
+                JobId = 10,
+                TransactionType = TransactionType.Learning,
+                FundingPlatformType = null
             };
 
             paymentClawbackRepository.Setup(x => x.GetReadOnlyLearnerPaymentHistory(
@@ -574,6 +671,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
             listOfCalculatedRequiredLevyAmounts.TransactionType.Should().Be(historicalPayment.TransactionType);
             listOfCalculatedRequiredLevyAmounts.TransferSenderAccountId.Should().Be(historicalPayment.TransferSenderAccountId);
             listOfCalculatedRequiredLevyAmounts.Ukprn.Should().Be(historicalPayment.Ukprn);
+            listOfCalculatedRequiredLevyAmounts.FundingPlatformType.Should().Be(historicalPayment.FundingPlatformType);
         }
 
         private static bool AssertPaymentModel(PaymentModel actualPayment, IdentifiedRemovedLearningAim message, Guid originalEventId, DateTimeOffset originalEventTime)
@@ -589,7 +687,8 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.Application.Pr
                    && actualPayment.EventTime != originalEventTime
                    && actualPayment.RequiredPaymentEventId == Guid.Empty
                    && actualPayment.EarningEventId == Guid.Empty
-                   && actualPayment.FundingSourceEventId == Guid.Empty;
+                   && actualPayment.FundingSourceEventId == Guid.Empty
+                   && actualPayment.FundingPlatformType == FundingPlatformType.SubmitLearnerData;
         }
     }
 }

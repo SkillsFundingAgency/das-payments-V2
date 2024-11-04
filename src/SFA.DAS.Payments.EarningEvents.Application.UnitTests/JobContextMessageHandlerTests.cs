@@ -15,6 +15,7 @@ using NUnit.Framework;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.EarningEvents.Application.Handlers;
 using SFA.DAS.Payments.EarningEvents.Domain.Mapping;
+using SFA.DAS.Payments.EarningEvents.Messages.Events;
 using SFA.DAS.Payments.EarningEvents.Messages.Internal.Commands;
 using SFA.DAS.Payments.JobContextMessageHandling.Infrastructure;
 using SFA.DAS.Payments.Model.Core.Entities;
@@ -50,6 +51,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                 {
                     new FM36Learner
                     {
+                        EarningsPlatform = 1,
                         ULN = 12345,
                         LearnRefNumber = "ref-1234"
                     }
@@ -392,7 +394,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             var handler = mocker.Create<JobContextMessageHandler>();
             await handler.HandleAsync(jobContextMessage, CancellationToken.None);
 
-            mocker.Mock<IEndpointInstance>().Verify(x => x.Publish(It.IsAny<object>(), It.IsAny<PublishOptions>()), Times.Once);
+            mocker.Mock<IEndpointInstance>().Verify(x => x.Publish(It.IsAny<ReceivedProviderEarningsEvent>(), It.IsAny<PublishOptions>()), Times.Once);
 
             mocker.Mock<ITelemetry>().Verify(x => x.TrackEvent("Sent All ProcessLearnerCommand Messages", It.IsAny<Dictionary<string, string>>(), It.IsAny<Dictionary<string, double>>()));
         }
@@ -446,7 +448,7 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
             await handler.HandleAsync(jobContextMessage, CancellationToken.None);
 
             mocker.Mock<IEndpointInstance>()
-                .Verify(x => x.Publish(It.IsAny<object>(), It.IsAny<PublishOptions>()), Times.Never);
+                .Verify(x => x.Publish(It.IsAny<ReceivedProviderEarningsEvent>(), It.IsAny<PublishOptions>()), Times.Never);
         }
 
         [Test]
@@ -571,6 +573,251 @@ namespace SFA.DAS.Payments.EarningEvents.Application.UnitTests
                     It.Is<DateTime>(submissionTime => submissionTime == jobContextMessage.SubmissionDateTimeUtc),
                     It.Is<short>(year => year == collectionYear),
                     It.Is<byte>(period => period == collectionPeriod)), Times.Once);
+        }
+
+        [Test]
+        public async Task Only_Processes_SLD_Earnings_Learners_When_Both_SLD_And_DAS_Are_Present()
+        {
+            var learners = new List<FM36Learner>
+            {
+                new FM36Learner
+                {
+                    EarningsPlatform = 1,
+                    ULN = 1234
+                },
+                new FM36Learner
+                {
+                    EarningsPlatform = 2,
+                    ULN = 2345
+                },
+                new FM36Learner
+                {
+                    EarningsPlatform = 1,
+                    ULN = 4567
+                }
+            };
+
+            fm36Global.Learners = learners;
+            
+            mocker.Mock<IJsonSerializationService>()
+                .Setup(svc => svc.Deserialize<FM36Global>(It.IsAny<Stream>()))
+                .Returns(fm36Global);
+
+            var jobContextMessage = new JobContextMessage
+            {
+                JobId = 1,
+                Topics = new List<ITopicItem>
+                {
+                    new TopicItem
+                    {
+                        SubscriptionName = "GenerateFM36Payments",
+                        Tasks = new List<ITaskItem>
+                        {
+                            new TaskItem
+                            {
+                                SupportsParallelExecution = false,
+                                Tasks = new List<string>{ JobContextMessageConstants.Tasks.ProcessSubmission}
+                            }
+                        }
+                    },
+                    new TopicItem
+                    {
+                        SubscriptionName = "Other Task",
+                        Tasks = new List<ITaskItem>
+                        {
+                            new TaskItem
+                            {
+                                SupportsParallelExecution = false,
+                                Tasks = new List<string>{"Something else"}
+                            }
+                        }
+                    }
+                },
+                KeyValuePairs = new Dictionary<string, object> {
+                    { JobContextMessageConstants.KeyValuePairs.ReturnPeriod, 10 },
+                    { JobContextMessageConstants.KeyValuePairs.CollectionYear, 1819 },
+                    { JobContextMessageConstants.KeyValuePairs.Ukprn, 2123 },
+                    { JobContextMessageConstants.KeyValuePairs.FundingFm36Output, "valid path" },
+                    { JobContextMessageConstants.KeyValuePairs.FundingFm36OutputPeriodEnd, "invalid path" },
+                    { JobContextMessageConstants.KeyValuePairs.Container, "container" },
+                    { JobContextMessageConstants.KeyValuePairs.Filename, "filename" },
+                }
+            };
+
+            var handler = mocker.Create<JobContextMessageHandler>();
+            await handler.HandleAsync(jobContextMessage, CancellationToken.None);
+            
+            mocker.Mock<IEndpointInstance>()
+                .Verify(x => x.Publish(It.IsAny<ReceivedProviderEarningsEvent>(), It.IsAny<PublishOptions>()), Times.Once);
+
+            mocker.Mock<ISubmittedLearnerAimBuilder>()
+                .Verify(builder => builder.Build(It.Is<ProcessLearnerCommand>(x => x.Learner.ULN == learners[0].ULN)), Times.Once);
+            mocker.Mock<ISubmittedLearnerAimBuilder>()
+                .Verify(builder => builder.Build(It.Is<ProcessLearnerCommand>(x => x.Learner.ULN == learners[1].ULN)), Times.Never);
+            mocker.Mock<ISubmittedLearnerAimBuilder>()
+                .Verify(builder => builder.Build(It.Is<ProcessLearnerCommand>(x => x.Learner.ULN == learners[2].ULN)), Times.Once);
+        }
+
+        [Test]
+        public async Task Ignores_Submission_Contents_If_No_SLD_Earnings_Learners_Present()
+        {
+            var learners = new List<FM36Learner>
+            {
+                new FM36Learner
+                {
+                    EarningsPlatform = 2,
+                    ULN = 1234
+                },
+                new FM36Learner
+                {
+                    EarningsPlatform = 2,
+                    ULN = 2345
+                },
+                new FM36Learner
+                {
+                    EarningsPlatform = 2,
+                    ULN = 4567
+                }
+            };
+
+            fm36Global.Learners = learners;
+
+            mocker.Mock<IJsonSerializationService>()
+                .Setup(svc => svc.Deserialize<FM36Global>(It.IsAny<Stream>()))
+                .Returns(fm36Global);
+
+            var jobContextMessage = new JobContextMessage
+            {
+                JobId = 1,
+                Topics = new List<ITopicItem>
+                {
+                    new TopicItem
+                    {
+                        SubscriptionName = "GenerateFM36Payments",
+                        Tasks = new List<ITaskItem>
+                        {
+                            new TaskItem
+                            {
+                                SupportsParallelExecution = false,
+                                Tasks = new List<string>{ JobContextMessageConstants.Tasks.ProcessSubmission}
+                            }
+                        }
+                    },
+                    new TopicItem
+                    {
+                        SubscriptionName = "Other Task",
+                        Tasks = new List<ITaskItem>
+                        {
+                            new TaskItem
+                            {
+                                SupportsParallelExecution = false,
+                                Tasks = new List<string>{"Something else"}
+                            }
+                        }
+                    }
+                },
+                KeyValuePairs = new Dictionary<string, object> {
+                    { JobContextMessageConstants.KeyValuePairs.ReturnPeriod, 10 },
+                    { JobContextMessageConstants.KeyValuePairs.CollectionYear, 1819 },
+                    { JobContextMessageConstants.KeyValuePairs.Ukprn, 2123 },
+                    { JobContextMessageConstants.KeyValuePairs.FundingFm36Output, "valid path" },
+                    { JobContextMessageConstants.KeyValuePairs.FundingFm36OutputPeriodEnd, "invalid path" },
+                    { JobContextMessageConstants.KeyValuePairs.Container, "container" },
+                    { JobContextMessageConstants.KeyValuePairs.Filename, "filename" },
+                }
+            };
+
+            var handler = mocker.Create<JobContextMessageHandler>();
+            await handler.HandleAsync(jobContextMessage, CancellationToken.None);
+
+            mocker.Mock<IEndpointInstance>()
+                .Verify(x => x.Publish(It.IsAny<ReceivedProviderEarningsEvent>(), It.IsAny<PublishOptions>()), Times.Once);
+
+            mocker.Mock<ISubmittedLearnerAimBuilder>()
+                .Verify(builder => builder.Build(It.IsAny<ProcessLearnerCommand>()), Times.Never);
+        }
+
+        [Test]
+        public async Task Processes_SLD_Earnings_Learners_When_EarningsPlatform_Value_Not_Set()
+        {
+            var learners = new List<FM36Learner>
+            {
+                new FM36Learner
+                {
+                    EarningsPlatform = 1,
+                    ULN = 1234
+                },
+                new FM36Learner
+                {
+                    EarningsPlatform = 0,
+                    ULN = 2345
+                },
+                new FM36Learner
+                {
+                    EarningsPlatform = 1,
+                    ULN = 4567
+                }
+            };
+
+            fm36Global.Learners = learners;
+
+            mocker.Mock<IJsonSerializationService>()
+                .Setup(svc => svc.Deserialize<FM36Global>(It.IsAny<Stream>()))
+                .Returns(fm36Global);
+
+            var jobContextMessage = new JobContextMessage
+            {
+                JobId = 1,
+                Topics = new List<ITopicItem>
+                {
+                    new TopicItem
+                    {
+                        SubscriptionName = "GenerateFM36Payments",
+                        Tasks = new List<ITaskItem>
+                        {
+                            new TaskItem
+                            {
+                                SupportsParallelExecution = false,
+                                Tasks = new List<string>{ JobContextMessageConstants.Tasks.ProcessSubmission}
+                            }
+                        }
+                    },
+                    new TopicItem
+                    {
+                        SubscriptionName = "Other Task",
+                        Tasks = new List<ITaskItem>
+                        {
+                            new TaskItem
+                            {
+                                SupportsParallelExecution = false,
+                                Tasks = new List<string>{"Something else"}
+                            }
+                        }
+                    }
+                },
+                KeyValuePairs = new Dictionary<string, object> {
+                    { JobContextMessageConstants.KeyValuePairs.ReturnPeriod, 10 },
+                    { JobContextMessageConstants.KeyValuePairs.CollectionYear, 1819 },
+                    { JobContextMessageConstants.KeyValuePairs.Ukprn, 2123 },
+                    { JobContextMessageConstants.KeyValuePairs.FundingFm36Output, "valid path" },
+                    { JobContextMessageConstants.KeyValuePairs.FundingFm36OutputPeriodEnd, "invalid path" },
+                    { JobContextMessageConstants.KeyValuePairs.Container, "container" },
+                    { JobContextMessageConstants.KeyValuePairs.Filename, "filename" },
+                }
+            };
+
+            var handler = mocker.Create<JobContextMessageHandler>();
+            await handler.HandleAsync(jobContextMessage, CancellationToken.None);
+
+            mocker.Mock<IEndpointInstance>()
+                .Verify(x => x.Publish(It.IsAny<ReceivedProviderEarningsEvent>(), It.IsAny<PublishOptions>()), Times.Once);
+
+            mocker.Mock<ISubmittedLearnerAimBuilder>()
+                .Verify(builder => builder.Build(It.Is<ProcessLearnerCommand>(x => x.Learner.ULN == learners[0].ULN)), Times.Once);
+            mocker.Mock<ISubmittedLearnerAimBuilder>()
+                .Verify(builder => builder.Build(It.Is<ProcessLearnerCommand>(x => x.Learner.ULN == learners[1].ULN)), Times.Once);
+            mocker.Mock<ISubmittedLearnerAimBuilder>()
+                .Verify(builder => builder.Build(It.Is<ProcessLearnerCommand>(x => x.Learner.ULN == learners[2].ULN)), Times.Once);
         }
     }
 }
