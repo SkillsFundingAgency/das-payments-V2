@@ -58,5 +58,33 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
 
             sfaFullyFundedFundingSourcePaymentEvent.FundingPlatformType.Should().Be(FundingPlatformType.SubmitLearnerData);
         }
+
+        [TestCase(FundingPlatformType.SubmitLearnerData)]
+        [TestCase(FundingPlatformType.DigitalApprenticeshipService)]
+        public void CalculatedRequiredLevyAmount_Maps_FundingPlatform_For_EmployerCoInvestedFundingSourcePaymentEvent(FundingPlatformType fundingPlatformType)
+        {
+            var calculatedRequiredLevyAmount = new CalculatedRequiredLevyAmount
+            {
+                FundingPlatformType = fundingPlatformType
+            };
+
+            var fundingSourcePaymentEvent = autoMapper.Map<EmployerCoInvestedFundingSourcePaymentEvent>(calculatedRequiredLevyAmount);
+
+            fundingSourcePaymentEvent.FundingPlatformType.Should().Be(fundingPlatformType);
+        }
+
+        [TestCase(FundingPlatformType.SubmitLearnerData)]
+        [TestCase(FundingPlatformType.DigitalApprenticeshipService)]
+        public void CalculatedRequiredLevyAmount_Maps_FundingPlatform_For_SfaCoInvestedFundingSourcePaymentEvent(FundingPlatformType fundingPlatformType)
+        {
+            var calculatedRequiredLevyAmount = new CalculatedRequiredLevyAmount
+            {
+                FundingPlatformType = fundingPlatformType
+            };
+
+            var fundingSourcePaymentEvent = autoMapper.Map<SfaCoInvestedFundingSourcePaymentEvent>(calculatedRequiredLevyAmount);
+
+            fundingSourcePaymentEvent.FundingPlatformType.Should().Be(fundingPlatformType);
+        }
     }
 }
