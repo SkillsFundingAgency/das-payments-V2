@@ -60,6 +60,7 @@ namespace SFA.DAS.Payments.ProviderPayments.Application.Mapping
                 .ForMember(dest => dest.NonPaymentReason, opt => opt.Ignore())
                 .ForMember(dest => dest.LearningAimSequenceNumber, opt => opt.MapFrom(source => source.LearningAimSequenceNumber))
                 .ForMember(dest => dest.AgeAtStartOfLearning, opt => opt.MapFrom(source => source.AgeAtStartOfLearning))
+                .ForMember(dest => dest.FundingPlatformType, opt => opt.MapFrom(source => source.FundingPlatformType))
                 ;
 
             CreateMap<EmployerCoInvestedFundingSourcePaymentEvent, ProviderPaymentEventModel>();
