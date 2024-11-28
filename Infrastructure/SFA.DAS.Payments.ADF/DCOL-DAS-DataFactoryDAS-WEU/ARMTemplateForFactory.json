@@ -160,6 +160,35 @@
             ]
         },
         {
+            "name": "[concat(parameters('factoryName'), '/AzureVNETIntegrationRuntime')]",
+            "type": "Microsoft.DataFactory/factories/integrationRuntimes",
+            "apiVersion": "2018-06-01",
+            "properties": {
+                "type": "Managed",
+                "typeProperties": {
+                    "computeProperties": {
+                        "location": "West Europe",
+                        "dataFlowProperties": {
+                            "computeType": "General",
+                            "coreCount": 8,
+                            "timeToLive": 10,
+                            "cleanup": false
+                        },
+                        "pipelineExternalComputeScaleProperties": {
+                            "timeToLive": 60
+                        }
+                    }
+                },
+                "managedVirtualNetwork": {
+                    "type": "ManagedVirtualNetworkReference",
+                    "referenceName": "default"
+                }
+            },
+            "dependsOn": [
+                "[concat(variables('factoryId'), '/managedVirtualNetworks/default')]"
+            ]
+        },
+        {
             "name": "[concat(parameters('factoryName'), '/AzureKeyVault1')]",
             "type": "Microsoft.DataFactory/factories/linkedServices",
             "apiVersion": "2018-06-01",
@@ -250,40 +279,37 @@
             ]
         },
         {
-            "name": "[concat(parameters('factoryName'), '/AzureVNETIntegrationRuntime')]",
-            "type": "Microsoft.DataFactory/factories/integrationRuntimes",
+            "name": "[concat(parameters('factoryName'), '/default')]",
+            "type": "Microsoft.DataFactory/factories/managedVirtualNetworks",
+            "apiVersion": "2018-06-01",
+            "properties": {},
+            "dependsOn": []
+        },
+        {
+            "name": "[concat(parameters('factoryName'), '/default/datamart_sql_private_endpoint')]",
+            "type": "Microsoft.DataFactory/factories/managedVirtualNetworks/managedPrivateEndpoints",
             "apiVersion": "2018-06-01",
             "properties": {
-                "type": "Managed",
-                "typeProperties": {
-                    "computeProperties": {
-                        "location": "West Europe",
-                        "dataFlowProperties": {
-                            "computeType": "General",
-                            "coreCount": 8,
-                            "timeToLive": 10,
-                            "cleanup": false
-                        },
-                        "pipelineExternalComputeScaleProperties": {
-                            "timeToLive": 60
-                        }
-                    }
-                },
-                "managedVirtualNetwork": {
-                    "type": "ManagedVirtualNetworkReference",
-                    "referenceName": "default"
-                }
+                "privateLinkResourceId": "[parameters('datamart_sql_private_endpoint_properties_privateLinkResourceId')]",
+                "groupId": "[parameters('datamart_sql_private_endpoint_properties_groupId')]",
+                "fqdns": "[parameters('datamart_sql_private_endpoint_properties_fqdns')]"
             },
             "dependsOn": [
                 "[concat(variables('factoryId'), '/managedVirtualNetworks/default')]"
             ]
         },
         {
-            "name": "[concat(parameters('factoryName'), '/default')]",
-            "type": "Microsoft.DataFactory/factories/managedVirtualNetworks",
+            "name": "[concat(parameters('factoryName'), '/default/shared_sql_private_endpoint')]",
+            "type": "Microsoft.DataFactory/factories/managedVirtualNetworks/managedPrivateEndpoints",
             "apiVersion": "2018-06-01",
-            "properties": {},
-            "dependsOn": []
+            "properties": {
+                "privateLinkResourceId": "[parameters('shared_sql_private_endpoint_properties_privateLinkResourceId')]",
+                "groupId": "[parameters('shared_sql_private_endpoint_properties_groupId')]",
+                "fqdns": "[parameters('shared_sql_private_endpoint_properties_fqdns')]"
+            },
+            "dependsOn": [
+                "[concat(variables('factoryId'), '/managedVirtualNetworks/default')]"
+            ]
         },
         {
             "name": "[concat(parameters('factoryName'), '/CopyPaymentsToArchive')]",
@@ -307,7 +333,7 @@
                             "source": {
                                 "type": "AzureSqlSource",
                                 "sqlReaderQuery": {
-                                    "value": "IF (CAST(@{pipeline().parameters.IsManualRun} as bit) != CAST(1 as bit))\nBEGIN\n    SELECT AcademicYear,Period\n    FROM payments2.CollectionPeriod\n    WHERE AuditMigrationCompletionDate is null;\nEnd\nElse\nBEGIN\n    SELECT @{pipeline().parameters.AcademicYear} as AcademicYear, @{pipeline().parameters.CollectionPeriod} AS Period\nEND",
+                                    "value": "IF (CAST(@{pipeline().parameters.IsManualRun} as bit) != CAST(1 as bit))\nBEGIN\n    SELECT AcademicYear,Period\n    FROM payments2.CollectionPeriod\n    WHERE AuditMigrationCompletionDate is null\n    AND AuditMigrationStartDate is null;\nEnd\nElse\nBEGIN\n    SELECT @{pipeline().parameters.AcademicYear} as AcademicYear, @{pipeline().parameters.CollectionPeriod} AS Period\nEND",
                                     "type": "Expression"
                                 },
                                 "queryTimeout": "02:00:00",
@@ -345,7 +371,14 @@
                                 {
                                     "name": "Source-Record-Count",
                                     "type": "Lookup",
-                                    "dependsOn": [],
+                                    "dependsOn": [
+                                        {
+                                            "activity": "Set-Audit-Migration-Start-Date",
+                                            "dependencyConditions": [
+                                                "Succeeded"
+                                            ]
+                                        }
+                                    ],
                                     "policy": {
                                         "timeout": "7.00:00:00",
                                         "retry": 0,
@@ -1359,7 +1392,14 @@
                                 {
                                     "name": "Archive-Record-Count",
                                     "type": "Lookup",
-                                    "dependsOn": [],
+                                    "dependsOn": [
+                                        {
+                                            "activity": "Set-Audit-Migration-Start-Date",
+                                            "dependencyConditions": [
+                                                "Succeeded"
+                                            ]
+                                        }
+                                    ],
                                     "policy": {
                                         "timeout": "7.00:00:00",
                                         "retry": 0,
@@ -5204,6 +5244,35 @@
                                             }
                                         ]
                                     }
+                                },
+                                {
+                                    "name": "Set-Audit-Migration-Start-Date",
+                                    "type": "Script",
+                                    "dependsOn": [],
+                                    "policy": {
+                                        "timeout": "0.00:10:00",
+                                        "retry": 0,
+                                        "retryIntervalInSeconds": 30,
+                                        "secureOutput": false,
+                                        "secureInput": false
+                                    },
+                                    "userProperties": [],
+                                    "linkedServiceName": {
+                                        "referenceName": "DASPayments",
+                                        "type": "LinkedServiceReference"
+                                    },
+                                    "typeProperties": {
+                                        "scripts": [
+                                            {
+                                                "type": "Query",
+                                                "text": {
+                                                    "value": "IF (CAST(@{pipeline().parameters.IsManualRun} as bit) != CAST(1 as bit))\nBEGIN\n    UPDATE [payments2].[collectionperiod]\n    SET [AuditMigrationStartDate]=getdate()\n    WHERE [AcademicYear]='@{item().AcademicYear}'\n    AND [Period]='@{item().Period}'\nEND",
+                                                    "type": "Expression"
+                                                }
+                                            }
+                                        ],
+                                        "scriptBlockExecutionTimeout": "02:00:00"
+                                    }
                                 }
                             ]
                         }
@@ -6263,7 +6332,7 @@
                     }
                 },
                 "annotations": [],
-                "lastPublishTime": "2024-10-29T12:51:54Z"
+                "lastPublishTime": "2024-11-28T08:33:12Z"
             },
             "dependsOn": [
                 "[concat(variables('factoryId'), '/datasets/SrcPayments')]",
@@ -7521,39 +7590,13 @@
                     }
                 },
                 "annotations": [],
-                "lastPublishTime": "2024-10-29T12:51:53Z"
+                "lastPublishTime": "2024-11-27T13:39:56Z"
             },
             "dependsOn": [
                 "[concat(variables('factoryId'), '/linkedServices/datamart_stagingDB_linkedservices')]",
                 "[concat(variables('factoryId'), '/datasets/DataMart')]",
                 "[concat(variables('factoryId'), '/datasets/SrcPayments')]",
                 "[concat(variables('factoryId'), '/datasets/DestPaymentsArchive')]"
-            ]
-        },
-        {
-            "name": "[concat(parameters('factoryName'), '/default/datamart_sql_private_endpoint')]",
-            "type": "Microsoft.DataFactory/factories/managedVirtualNetworks/managedPrivateEndpoints",
-            "apiVersion": "2018-06-01",
-            "properties": {
-                "privateLinkResourceId": "[parameters('datamart_sql_private_endpoint_properties_privateLinkResourceId')]",
-                "groupId": "[parameters('datamart_sql_private_endpoint_properties_groupId')]",
-                "fqdns": "[parameters('datamart_sql_private_endpoint_properties_fqdns')]"
-            },
-            "dependsOn": [
-                "[concat(variables('factoryId'), '/managedVirtualNetworks/default')]"
-            ]
-        },
-        {
-            "name": "[concat(parameters('factoryName'), '/default/shared_sql_private_endpoint')]",
-            "type": "Microsoft.DataFactory/factories/managedVirtualNetworks/managedPrivateEndpoints",
-            "apiVersion": "2018-06-01",
-            "properties": {
-                "privateLinkResourceId": "[parameters('shared_sql_private_endpoint_properties_privateLinkResourceId')]",
-                "groupId": "[parameters('shared_sql_private_endpoint_properties_groupId')]",
-                "fqdns": "[parameters('shared_sql_private_endpoint_properties_fqdns')]"
-            },
-            "dependsOn": [
-                "[concat(variables('factoryId'), '/managedVirtualNetworks/default')]"
             ]
         }
     ]
