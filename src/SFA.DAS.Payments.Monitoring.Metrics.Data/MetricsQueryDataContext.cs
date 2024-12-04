@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using Polly;
 using SFA.DAS.Payments.Application.Data.Configurations;
 using SFA.DAS.Payments.Model.Core;
 using SFA.DAS.Payments.Model.Core.Audit;
@@ -142,7 +143,8 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 		            and npp.Amount <> 0
 		            and dle.IsPayable = 0	
 		            and p.collectionperiod < dle.CollectionPeriod
-                and p.ContractType = 1)
+                and p.ContractType = 1
+                and p.FundingPlatformType not in (2))
 					SELECT Ukprn,
 					SUM(unGroupedAmounts.FundingLineType16To18Amount) AS FundingLineType16To18Amount, 
 					SUM(unGroupedAmounts.FundingLineType19PlusAmount) AS FundingLineType19PlusAmount,
@@ -220,6 +222,7 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Data
 				    and dle.IsPayable = 0	
 				    and p.collectionperiod < dle.CollectionPeriod
                     and p.ContractType = 1
+                    and p.FundingPlatformType not in (2)
 			";
             var result = new SqlParameter("@result", SqlDbType.Decimal) { Direction = ParameterDirection.Output };
             await Database.ExecuteSqlCommandAsync(sql, new[] { new SqlParameter("@jobid", jobId), new SqlParameter("@ukprn", ukprn), result }, cancellationToken);
