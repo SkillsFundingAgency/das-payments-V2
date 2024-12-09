@@ -1,9 +1,11 @@
-﻿using FluentAssertions;
+﻿using System.Linq;
+using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Payments.FundingSource.Domain.Interface;
 using SFA.DAS.Payments.FundingSource.Domain.Models;
 using SFA.DAS.Payments.FundingSource.Domain.Services;
+using SFA.DAS.Payments.Model.Core.Entities;
 
 namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests
 {
@@ -101,6 +103,39 @@ namespace SFA.DAS.Payments.FundingSource.Domain.UnitTests
 
             employerCoInvestedPaymentProcessorMock.Verify();
             sfaCoInvestedPaymentProcessorMock.Verify();
+        }
+
+        [TestCase(FundingPlatformType.SubmitLearnerData)]
+        [TestCase(FundingPlatformType.DigitalApprenticeshipService)]
+        public void TestFundingPlatformTypePopulatedCorrectlyForCoInvestedFundingSourcePayments(FundingPlatformType fundingPlatformType)
+        {
+            var requiredPayment = new RequiredPayment
+            {
+                SfaContributionPercentage = 0.9m,
+                FundingPlatformType = fundingPlatformType,
+                AmountDue = 1000m
+            };
+
+            var validateRequiredPaymentEvent = new Mock<IValidateRequiredPaymentEvent>();
+
+            var employerCoInvestedProcessor = new EmployerCoInvestedPaymentProcessor(validateRequiredPaymentEvent.Object);
+
+            var sfaCoInvestedProcessor = new SfaCoInvestedPaymentProcessor(validateRequiredPaymentEvent.Object);
+
+            var processor = new CoInvestedPaymentProcessor(employerCoInvestedProcessor, sfaCoInvestedProcessor);
+
+            var actualPayments = processor.Process(requiredPayment);
+
+            actualPayments.Should().HaveCount(2);
+
+            var employerPayment = actualPayments.FirstOrDefault(x => x.Type == FundingSourceType.CoInvestedEmployer);
+            employerPayment.Should().NotBeNull();
+            employerPayment.FundingPlatformType.Should().Be(fundingPlatformType);
+            employerPayment.AmountDue.Should().Be(100m);
+
+            var sfaPayment = actualPayments.FirstOrDefault(x => x.Type == FundingSourceType.CoInvestedSfa);
+            sfaPayment.FundingPlatformType.Should().Be(fundingPlatformType);
+            sfaPayment.AmountDue.Should().Be(900m);
         }
     }
 }
