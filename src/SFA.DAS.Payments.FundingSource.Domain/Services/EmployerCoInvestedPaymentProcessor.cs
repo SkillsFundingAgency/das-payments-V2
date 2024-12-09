@@ -20,7 +20,8 @@ namespace SFA.DAS.Payments.FundingSource.Domain.Services
             return new EmployerCoInvestedPayment
             {
                 AmountDue = amountToPay.AsRounded(),
-                Type = FundingSourceType.CoInvestedEmployer
+                Type = FundingSourceType.CoInvestedEmployer,
+                FundingPlatformType = requiredPayment.FundingPlatformType
             };
         }
     }

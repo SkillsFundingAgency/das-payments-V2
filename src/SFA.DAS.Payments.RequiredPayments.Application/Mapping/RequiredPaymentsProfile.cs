@@ -274,7 +274,6 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .ForAllOtherMembers(opt => opt.Ignore())
                 ;
 
-
             CreateMap<EarningPeriod, CalculatedRequiredOnProgrammeAmount>()
                 .Include<EarningPeriod, CalculatedRequiredCoInvestedAmount>()
                 .Include<EarningPeriod, CalculatedRequiredLevyAmount>()
@@ -284,6 +283,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 ;
 
             CreateMap<EarningPeriod, CalculatedRequiredCoInvestedAmount>()
+                .Ignore(x => x.FundingPlatformType)
                 ;
 
             CreateMap<EarningPeriod, CalculatedRequiredLevyAmount>()
@@ -344,6 +344,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .ForMember(x => x.SfaContributionPercentage, opt => opt.MapFrom(x => x.SfaContributionPercentage))
                 .Ignore(x => x.OnProgrammeEarningType)
                 .Ignore(x => x.AgeAtStartOfLearning)
+                .Ignore(x => x.FundingPlatformType)
                 ;
             CreateMap<RequiredPayment, CalculatedRequiredIncentiveAmount>()
                 .Ignore(x => x.ContractType)
@@ -397,6 +398,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.SfaContributionPercentage)
                 .Ignore(x => x.OnProgrammeEarningType)
                 .Ignore(x => x.AgeAtStartOfLearning)
+                .Ignore(x => x.FundingPlatformType)
                 ;
 
             CreateMap<IdentifiedRemovedLearningAim, CalculatedRequiredIncentiveAmount>()
@@ -445,6 +447,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Mapping
                 .Ignore(x => x.TransactionType)
                 .Ignore(x => x.OnProgrammeEarningType)
                 .Ignore(x => x.AgeAtStartOfLearning)
+                .Ignore(x => x.FundingPlatformType)
                 ;
 
             CreateMap<PaymentHistoryEntity, CalculatedRequiredIncentiveAmount>()

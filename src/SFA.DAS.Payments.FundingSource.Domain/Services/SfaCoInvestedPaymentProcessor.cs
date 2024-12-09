@@ -20,6 +20,7 @@ namespace SFA.DAS.Payments.FundingSource.Domain.Services
             {
                 AmountDue = amountToPay.AsRounded(),
                 Type = FundingSourceType.CoInvestedSfa,
+                FundingPlatformType = requiredPayment.FundingPlatformType
             };
         }
     }
