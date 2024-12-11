@@ -5,7 +5,8 @@
 	[Period] TINYINT NOT NULL,
 	[StartDate] DATETIME2 NULL,
 	[CompletionDate] DATETIME2 NULL,
-	[CreationDate] DATETIME2 NOT NULL DEFAULT sysutcdatetime()
+	[Failed] BIT NOT NULL CONSTRAINT DF_AuditMigrationJob__Failed DEFAULT (0),
+	[CreationDate] DATETIME2 NOT NULL CONSTRAINT DF_AuditMigrationJob__CreationDate DEFAULT sysutcdatetime()
 )
 GO
 
