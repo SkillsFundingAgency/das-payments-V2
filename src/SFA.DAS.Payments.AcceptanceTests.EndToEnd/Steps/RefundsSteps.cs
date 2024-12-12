@@ -9,6 +9,7 @@ using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Data;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.EventMatchers;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Extensions;
 using SFA.DAS.Payments.AcceptanceTests.EndToEnd.Handlers;
+using SFA.DAS.Payments.Model.Core.Entities;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
@@ -86,6 +87,12 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
         public async Task GivenTheFollowingProviderPaymentsHadBeenGenerated(Table table)
         {
             await GeneratePreviousPayment(table, TestSession.Provider.Ukprn);
+        }
+
+        [Given(@"the following DAS platform provider payments had been generated")]
+        public async Task GiveTheFollowingDasPlatformProviderPaymentsHadBeenGenerated(Table table)
+        {
+            await GeneratePreviousPayment(table, TestSession.Provider.Ukprn, FundingPlatformType.DigitalApprenticeshipService);
         }
 
         [Given(@"the following ""(.*)"" payments had been generated")]
