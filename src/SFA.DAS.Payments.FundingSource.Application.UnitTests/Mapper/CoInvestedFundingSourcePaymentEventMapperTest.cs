@@ -54,15 +54,16 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
             coInvestedFundingMapper = new CoInvestedFundingSourcePaymentEventMapper(autoMapper);
         }
 
-        [Test]
-        public void ShouldMapToValidSfaCoInvestedFundingSourcePaymentEvent()
+        [TestCase(FundingPlatformType.SubmitLearnerData)]
+        [TestCase(FundingPlatformType.DigitalApprenticeshipService)]
+        public void ShouldMapToValidSfaCoInvestedFundingSourcePaymentEvent(FundingPlatformType fundingPlatformType)
         {
             //Arrange 
             var coInvestedPayment = new SfaCoInvestedPayment
             {
                 AmountDue = 900.00m,
                 Type = FundingSourceType.CoInvestedSfa,
-                FundingPlatformType = FundingPlatformType.SubmitLearnerData
+                FundingPlatformType = fundingPlatformType
             };
 
             var expectedPayment = new SfaCoInvestedFundingSourcePaymentEvent
@@ -93,14 +94,16 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
             actualSfaCoInvestedPayment.Should().BeEquivalentTo(expectedPayment);
         }
 
-        [Test]
-        public void ShouldMapToValidEmployerCoInvestedFundingSourcePaymentEvent()
+        [TestCase(FundingPlatformType.SubmitLearnerData)]
+        [TestCase(FundingPlatformType.DigitalApprenticeshipService)]
+        public void ShouldMapToValidEmployerCoInvestedFundingSourcePaymentEvent(FundingPlatformType fundingPlatformType)
         {
             //Arrange 
             var coInvestedPayment = new EmployerCoInvestedPayment
             {
                 AmountDue = 100.00m,
-                Type = FundingSourceType.CoInvestedEmployer
+                Type = FundingSourceType.CoInvestedEmployer,
+                FundingPlatformType = fundingPlatformType
             };
 
             var expectedPayment = new EmployerCoInvestedFundingSourcePaymentEvent
@@ -131,14 +134,18 @@ namespace SFA.DAS.Payments.FundingSource.Application.UnitTests.Mapper
             actualEmployerCoInvestedPayment.Should().BeEquivalentTo(expectedPayment);
         }
 
-        [Test]
-        public void ShouldMapToValidRequiredCoInvestedPayment()
+        [TestCase(FundingPlatformType.SubmitLearnerData)]
+        [TestCase(FundingPlatformType.DigitalApprenticeshipService)]
+        public void ShouldMapToValidRequiredCoInvestedPayment(FundingPlatformType fundingPlatformType)
         {
             var expectedRequiredCoInvestedPayment = new RequiredCoInvestedPayment
             {
                 AmountDue = requiredCoInvestedAmount.AmountDue,
-                SfaContributionPercentage = requiredCoInvestedAmount.SfaContributionPercentage
+                SfaContributionPercentage = requiredCoInvestedAmount.SfaContributionPercentage,
+                FundingPlatformType = fundingPlatformType
             };
+
+            requiredCoInvestedAmount.FundingPlatformType = fundingPlatformType;
 
             var actual = coInvestedFundingMapper.MapToRequiredCoInvestedPayment(requiredCoInvestedAmount);
 
