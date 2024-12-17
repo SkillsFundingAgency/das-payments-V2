@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
-using NServiceBus;
 using Microsoft.EntityFrameworkCore;
+using NServiceBus;
 using SFA.DAS.Payments.Application.Infrastructure.Logging;
 using SFA.DAS.Payments.Application.Messaging;
 using SFA.DAS.Payments.Application.Repositories;
@@ -152,8 +152,8 @@ namespace SFA.DAS.Payments.ScheduledJobs.AuditDataCleanUp
         private async Task DeleteFundingSourceEvent(IList<SqlParameter> sqlParameters, string sqlParamName, string paramValues)
         {
             var fundingSourceEventCount = await dataContext.Database.ExecuteSqlCommandAsync(
-                    $"DELETE Payments2.FundingSourceEvent WHERE JobId IN ({sqlParamName})",
-                    sqlParameters);
+                $"DELETE Payments2.FundingSourceEvent WHERE JobId IN ({sqlParamName}) AND Payments2.FundingSourceEvent.FundingPlatformType != '2' ",
+                sqlParameters);
 
             paymentLogger.LogInfo($"DELETED {fundingSourceEventCount} FundingSourceEvents for JobIds {paramValues}");
         }
