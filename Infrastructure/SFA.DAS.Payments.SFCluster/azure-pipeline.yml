@@ -1,0 +1,213 @@
+trigger:
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - Infrastructure/ServiceFabricCluster
+
+variables:
+- group: Common - Project Level
+- group: Common - Connection String
+- group: Common - Database Names
+- group: Common - Database Usernames
+
+resources:
+  repositories:
+  - repository: self
+    fetchDepth: 0
+
+stages:
+- stage: Validate_Templates
+  displayName: Validate ARM Templates
+  jobs:
+  - job: ValidateTemplates
+    pool:
+      vmImage: 'windows-latest'
+    steps:
+    - task: AzureResourceManagerTemplateDeployment@3
+      inputs:
+        deploymentScope: 'Resource Group'
+        azureResourceManagerConnection: 'DCT-VSO'
+        azureSubscription: DCT-VSO
+        action: 'Create Or Update Resource Group'
+        resourceGroupName: 'validation-rg'
+        location: 'West Europe'
+        templateLocation: 'Linked artifact'
+        csmFile: 'pipeline/main-template.json'
+        csmParametersFile: 'pipeline/parameters.json'
+        deploymentMode: 'Validation'
+
+- stage: Deploy_DAS
+  displayName: Deploy to DAS
+  dependsOn: Validate_Templates
+  variables:
+  - group: DCOL-DAS - Environment Key Vault Secrets
+  jobs:
+  - deployment: DeployServiceFabric
+    displayName: Deploy Service Fabric Cluster
+    environment: DAS
+    pool:
+      vmImage: 'windows-latest'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureResourceManagerTemplateDeployment@3
+            inputs:
+              deploymentScope: 'Resource Group'
+              azureResourceManagerConnection: 'DCT-VSO'
+              azureSubscription: DCT-VSO
+              action: 'Create Or Update Resource Group'
+              resourceGroupName: 'das-servicefabric-rg'
+              location: 'West Europe'
+              templateLocation: 'Linked artifact'
+              csmFile: 'pipeline/main-template.json'
+              csmParametersFile: 'pipeline/parameters-DAS.json'
+              overrideParameters: '-environment DAS'
+              deploymentMode: 'Incremental'
+
+- stage: Deploy_DST
+  displayName: Deploy to DST
+  dependsOn: Deploy_DAS
+  variables:
+  - group: DCOL-DST - Environment Key Vault Secrets
+  jobs:
+  - deployment: DeployServiceFabric
+    displayName: Deploy Service Fabric Cluster
+    environment: DST
+    pool:
+      vmImage: 'windows-latest'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureResourceManagerTemplateDeployment@3
+            inputs:
+              deploymentScope: 'Resource Group'
+              azureResourceManagerConnection: 'DCT-VSO'
+              subscriptionId: '$(subscriptionId)'
+              action: 'Create Or Update Resource Group'
+              resourceGroupName: 'dst-servicefabric-rg'
+              location: 'West Europe'
+              templateLocation: 'Linked artifact'
+              csmFile: '$(Build.SourcesDirectory)/Infrastructure/ServiceFabricCluster/service-fabric-main-template.json'
+              csmParametersFile: '$(Build.SourcesDirectory)/Infrastructure/ServiceFabricCluster/service-fabric-parameters.json'
+              overrideParameters: '-environment DST'
+              deploymentMode: 'Incremental'
+
+- stage: Deploy_SIT
+  displayName: Deploy to SIT
+  dependsOn: Deploy_DST
+  variables:
+  - group: DCOL-SIT - Environment Key Vault Secrets
+  jobs:
+  - deployment: DeployServiceFabric
+    displayName: Deploy Service Fabric Cluster
+    environment: SIT
+    pool:
+      vmImage: 'windows-latest'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureResourceManagerTemplateDeployment@3
+            inputs:
+              deploymentScope: 'Resource Group'
+              azureResourceManagerConnection: 'DCT-VSO'
+              subscriptionId: '$(subscriptionId)'
+              action: 'Create Or Update Resource Group'
+              resourceGroupName: 'sit-servicefabric-rg'
+              location: 'West Europe'
+              templateLocation: 'Linked artifact'
+              csmFile: '$(Build.SourcesDirectory)/Infrastructure/ServiceFabricCluster/main-template.json'
+              csmParametersFile: '$(Build.SourcesDirectory)/Infrastructure/ServiceFabricCluster/parameters-SIT.json'
+              overrideParameters: '-environment SIT'
+              deploymentMode: 'Incremental'
+
+- stage: Deploy_SDW
+  displayName: Deploy to SDW
+  dependsOn: Deploy_SIT
+  variables:
+  - group: DCOL-SDW - Environment Key Vault Secrets
+  jobs:
+  - deployment: DeployServiceFabric
+    displayName: Deploy Service Fabric Cluster
+    environment: SDW
+    pool:
+      vmImage: 'windows-latest'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureResourceManagerTemplateDeployment@3
+            inputs:
+              deploymentScope: 'Resource Group'
+              azureResourceManagerConnection: 'DCOL-Shadow'
+              subscriptionId: '$(subscriptionId)'
+              action: 'Create Or Update Resource Group'
+              resourceGroupName: 'sdw-servicefabric-rg'
+              location: 'West Europe'
+              templateLocation: 'Linked artifact'
+              csmFile: '$(Build.SourcesDirectory)/Infrastructure/ServiceFabricCluster/main-template.json'
+              csmParametersFile: '$(Build.SourcesDirectory)/Infrastructure/ServiceFabricCluster/parameters-SDW.json'
+              overrideParameters: '-environment SDW'
+              deploymentMode: 'Incremental'
+
+- stage: Deploy_MO
+  displayName: Deploy to MO
+  dependsOn: Deploy_SDW
+  variables:
+  - group: DCOL-MO - Environment Key Vault Secrets
+  jobs:
+  - deployment: DeployServiceFabric
+    displayName: Deploy Service Fabric Cluster
+    environment: MO
+    pool:
+      vmImage: 'windows-latest'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureResourceManagerTemplateDeployment@3
+            inputs:
+              deploymentScope: 'Resource Group'
+              azureResourceManagerConnection: 'DCOL-MO-VSTS'
+              subscriptionId: '$(subscriptionId)'
+              action: 'Create Or Update Resource Group'
+              resourceGroupName: 'mo-servicefabric-rg'
+              location: 'West Europe'
+              templateLocation: 'Linked artifact'
+              csmFile: '$(Build.SourcesDirectory)/Infrastructure/ServiceFabricCluster/main-template.json'
+              csmParametersFile: '$(Build.SourcesDirectory)/Infrastructure/ServiceFabricCluster/parameters-MO.json'
+              overrideParameters: '-environment MO'
+              deploymentMode: 'Incremental'
+
+- stage: Deploy_PD
+  displayName: Deploy to PD
+  dependsOn: Deploy_MO
+  variables:
+  - group: DCOL-PD - Environment Key Vault Secrets
+  jobs:
+  - deployment: DeployServiceFabric
+    displayName: Deploy Service Fabric Cluster
+    environment: PD
+    pool:
+      vmImage: 'windows-latest'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureResourceManagerTemplateDeployment@3
+            inputs:
+              deploymentScope: 'Resource Group'
+              azureResourceManagerConnection: 'DCOLPDVSTS'
+              subscriptionId: '$(subscriptionId)'
+              action: 'Create Or Update Resource Group'
+              resourceGroupName: 'pd-servicefabric-rg'
+              location: 'West Europe'
+              templateLocation: 'Linked artifact'
+              csmFile: '$(Build.SourcesDirectory)/Infrastructure/ServiceFabricCluster/main-template.json'
+              csmParametersFile: '$(Build.SourcesDirectory)/Infrastructure/ServiceFabricCluster/parameters-PD.json'
+              overrideParameters: '-environment PD'
+              deploymentMode: 'Incremental'
