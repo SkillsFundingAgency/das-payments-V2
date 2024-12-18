@@ -30,8 +30,8 @@ stages:
         deploymentScope: 'Resource Group'
         azureResourceManagerConnection: 'DCT-VSO'
         azureSubscription: DCT-VSO
-        #action: 'Create Or Update Resource Group'
-        #resourceGroupName: 'DCOL-DAS-validation-rg'
+        action: 'Create Or Update Resource Group'
+        resourceGroupName: 'DCOL-DAS-validation-WEU'
         location: 'West Europe'
         templateLocation: 'Linked artifact'
         csmFile: 'pipeline/main-template.json'
