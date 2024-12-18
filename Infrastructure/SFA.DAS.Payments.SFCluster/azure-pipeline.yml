@@ -67,8 +67,8 @@ stages:
               overrideParameters: '-environment DAS'
               deploymentMode: 'Incremental'
 
-- stage: Deploy_DST
-  displayName: Deploy to DST
+- stage: Deploy_DST1
+  displayName: Deploy to DST1
   dependsOn: Deploy_DAS
   variables:
   - group: DCOL-DST - Environment Key Vault Secrets
