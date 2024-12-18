@@ -2,6 +2,18 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "networkTemplateUri": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the Service Fabric cluster"
+            }
+        },
+        "clusterTemplateUri":{
+            "type": "string",
+            "metadata": {
+                "description": "Name of the Service Fabric cluster"
+            }
+        },
         "clusterName": {
             "type": "string",
             "metadata": {
@@ -38,6 +50,7 @@
                 "description": "Deployment environment (e.g., DAS, DST, SIT)"
             }
         },
+
         "location": {
             "type": "string",
             "defaultValue": "[resourceGroup().location]",
@@ -47,8 +60,8 @@
         }
     },
     "variables": {
-        "networkTemplateUri": "[uri(deployment().properties.templateLink.uri, 'network-template.json')]",
-        "clusterTemplateUri": "[uri(deployment().properties.templateLink.uri, 'cluster-template.json')]"
+        "networkTemplateUri": "[parameters('networkTemplateUri')]",
+        "clusterTemplateUri": "[parameters('clusterTemplateUri')]"
     },
     "resources": [
         {

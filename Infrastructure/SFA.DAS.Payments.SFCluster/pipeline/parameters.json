@@ -19,6 +19,12 @@
         },
         "environment": {
             "value": "{environment}"
+        },
+        "networkTemplateUri": {
+            "value": "network-template.json" 
+        },
+        "clusterTemplateUri": {
+            "value": "cluster-template.json" 
         }
     }
 }
