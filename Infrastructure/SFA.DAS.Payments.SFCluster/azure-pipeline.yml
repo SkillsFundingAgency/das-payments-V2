@@ -46,6 +46,7 @@ stages:
           Service Line=Data Science (CEDD)
           Service Offering=Submit Learner Data
           Portfolio=Education and Skills Funding Agency
+          Contact Service=Praveen Pattisapu
 
 - stage: Deploy_DAS
   displayName: Deploy to DAS
