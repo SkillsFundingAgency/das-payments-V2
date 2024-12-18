@@ -1,0 +1,58 @@
+parameters:
+  pool:
+  azureSubscription:
+  location: 'West Europe'
+  environmentName:
+  
+
+jobs:
+- deployment: DeployADF
+  pool:
+    name: ${{ parameters.pool }}
+    demands:
+    - ReleaseEnvironment -equals ${{ parameters.environmentName }}
+  environment: ${{ parameters.environmentName }}
+  variables: 
+    - name: resourceGroupName
+      value: '$(Service)-${{ parameters.environmentName }}-ServiceFabricDAS-$(RegionPrimaryCode)-RG'
+    - name: clusterName
+      value: '$(Service)-${{ parameters.environmentName }}-ServiceFabricDAS-$(RegionPrimaryCode)-Cluster'
+    - name: keyVaultName
+      ${{ if eq( parameters['environmentName'], 'SDW') }}:
+        value: '$(Service)-${{ parameters.environmentName }}-KVaultDAS-$(RegionPrimaryCode)'
+      ${{ if ne( parameters['environmentName'], 'SDW') }}:
+        value: '$(Service)-${{ parameters.environmentName }}-KeyVaultDAS-$(RegionPrimaryCode)'
+    
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+        - task: AzurePowerShell@5
+          displayName: Create solution resource group
+          inputs:
+            azureSubscription: '${{ parameters.azureSubscription }}'
+            ScriptType: 'InlineScript'
+            Inline: 'New-AzResourceGroup -Name ${{ variables.resourceGroupName }} -Location "${{ parameters.location }}" -Tag $(tags) -Force'
+            azurePowerShellVersion: 'LatestVersion'
+
+        - task: AzurePowerShell@5
+          displayName: Set subscription id variable
+          inputs:
+            azureSubscription: '${{ parameters.azureSubscription }}'
+            ScriptType: 'InlineScript'
+            Inline: |
+              $subscriptionId = (Get-AzSubscription).SubscriptionId
+              Write-Host "variable=subscriptionId: $subscriptionId"
+              Write-Host "##vso[task.setvariable variable=subscriptionId;]$subscriptionId"
+            azurePowerShellVersion: 'LatestVersion'
+
+        - task: AzureResourceGroupDeployment@2
+          displayName: Deploy Solution Resources
+          inputs:
+            azureSubscription: '${{ parameters.azureSubscription }}'
+            resourceGroupName: '${{ variables.resourceGroupName }}'
+            location: '${{ parameters.location }}'
+            csmFile: '$(Pipeline.Workspace)/drop/Infrastructure/SFA.DAS.Payments.SFCluster/pipeline/main-template.json'
+            csmParametersFile: '$(Pipeline.Workspace)/drop/Infrastructure/SFA.DAS.Payments.SFCluster/pipeline/parameters.json'
+            overrideParameters: '-resourceEnvironmentName "${{ parameters.environmentName }}" -clusterName "${{ variables.clusterName }}"
+            deploymentOutputs: armoutputs

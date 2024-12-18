@@ -18,35 +18,25 @@ resources:
     fetchDepth: 0
 
 stages:
-- stage: Validate_Templates
-  displayName: Validate ARM Templates
+- stage: Publish_ServiceFabric 
+  displayName: Publish Service Fabric Cluster
+
   jobs:
-  - job: ValidateTemplates
-    pool:
-      vmImage: 'windows-latest'
-    steps:
-    - task: AzureResourceManagerTemplateDeployment@3
-      inputs:
-        deploymentScope: 'Resource Group'
-        azureResourceManagerConnection: 'DCT-VSO'
-        azureSubscription: DCT-VSO
-        action: 'Create Or Update Resource Group'
-        resourceGroupName: 'DCOL-DAS-validation-WEU'
-        location: 'West Europe'
-        templateLocation: 'Linked artifact'
-        csmFile: 'pipeline/main-template.json'
-        csmParametersFile: 'pipeline/parameters.json'
-        deploymentMode: 'Validation'
-        tags: |
-          Environment=Dev/Test
-          Product=Submit Learner Data
-          Service=Data Collections
-          ContactTechnical=DCT DevOps Team
-          Parent Business=Payments
-          Service Line=Data Science (CEDD)
-          Service Offering=Submit Learner Data
-          Portfolio=Education and Skills Funding Agency
-          Contact Service=Praveen Pattisapu
+  - template: pipeline/publish.yml
+
+- stage: Deploy_DST
+  displayName: Deploy to DST
+  variables:
+  - name: tagEnvironment
+    value: Dev/Test
+  - group: DCOL-DAS - Environment Key Vault Secrets
+  jobs:
+  - template: pipeline/deploy.yml
+    parameters:
+      pool: DCT Build Pool
+      environmentName: DAS
+      azureSubscription: DCT-VSO
+    
 
 - stage: Deploy_DAS
   displayName: Deploy to DAS
