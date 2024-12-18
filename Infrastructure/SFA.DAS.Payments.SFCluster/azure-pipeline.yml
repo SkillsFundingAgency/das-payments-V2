@@ -40,7 +40,7 @@ stages:
 
 - stage: Deploy_DAS
   displayName: Deploy to DAS
-  dependsOn: Validate_Templates
+  dependsOn: Deploy_DST
   variables:
   - group: DCOL-DAS - Environment Key Vault Secrets
   jobs:
@@ -69,7 +69,7 @@ stages:
 
 - stage: Deploy_DST1
   displayName: Deploy to DST1
-  dependsOn: Deploy_DAS
+  dependsOn: Deploy_DST
   variables:
   - group: DCOL-DST - Environment Key Vault Secrets
   jobs:
