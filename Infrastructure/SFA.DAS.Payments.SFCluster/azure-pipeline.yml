@@ -29,7 +29,7 @@ stages:
   variables:
   - name: tagEnvironment
     value: Dev/Test
-  - group: DCOL-DAS - Environment Key Vault Secrets
+  - group: DCOL-DST - Environment Key Vault Secrets
   jobs:
   - template: pipeline/deploy.yml
     parameters:

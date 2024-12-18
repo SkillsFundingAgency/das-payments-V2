@@ -15,12 +15,7 @@
             "value": "sfadmin"
         },
         "adminPassword": {
-            "reference": {
-                "keyVault": {
-                    "id": "/subscriptions/12f72527-6622-45d3-90a4-0a5d3644c45c/resourceGroups/DCOL-DST-DataFactoryDAS-WEU/providers/Microsoft.KeyVault/vaults/DCOL-DST-KeyVaultDAS-WEU"
-                },
-                "secretName": "sfAdminPassword"
-            }
+            "value": "sfpassword"
         },
         "environment": {
             "value": "{environment}"
