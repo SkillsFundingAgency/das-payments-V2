@@ -54,5 +54,5 @@ jobs:
             location: '${{ parameters.location }}'
             csmFile: '$(Pipeline.Workspace)/drop/Infrastructure/SFA.DAS.Payments.SFCluster/pipeline/main-template.json'
             csmParametersFile: '$(Pipeline.Workspace)/drop/Infrastructure/SFA.DAS.Payments.SFCluster/pipeline/parameters.json'
-            overrideParameters: '-resourceEnvironmentName "${{ parameters.environmentName }}" -clusterName "${{ variables.clusterName }}"'
+            overrideParameters: '-clusterName "${{ variables.clusterName }}"'
             deploymentOutputs: armoutputs
