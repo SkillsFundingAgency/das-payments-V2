@@ -41,6 +41,11 @@ stages:
           Environment=Dev/Test
           Product=Submit Learner Data
           Service=Data Collections
+          ContactTechnical=DCT DevOps Team
+          Parent Business=Payments
+          Service Line=Data Science (CEDD)
+          Service Offering=Submit Learner Data
+          Portfolio=Education and Skills Funding Agency
 
 - stage: Deploy_DAS
   displayName: Deploy to DAS
