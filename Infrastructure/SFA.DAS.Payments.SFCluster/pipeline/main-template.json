@@ -2,18 +2,6 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "networkTemplateUri": {
-            "type": "string",
-            "metadata": {
-                "description": "URI for the network template file"
-            }
-        },
-        "clusterTemplateUri":{
-            "type": "string",
-            "metadata": {
-                "description": "URI for the cluster template file"
-            }
-        },
         "clusterName": {
             "type": "string",
             "metadata": {
@@ -65,9 +53,57 @@
             "name": "networkDeployment",
             "properties": {
                 "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[parameters('networkTemplateUri')]",
-                    "contentVersion": "1.0.0.0"
+                "expressionEvaluationOptions": {
+                    "scope": "inner"
+                },
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {
+                        "clusterName": {
+                            "type": "string"
+                        },
+                        "location": {
+                            "type": "string"
+                        }
+                    },
+                    "variables": {
+                        "virtualNetworkName": "[concat(parameters('clusterName'), '-vnet')]",
+                        "subnetName": "[concat(parameters('clusterName'), '-subnet')]"
+                    },
+                    "resources": [
+                        {
+                            "type": "Microsoft.Network/virtualNetworks",
+                            "apiVersion": "2021-02-01",
+                            "name": "[variables('virtualNetworkName')]",
+                            "location": "[parameters('location')]",
+                            "properties": {
+                                "addressSpace": {
+                                    "addressPrefixes": [
+                                        "10.0.0.0/16"
+                                    ]
+                                },
+                                "subnets": [
+                                    {
+                                        "name": "[variables('subnetName')]",
+                                        "properties": {
+                                            "addressPrefix": "10.0.0.0/24"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ],
+                    "outputs": {
+                        "virtualNetworkName": {
+                            "type": "string",
+                            "value": "[variables('virtualNetworkName')]"
+                        },
+                        "subnetName": {
+                            "type": "string",
+                            "value": "[variables('subnetName')]"
+                        }
+                    }
                 },
                 "parameters": {
                     "clusterName": {"value": "[parameters('clusterName')]"},
@@ -84,9 +120,97 @@
             ],
             "properties": {
                 "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[parameters('clusterTemplateUri')]",
-                    "contentVersion": "1.0.0.0"
+                "expressionEvaluationOptions": {
+                    "scope": "inner"
+                },
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {
+                        "clusterName": {
+                            "type": "string"
+                        },
+                        "clusterSize": {
+                            "type": "int"
+                        },
+                        "vmSku": {
+                            "type": "string"
+                        },
+                        "adminUsername": {
+                            "type": "string"
+                        },
+                        "adminPassword": {
+                            "type": "securestring"
+                        },
+                        "environment": {
+                            "type": "string"
+                        },
+                        "location": {
+                            "type": "string"
+                        },
+                        "virtualNetworkName": {
+                            "type": "string"
+                        },
+                        "subnetName": {
+                            "type": "string"
+                        }
+                    },
+                    "variables": {
+                        "vmssName": "[concat(parameters('clusterName'), '-vmss')]",
+                        "loadBalancerName": "[concat(parameters('clusterName'), '-lb')]"
+                    },
+                    "resources": [
+                        {
+                            "type": "Microsoft.ServiceFabric/clusters",
+                            "apiVersion": "2021-06-01",
+                            "name": "[parameters('clusterName')]",
+                            "location": "[parameters('location')]",
+                            "properties": {
+                                "clusterState": "Default",
+                                "managementEndpoint": "[concat('https://', parameters('clusterName'), '.', parameters('location'), '.cloudapp.azure.com:19080')]",
+                                "nodeTypes": [
+                                    {
+                                        "name": "NodeType0",
+                                        "clientConnectionEndpointPort": 19000,
+                                        "httpGatewayEndpointPort": 19080,
+                                        "applicationPorts": {
+                                            "startPort": 20000,
+                                            "endPort": 30000
+                                        },
+                                        "ephemeralPorts": {
+                                            "startPort": 49152,
+                                            "endPort": 65534
+                                        },
+                                        "isPrimary": true,
+                                        "vmInstanceCount": "[parameters('clusterSize')]"
+                                    }
+                                ],
+                                "vmImage": "Windows",
+                                "reliabilityLevel": "Silver",
+                                "upgradeMode": "Automatic",
+                                "fabricSettings": [
+                                    {
+                                        "parameters": [
+                                            {
+                                                "name": "ClusterProtectionLevel",
+                                                "value": "EncryptAndSign"
+                                            }
+                                        ],
+                                        "name": "Security"
+                                    }
+                                ]
+                            },
+                            "tags": {
+                                "Environment": "[parameters('environment')]"
+                            }
+                        }
+                    ],
+                    "outputs": {
+                        "clusterEndpoint": {
+                            "type": "string",
+                            "value": "[reference(parameters('clusterName')).clusterEndpoint]"
+                        }
+                    }
                 },
                 "parameters": {
                     "clusterName": {"value": "[parameters('clusterName')]"},
