@@ -21,10 +21,10 @@
             "value": "{environment}"
         },
         "networkTemplateUri": {
-            "value": "https://github.com/SkillsFundingAgency/das-payments-V2/blob/PV2-3442-SFCluster/Infrastructure/SFA.DAS.Payments.SFCluster/pipeline/network-template.json" 
+            "value": "$(Pipeline.Workspace)/drop/Infrastructure/SFA.DAS.Payments.SFCluster/pipeline/network-template.json" 
         },
         "clusterTemplateUri": {
-            "value": "https://github.com/SkillsFundingAgency/das-payments-V2/blob/PV2-3442-SFCluster/Infrastructure/SFA.DAS.Payments.SFCluster/pipeline/cluster-template.json" 
+            "value": "$(Pipeline.Workspace)/drop/Infrastructure/SFA.DAS.Payments.SFCluster/pipeline/cluster-template.json" 
         }
     }
 }

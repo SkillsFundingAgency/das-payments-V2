@@ -8,6 +8,7 @@
         "location": {
             "type": "string"
         }
+       
     },
     "variables": {
         "virtualNetworkName": "[concat(parameters('clusterName'), '-vnet')]",
