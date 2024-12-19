@@ -19,12 +19,7 @@
         },
         "environment": {
             "value": "{environment}"
-        },
-        "networkTemplateUri": {
-            "value": "$(Pipeline.Workspace)/drop/Infrastructure/SFA.DAS.Payments.SFCluster/pipeline/network-template.json" 
-        },
-        "clusterTemplateUri": {
-            "value": "$(Pipeline.Workspace)/drop/Infrastructure/SFA.DAS.Payments.SFCluster/pipeline/cluster-template.json" 
         }
+       
     }
 }
