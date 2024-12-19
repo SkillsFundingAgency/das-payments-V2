@@ -20,10 +20,10 @@
         "environment": {
             "value": "{environment}"
         },
-        "networkTemplateUri": {
+        "networkTemplateFile": {
             "value": "network-template.json" 
         },
-        "clusterTemplateUri": {
+        "clusterTemplateFile": {
             "value": "cluster-template.json" 
         }
     }
