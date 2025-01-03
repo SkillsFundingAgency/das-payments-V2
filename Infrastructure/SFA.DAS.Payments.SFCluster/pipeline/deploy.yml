@@ -6,7 +6,7 @@ parameters:
   
 
 jobs:
-- deployment: Deploy SF Cluster
+- deployment: DeployServiceFabricCluster
   pool:
     name: ${{ parameters.pool }}
     demands:
