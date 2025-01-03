@@ -6,7 +6,7 @@ parameters:
   
 
 jobs:
-- deployment: DeployADF
+- deployment: Deploy SF Cluster
   pool:
     name: ${{ parameters.pool }}
     demands:
