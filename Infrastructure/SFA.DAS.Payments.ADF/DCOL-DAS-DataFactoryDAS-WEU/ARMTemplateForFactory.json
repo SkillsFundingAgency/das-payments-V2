@@ -160,42 +160,6 @@
             ]
         },
         {
-            "name": "[concat(parameters('factoryName'), '/default')]",
-            "type": "Microsoft.DataFactory/factories/managedVirtualNetworks",
-            "apiVersion": "2018-06-01",
-            "properties": {},
-            "dependsOn": []
-        },
-        {
-            "name": "[concat(parameters('factoryName'), '/AzureVNETIntegrationRuntime')]",
-            "type": "Microsoft.DataFactory/factories/integrationRuntimes",
-            "apiVersion": "2018-06-01",
-            "properties": {
-                "type": "Managed",
-                "typeProperties": {
-                    "computeProperties": {
-                        "location": "West Europe",
-                        "dataFlowProperties": {
-                            "computeType": "General",
-                            "coreCount": 8,
-                            "timeToLive": 10,
-                            "cleanup": false
-                        },
-                        "pipelineExternalComputeScaleProperties": {
-                            "timeToLive": 60
-                        }
-                    }
-                },
-                "managedVirtualNetwork": {
-                    "type": "ManagedVirtualNetworkReference",
-                    "referenceName": "default"
-                }
-            },
-            "dependsOn": [
-                "[concat(variables('factoryId'), '/managedVirtualNetworks/default')]"
-            ]
-        },
-        {
             "name": "[concat(parameters('factoryName'), '/AzureKeyVault1')]",
             "type": "Microsoft.DataFactory/factories/linkedServices",
             "apiVersion": "2018-06-01",
@@ -6267,7 +6231,7 @@
                             "source": {
                                 "type": "AzureSqlSource",
                                 "sqlReaderQuery": {
-                                    "value": "SELECT \n    @{pipeline().parameters.AcademicYear} as AcademicYear, \n    @{pipeline().parameters.CollectionPeriod} AS Period\n    Where not exists (\n        select \n            1 \n            FROM [Payments2].[AuditMigrationJob] \n            Where  AcademicYear = @{pipeline().parameters.AcademicYear} \n            and [Period] = @{pipeline().parameters.CollectionPeriod}\n            and Failed = 0\n        )\n\n",
+                                    "value": "SELECT \n    @{pipeline().parameters.AcademicYear} as AcademicYear, \n    @{pipeline().parameters.CollectionPeriod} AS Period\n    Where exists (\n        select \n            1 \n            FROM [Payments2].[AuditMigrationJob] \n            Where  AcademicYear = @{pipeline().parameters.AcademicYear} \n            and [Period] = @{pipeline().parameters.CollectionPeriod}\n            and Failed = 0\n        )\n\n",
                                     "type": "Expression"
                                 },
                                 "queryTimeout": "02:00:00",
@@ -6280,7 +6244,7 @@
                                     "Table_Name": "AuditMigrationJob"
                                 }
                             },
-                            "firstRowOnly": true
+                            "firstRowOnly": false
                         }
                     },
                     {
@@ -6374,7 +6338,7 @@
                     }
                 },
                 "annotations": [],
-                "lastPublishTime": "2024-12-12T09:03:25Z"
+                "lastPublishTime": "2025-01-07T13:08:28Z"
             },
             "dependsOn": [
                 "[concat(variables('factoryId'), '/datasets/SrcPayments')]",
@@ -7632,7 +7596,7 @@
                     }
                 },
                 "annotations": [],
-                "lastPublishTime": "2024-12-10T16:54:37Z"
+                "lastPublishTime": "2025-01-06T14:56:50Z"
             },
             "dependsOn": [
                 "[concat(variables('factoryId'), '/linkedServices/datamart_stagingDB_linkedservices')]",
@@ -7640,6 +7604,42 @@
                 "[concat(variables('factoryId'), '/datasets/SrcPayments')]",
                 "[concat(variables('factoryId'), '/datasets/DestPaymentsArchive')]"
             ]
+        },
+        {
+            "name": "[concat(parameters('factoryName'), '/AzureVNETIntegrationRuntime')]",
+            "type": "Microsoft.DataFactory/factories/integrationRuntimes",
+            "apiVersion": "2018-06-01",
+            "properties": {
+                "type": "Managed",
+                "typeProperties": {
+                    "computeProperties": {
+                        "location": "West Europe",
+                        "dataFlowProperties": {
+                            "computeType": "General",
+                            "coreCount": 8,
+                            "timeToLive": 10,
+                            "cleanup": false
+                        },
+                        "pipelineExternalComputeScaleProperties": {
+                            "timeToLive": 60
+                        }
+                    }
+                },
+                "managedVirtualNetwork": {
+                    "type": "ManagedVirtualNetworkReference",
+                    "referenceName": "default"
+                }
+            },
+            "dependsOn": [
+                "[concat(variables('factoryId'), '/managedVirtualNetworks/default')]"
+            ]
+        },
+        {
+            "name": "[concat(parameters('factoryName'), '/default')]",
+            "type": "Microsoft.DataFactory/factories/managedVirtualNetworks",
+            "apiVersion": "2018-06-01",
+            "properties": {},
+            "dependsOn": []
         },
         {
             "name": "[concat(parameters('factoryName'), '/default/datamart_sql_private_endpoint')]",
