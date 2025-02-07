@@ -160,6 +160,42 @@
             ]
         },
         {
+            "name": "[concat(parameters('factoryName'), '/AzureVNETIntegrationRuntime')]",
+            "type": "Microsoft.DataFactory/factories/integrationRuntimes",
+            "apiVersion": "2018-06-01",
+            "properties": {
+                "type": "Managed",
+                "typeProperties": {
+                    "computeProperties": {
+                        "location": "West Europe",
+                        "dataFlowProperties": {
+                            "computeType": "General",
+                            "coreCount": 8,
+                            "timeToLive": 10,
+                            "cleanup": false
+                        },
+                        "pipelineExternalComputeScaleProperties": {
+                            "timeToLive": 60
+                        }
+                    }
+                },
+                "managedVirtualNetwork": {
+                    "type": "ManagedVirtualNetworkReference",
+                    "referenceName": "default"
+                }
+            },
+            "dependsOn": [
+                "[concat(variables('factoryId'), '/managedVirtualNetworks/default')]"
+            ]
+        },
+        {
+            "name": "[concat(parameters('factoryName'), '/default')]",
+            "type": "Microsoft.DataFactory/factories/managedVirtualNetworks",
+            "apiVersion": "2018-06-01",
+            "properties": {},
+            "dependsOn": []
+        },
+        {
             "name": "[concat(parameters('factoryName'), '/AzureKeyVault1')]",
             "type": "Microsoft.DataFactory/factories/linkedServices",
             "apiVersion": "2018-06-01",
@@ -1947,6 +1983,18 @@
                                                                 },
                                                                 "sink": {
                                                                     "name": "AgeAtStartOfLearning",
+                                                                    "type": "Byte",
+                                                                    "physicalType": "tinyint"
+                                                                }
+                                                            },
+                                                            {
+                                                                "source": {
+                                                                    "name": "FundingPlatformType",
+                                                                    "type": "Byte",
+                                                                    "physicalType": "tinyint"
+                                                                },
+                                                                "sink": {
+                                                                    "name": "FundingPlatformType",
                                                                     "type": "Byte",
                                                                     "physicalType": "tinyint"
                                                                 }
@@ -4590,6 +4638,18 @@
                                                                     "type": "Byte",
                                                                     "physicalType": "tinyint"
                                                                 }
+                                                            },
+                                                            {
+                                                                "source": {
+                                                                    "name": "FundingPlatformType",
+                                                                    "type": "Byte",
+                                                                    "physicalType": "tinyint"
+                                                                },
+                                                                "sink": {
+                                                                    "name": "FundingPlatformType",
+                                                                    "type": "Byte",
+                                                                    "physicalType": "tinyint"
+                                                                }
                                                             }
                                                         ],
                                                         "typeConversion": true,
@@ -6338,7 +6398,7 @@
                     }
                 },
                 "annotations": [],
-                "lastPublishTime": "2025-01-07T13:08:28Z"
+                "lastPublishTime": "2025-01-23T13:40:15Z"
             },
             "dependsOn": [
                 "[concat(variables('factoryId'), '/datasets/SrcPayments')]",
@@ -7596,7 +7656,7 @@
                     }
                 },
                 "annotations": [],
-                "lastPublishTime": "2025-01-06T14:56:50Z"
+                "lastPublishTime": "2025-01-22T12:44:38Z"
             },
             "dependsOn": [
                 "[concat(variables('factoryId'), '/linkedServices/datamart_stagingDB_linkedservices')]",
@@ -7604,42 +7664,6 @@
                 "[concat(variables('factoryId'), '/datasets/SrcPayments')]",
                 "[concat(variables('factoryId'), '/datasets/DestPaymentsArchive')]"
             ]
-        },
-        {
-            "name": "[concat(parameters('factoryName'), '/AzureVNETIntegrationRuntime')]",
-            "type": "Microsoft.DataFactory/factories/integrationRuntimes",
-            "apiVersion": "2018-06-01",
-            "properties": {
-                "type": "Managed",
-                "typeProperties": {
-                    "computeProperties": {
-                        "location": "West Europe",
-                        "dataFlowProperties": {
-                            "computeType": "General",
-                            "coreCount": 8,
-                            "timeToLive": 10,
-                            "cleanup": false
-                        },
-                        "pipelineExternalComputeScaleProperties": {
-                            "timeToLive": 60
-                        }
-                    }
-                },
-                "managedVirtualNetwork": {
-                    "type": "ManagedVirtualNetworkReference",
-                    "referenceName": "default"
-                }
-            },
-            "dependsOn": [
-                "[concat(variables('factoryId'), '/managedVirtualNetworks/default')]"
-            ]
-        },
-        {
-            "name": "[concat(parameters('factoryName'), '/default')]",
-            "type": "Microsoft.DataFactory/factories/managedVirtualNetworks",
-            "apiVersion": "2018-06-01",
-            "properties": {},
-            "dependsOn": []
         },
         {
             "name": "[concat(parameters('factoryName'), '/default/datamart_sql_private_endpoint')]",
