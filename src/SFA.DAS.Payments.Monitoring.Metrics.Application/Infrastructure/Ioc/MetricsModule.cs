@@ -1,4 +1,4 @@
-﻿using Autofac;
+using Autofac;
 using Microsoft.EntityFrameworkCore;
 using SFA.DAS.Payments.Core.Configuration;
 using SFA.DAS.Payments.Monitoring.Metrics.Application.Submission;
@@ -18,16 +18,17 @@ namespace SFA.DAS.Payments.Monitoring.Metrics.Application.Infrastructure.Ioc
                 .As<ISubmissionMetricsService>()
                 .InstancePerLifetimeScope();
 
+
             builder.Register((c, p) =>
-            {
-                var configHelper = c.Resolve<IConfigurationHelper>();
+                {
+                    var configHelper = c.Resolve<IConfigurationHelper>();
 
-                var dbContextOptions = new DbContextOptionsBuilder().UseSqlServer(
-                    configHelper.GetConnectionString("DcEarnings2324ConnectionString"),
-                    optionsBuilder => optionsBuilder.CommandTimeout(270)).Options;
+                    var dbContextOptions = new DbContextOptionsBuilder().UseSqlServer(
+                        configHelper.GetConnectionString("DcEarnings2324ConnectionString"),
+                        optionsBuilder => optionsBuilder.CommandTimeout(270)).Options;
 
-                return new DcMetricsDataContext(dbContextOptions);
-            })
+                    return new DcMetricsDataContext(dbContextOptions);
+                })
                 .Named<IDcMetricsDataContext>("DcEarnings2324DataContext")
                 .InstancePerLifetimeScope();
 
