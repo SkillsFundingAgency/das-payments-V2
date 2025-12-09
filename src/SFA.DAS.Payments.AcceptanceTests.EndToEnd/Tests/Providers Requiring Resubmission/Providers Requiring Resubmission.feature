@@ -8,7 +8,7 @@ Scenario: Apprenticeship updated before ILR submitted by provider during current
 	When there is a change to the apprenticeship details for one of the provider's learners
 	Then new record will be added to the ProviderRequiringReprocessing table
 
-Scenario: Apprenticeship updated after IRL submitted by provider during current collection period
+Scenario: Apprenticeship updated after ILR submitted by provider during current collection period
 	Given the provider has made a submission in the current collection period
 	When there is a change to the apprenticeship details for one of the provider's learners
 	Then new record will be added to the ProviderRequiringReprocessing table
