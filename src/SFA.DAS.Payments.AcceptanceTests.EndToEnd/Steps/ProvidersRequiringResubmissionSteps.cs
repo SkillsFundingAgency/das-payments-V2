@@ -55,15 +55,6 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }, options);
         }
 
-        [Then(@"new record will be added to the ProviderRequiringReprocessing table")]
-        public async Task ThenNewRecordWillBeAddedToTheProviderRequiringReprocessingTable()
-        {
-            await WaitForIt(() =>
-            {
-                return dataContext.ProvidersRequiringReprocessing.AnyAsync(x => x.Ukprn == TestSession.Ukprn);
-            }, $"Failed to find provider with matching ukprn: {TestSession.Ukprn} in ProviderRequiringReprocessing table ");
-        }
-
         [Then(@"there should not be any change to ProviderRequiringReprocessing table")]
         public async Task ThenThereShouldNotBeAnyChangeToProviderRequiringReprocessingTable()
         {
@@ -94,6 +85,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }, options);
         }
 
+        [Then("no record is added to the ProviderRequiringReprocessing table for that provider")]
         [Then(@"record for provider should be deleted from the ProviderRequiringReprocessing table")]
         public async Task ThenRecordForProviderShouldBeDeletedFromTheProviderRequiringReprocessingTable()
         {
