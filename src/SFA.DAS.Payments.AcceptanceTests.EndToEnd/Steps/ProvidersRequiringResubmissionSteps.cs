@@ -55,14 +55,17 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             }, options);
         }
 
-        [Then(@"new record will be added to the ProviderRequiringReprocessing table")]
-        public async Task ThenNewRecordWillBeAddedToTheProviderRequiringReprocessingTable()
+
+        [Then(@"no record is added to the ProviderRequiringReprocessing table for that provider")]
+        public async Task ThenNoRecordIsAddedToTheProviderRequiringReprocessingTableForThatProvider()
         {
-            await WaitForIt(() =>
-            {
-                return dataContext.ProvidersRequiringReprocessing.AnyAsync(x => x.Ukprn == TestSession.Ukprn);
-            }, $"Failed to find provider with matching ukprn: {TestSession.Ukprn} in ProviderRequiringReprocessing table ");
+            await WaitForIt(async () =>
+                {
+                    return !(await dataContext.ProvidersRequiringReprocessing.AnyAsync(x => x.Ukprn == TestSession.Ukprn));
+                }, $"Failed - Unexpected provider with ukprn: {TestSession.Ukprn} found in ProviderRequiringReprocessing table ");
+
         }
+
 
         [Then(@"there should not be any change to ProviderRequiringReprocessing table")]
         public async Task ThenThereShouldNotBeAnyChangeToProviderRequiringReprocessingTable()
@@ -100,7 +103,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.EndToEnd.Steps
             await WaitForIt(async () =>
             {
                 return !(await dataContext.ProvidersRequiringReprocessing.AnyAsync(x => x.Ukprn == TestSession.Ukprn));
-            }, $"Failed to find provider with matching ukprn: {TestSession.Ukprn} in ProviderRequiringReprocessing table ");
+            }, $"Failed - Unexpected provider with ukprn: {TestSession.Ukprn} found in ProviderRequiringReprocessing table ");
 
         }
 
