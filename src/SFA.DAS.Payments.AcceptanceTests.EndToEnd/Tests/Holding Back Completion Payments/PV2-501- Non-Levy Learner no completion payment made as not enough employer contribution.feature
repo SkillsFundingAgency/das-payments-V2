@@ -1,3 +1,5 @@
+@ignore
+#HoldingBackCompletionPayments removed from RequiredPayments
 Feature: Holding back completion payments - PV2-501
 	As a provider,
 	I want a non-levy learner, where the employer has paid less than their 10% co-investment for the on-program element, and has not yet paid the employer completion payment element
