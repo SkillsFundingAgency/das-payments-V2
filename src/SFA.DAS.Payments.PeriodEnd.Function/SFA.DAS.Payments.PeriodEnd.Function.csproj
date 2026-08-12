@@ -6,6 +6,7 @@
   <ItemGroup>
 	  <PackageReference Include="AzureFunctions.Autofac" Version="4.0.1" />
 	  <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Http" Version="3.0.2" />
+	  <PackageReference Include="Microsoft.Azure.WebJobs.Script.ExtensionsMetadataGenerator" Version="1.1.8" />
 	  <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.9" />
   </ItemGroup>
   <ItemGroup>
