@@ -21,6 +21,24 @@ jobs:
         - checkout: self
           clean: true
 
+        - task: PowerShell@2
+          displayName: 'Ensure PowerShell 7 (pwsh) is installed'
+          inputs:
+            targetType: inline
+            pwsh: false
+            script: |
+              $ErrorActionPreference = 'Stop'
+              $dir = Join-Path $env:LOCALAPPDATA 'pwsh7'
+
+              if (-not (Test-Path "$dir\pwsh.exe")) {
+                $zip = Join-Path $env:TEMP 'pwsh.zip'
+                Invoke-WebRequest 'https://github.com/PowerShell/PowerShell/releases/download/v7.4.6/PowerShell-7.4.6-win-x64.zip' -OutFile $zip
+                Expand-Archive $zip $dir -Force
+                Remove-Item $zip -Force
+              }
+
+              Write-Host "##vso[task.prependpath]$dir"
+
         - template: azure-pipelines-templates/deploy/step/wait-azure-devops-deployment.yml@das-platform-building-blocks
           parameters:
             EnvironmentId: $(Environment.Id)
