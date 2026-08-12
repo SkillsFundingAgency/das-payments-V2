@@ -1,0 +1,166 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "functionAppName": {
+      "type": "string"
+    },
+    "environmentName": {
+      "type": "string",
+      "metadata": {
+        "description": "Short environment name, e.g. DAS, DST, SIT, ETE, MO, PP, PD. Applied as a resource tag."
+      }
+    },
+    "storageAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the existing storage account used for the Flex Consumption deployment container"
+      }
+    },
+    "deploymentContainerName": {
+      "type": "string",
+      "defaultValue": "app-package"
+    },
+    "maximumInstanceCount": {
+      "type": "int",
+      "defaultValue": 100
+    },
+    "instanceMemoryMB": {
+      "type": "int",
+      "defaultValue": 2048,
+      "allowedValues": [
+        512,
+        2048,
+        4096
+      ]
+    },
+    "azureWebJobsStorage": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Connection string for the storage account the Functions host uses for internal state and for the deployment container"
+      }
+    },
+    "paymentsConnectionString": {
+      "type": "securestring"
+    },
+    "dasNServiceBusLicenseKey": {
+      "type": "securestring"
+    },
+    "appInsightsInstrumentationKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Value for the APPINSIGHTS_INSTRUMENTATIONKEY setting read by the Functions host"
+      }
+    },
+    "applicationInsightsInstrumentationKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Value for the ApplicationInsightsInstrumentationKey setting read by the application"
+      }
+    }
+  },
+  "variables": {
+    "functionAppApiVersion": "2023-12-01",
+    "deploymentStorageContainerUri": "[concat('https://', parameters('storageAccountName'), '.blob.core.windows.net/', parameters('deploymentContainerName'))]",
+    "vnetName": "[concat('DCOL-', parameters('environmentName'), '-VNET-WEU')]",
+    "functionAppSubnetId": "[resourceId(variables('vnetName'), 'Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), 'DCOL-FunctionApp-Integration-Subnet')]",
+    "appSettings": [
+      {
+        "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+        "value": "[parameters('appInsightsInstrumentationKey')]"
+      },
+      {
+        "name": "ApplicationInsightsInstrumentationKey",
+        "value": "[parameters('applicationInsightsInstrumentationKey')]"
+      },
+      {
+        "name": "AzureWebJobsStorage",
+        "value": "[parameters('azureWebJobsStorage')]"
+      },
+      {
+        "name": "DasNServiceBusLicenseKey",
+        "value": "[parameters('dasNServiceBusLicenseKey')]"
+      },
+      {
+        "name": "DEPLOYMENT_STORAGE_CONNECTION_STRING",
+        "value": "[parameters('azureWebJobsStorage')]"
+      },
+      {
+        "name": "PaymentsConnectionString",
+        "value": "[parameters('paymentsConnectionString')]"
+      }
+    ]
+  },
+  "resources": [
+    {
+      "name": "[parameters('functionAppName')]",
+      "type": "Microsoft.Web/serverfarms",
+      "apiVersion": "2023-12-01",
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "Environment": "[parameters('environmentName')]"
+      },
+      "sku": {
+        "name": "FC1",
+        "tier": "FlexConsumption"
+      },
+      "kind": "functionapp",
+      "properties": {
+        "reserved": true
+      }
+    },
+    {
+      "name": "[parameters('functionAppName')]",
+      "type": "Microsoft.Web/sites",
+      "kind": "functionapp,linux",
+      "apiVersion": "[variables('functionAppApiVersion')]",
+      "location": "[resourceGroup().location]",
+      "tags": {
+        "Environment": "[parameters('environmentName')]"
+      },
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', parameters('functionAppName'))]"
+      ],
+      "properties": {
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('functionAppName'))]",
+        "virtualNetworkSubnetId": "[variables('functionAppSubnetId')]",
+        "clientAffinityEnabled": false,
+        "httpsOnly": true,
+        "siteConfig": {
+          "appSettings": "[variables('appSettings')]",
+          "minTlsVersion": "1.2",
+          "ftpsState": "Disabled"
+        },
+        "functionAppConfig": {
+          "deployment": {
+            "storage": {
+              "type": "blobContainer",
+              "value": "[variables('deploymentStorageContainerUri')]",
+              "authentication": {
+                "type": "StorageAccountConnectionString",
+                "storageAccountConnectionStringName": "DEPLOYMENT_STORAGE_CONNECTION_STRING"
+              }
+            }
+          },
+          "scaleAndConcurrency": {
+            "maximumInstanceCount": "[parameters('maximumInstanceCount')]",
+            "instanceMemoryMB": "[parameters('instanceMemoryMB')]"
+          },
+          "runtime": {
+            "name": "dotnet-isolated",
+            "version": "8.0"
+          }
+        }
+      }
+    }
+  ],
+  "outputs": {
+    "managedServiceIdentityId": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Web/sites', parameters('functionAppName')), variables('functionAppApiVersion'), 'Full').identity.principalId]"
+    }
+  }
+}
