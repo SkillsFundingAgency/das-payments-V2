@@ -70,4 +70,4 @@ jobs:
             appType: functionAppLinux
             isFlexConsumption: true
             appName: $(FunctionAppName)
-            package: $(Pipeline.Workspace)/${{ parameters.ArtifactName }}/${{ parameters.ArtifactName }}.zip
+            package: $(Pipeline.Workspace)/${{ parameters.ArtifactName }}
