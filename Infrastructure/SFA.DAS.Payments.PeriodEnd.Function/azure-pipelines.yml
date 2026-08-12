@@ -18,7 +18,7 @@ variables:
 - name: ArtifactName
   value: 'PeriodEndFunction'
 - group: Release Management Resources
-- group: RELEASE das-payments-v2-periodend
+- group: RELEASE das-payments-v2-periodendfunction
 
 resources:
   repositories:
@@ -43,7 +43,7 @@ stages:
   dependsOn: Build
   displayName: Deploy to DAS
   variables:
-  - group: DAS das-payments-v2-periodend
+  - group: DAS das-payments-v2-periodendfunction
   jobs:
   - template: pipeline-templates/job/deploy.yml
     parameters:
@@ -56,7 +56,7 @@ stages:
   dependsOn: Build
   displayName: Deploy to DST
   variables:
-  - group: DST das-payments-v2-periodend
+  - group: DST das-payments-v2-periodendfunction
   jobs:
   - template: pipeline-templates/job/deploy.yml
     parameters:
@@ -69,7 +69,7 @@ stages:
 #   dependsOn: Build
 #   displayName: Deploy to SIT
 #   variables:
-#   - group: SIT das-payments-v2-periodend
+#   - group: SIT das-payments-v2-periodendfunction
 #   jobs:
 #   - template: pipeline-templates/job/deploy.yml
 #     parameters:
@@ -82,7 +82,7 @@ stages:
 #   dependsOn: Build
 #   displayName: Deploy to ETE
 #   variables:
-#   - group: ETE das-payments-v2-periodend
+#   - group: ETE das-payments-v2-periodendfunction
 #   jobs:
 #   - template: pipeline-templates/job/deploy.yml
 #     parameters:
@@ -95,7 +95,7 @@ stages:
 #   dependsOn: Build
 #   displayName: Deploy to MO
 #   variables:
-#   - group: MO das-payments-v2-periodend
+#   - group: MO das-payments-v2-periodendfunction
 #   jobs:
 #   - template: pipeline-templates/job/deploy.yml
 #     parameters:
@@ -108,7 +108,7 @@ stages:
 #   dependsOn: Build
 #   displayName: Deploy to PP
 #   variables:
-#   - group: PP das-payments-v2-periodend
+#   - group: PP das-payments-v2-periodendfunction
 #   jobs:
 #   - template: pipeline-templates/job/deploy.yml
 #     parameters:
@@ -121,7 +121,7 @@ stages:
 #   dependsOn: Build
 #   displayName: Deploy to PD
 #   variables:
-#   - group: PD das-payments-v2-periodend
+#   - group: PD das-payments-v2-periodendfunction
 #   jobs:
 #   - template: pipeline-templates/job/deploy.yml
 #     parameters:
