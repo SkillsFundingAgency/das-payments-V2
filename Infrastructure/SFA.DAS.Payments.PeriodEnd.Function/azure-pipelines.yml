@@ -1,0 +1,131 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - "master"
+  paths:
+    include:
+      - Infrastructure/SFA.DAS.Payments.PeriodEnd.Function
+      - src/SFA.DAS.Payments.PeriodEnd.Function
+
+variables:
+- name: BuildPlatform
+  value : 'x64'
+- name: BuildConfiguration
+  value: 'release'
+- name: SolutionBaseName
+  value: 'SFA.DAS.Payments.PeriodEnd.Function'
+- name: ArtifactName
+  value: 'PeriodEndFunction'
+- group: Release Management Resources
+- group: RELEASE das-payments-v2-periodend
+
+resources:
+  repositories:
+    - repository: self
+    - repository: das-platform-building-blocks
+      type: github
+      name: SkillsFundingAgency/das-platform-building-blocks
+      endpoint: SkillsFundingAgency
+      ref: refs/heads/master
+    - repository: das-platform-automation
+      type: github
+      name: SkillsFundingAgency/das-platform-automation
+      endpoint: SkillsFundingAgency
+      ref: refs/heads/master
+
+stages:
+- stage: Build
+  jobs:
+  - template: pipeline-templates/job/code-build.yml
+
+- stage: Deploy_DAS
+  dependsOn: Build
+  displayName: Deploy to DAS
+  variables:
+  - group: DAS das-payments-v2-periodend
+  jobs:
+  - template: pipeline-templates/job/deploy.yml
+    parameters:
+      ServiceConnection: DCT-VSO
+      SolutionBaseName: ${{ variables.SolutionBaseName }}
+      ArtifactName: $(ArtifactName)
+      Environment: DAS
+
+- stage: Deploy_DST
+  dependsOn: Build
+  displayName: Deploy to DST
+  variables:
+  - group: DST das-payments-v2-periodend
+  jobs:
+  - template: pipeline-templates/job/deploy.yml
+    parameters:
+      ServiceConnection: DCT-VSO
+      SolutionBaseName: ${{ variables.SolutionBaseName }}
+      ArtifactName: $(ArtifactName)
+      Environment: DST
+
+# - stage: Deploy_SIT
+#   dependsOn: Build
+#   displayName: Deploy to SIT
+#   variables:
+#   - group: SIT das-payments-v2-periodend
+#   jobs:
+#   - template: pipeline-templates/job/deploy.yml
+#     parameters:
+#       ServiceConnection: DCT-VSO
+#       SolutionBaseName: ${{ variables.SolutionBaseName }}
+#       ArtifactName: $(ArtifactName)
+#       Environment: SIT
+
+# - stage: Deploy_ETE
+#   dependsOn: Build
+#   displayName: Deploy to ETE
+#   variables:
+#   - group: ETE das-payments-v2-periodend
+#   jobs:
+#   - template: pipeline-templates/job/deploy.yml
+#     parameters:
+#       ServiceConnection: DCT-VSO
+#       SolutionBaseName: ${{ variables.SolutionBaseName }}
+#       ArtifactName: $(ArtifactName)
+#       Environment: ETE
+
+# - stage: Deploy_MO
+#   dependsOn: Build
+#   displayName: Deploy to MO
+#   variables:
+#   - group: MO das-payments-v2-periodend
+#   jobs:
+#   - template: pipeline-templates/job/deploy.yml
+#     parameters:
+#       ServiceConnection: DCOL-MO-VSTS
+#       SolutionBaseName: ${{ variables.SolutionBaseName }}
+#       ArtifactName: $(ArtifactName)
+#       Environment: MO
+
+# - stage: Deploy_PP
+#   dependsOn: Build
+#   displayName: Deploy to PP
+#   variables:
+#   - group: PP das-payments-v2-periodend
+#   jobs:
+#   - template: pipeline-templates/job/deploy.yml
+#     parameters:
+#       ServiceConnection: DCOLPPVSTS
+#       SolutionBaseName: ${{ variables.SolutionBaseName }}
+#       ArtifactName: $(ArtifactName)
+#       Environment: PP
+
+# - stage: Deploy_PD
+#   dependsOn: Build
+#   displayName: Deploy to PD
+#   variables:
+#   - group: PD das-payments-v2-periodend
+#   jobs:
+#   - template: pipeline-templates/job/deploy.yml
+#     parameters:
+#       ServiceConnection: DCOLPDVSTS
+#       SolutionBaseName: ${{ variables.SolutionBaseName }}
+#       ArtifactName: $(ArtifactName)
+#       Environment: PD
