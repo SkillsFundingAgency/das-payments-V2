@@ -32,6 +32,21 @@ jobs:
       includeNuGetOrg: true
       requestTimeout: 300000
 
+  - task: PowerShell@2
+    displayName: 'Set assembly version'
+    inputs:
+      targetType: 'inline'
+      script: |
+        $buildNumber = "$(Build.BuildNumber)"
+        if ($buildNumber -match '^(\d{4})(\d{2})(\d{2})\.(\d+)$') {
+          $assemblyVersion = "$([int]$Matches[1]).$([int]$Matches[2]).$([int]$Matches[3]).$([int]$Matches[4])"
+        } else {
+          $buildId = 0
+          [int]::TryParse("$(Build.BuildId)", [ref]$buildId) | Out-Null
+          $assemblyVersion = "1.0.0.$($buildId % 65535)"
+        }
+        Write-Host "##vso[task.setvariable variable=AssemblyVersion]$assemblyVersion"
+
   - task: MSBuild@1
     displayName: 'Build solution src/SFA.DAS.Payments.PeriodEnd.Function/SFA.DAS.Payments.PeriodEnd.Function.csproj'
     inputs:
@@ -40,7 +55,7 @@ jobs:
       msbuildArchitecture: x64
       platform: '$(BuildPlatform)'
       configuration: '$(BuildConfiguration)'
-      msbuildArguments: '/p:version=$(Build.BuildNumber) /p:FileVersion=$(Build.BuildNumber) /p:OutputPath=$(build.artifactstagingdirectory)\PeriodEnd-Function'
+      msbuildArguments: '/p:Version=$(AssemblyVersion) /p:FileVersion=$(AssemblyVersion) /p:OutputPath=$(build.artifactstagingdirectory)\PeriodEnd-Function'
       clean: true
 
   - task: PublishPipelineArtifact@1
