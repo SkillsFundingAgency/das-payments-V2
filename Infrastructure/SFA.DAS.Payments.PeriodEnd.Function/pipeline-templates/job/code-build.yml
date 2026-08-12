@@ -1,0 +1,51 @@
+parameters:
+  TargetProjects: 'src/SFA.DAS.Payments.PeriodEnd.Function/SFA.DAS.Payments.PeriodEnd.Function.csproj'
+
+jobs:
+- job: CodeBuild
+  pool:
+    name: DCT Build Pool
+  variables:
+  - group: BUILD Management Resources
+  - name: SolutionBaseName
+    value: SFA.DAS.Payments.PeriodEnd.Function
+  steps:
+  - task: UseDotNet@2
+    displayName: 'Use .NET Core sdk 2.1.x'
+    inputs:
+      packageType: sdk
+      useGlobalJson: false
+      version: 2.1.x
+      includePreviewVersions: false
+      requestTimeout: 300000
+      performMultiLevelLookup: false
+      installationPath: '$(Agent.ToolsDirectory)/dotnet'
+
+  - task: DotNetCoreCLI@2
+    displayName: 'dotnet restore'
+    inputs:
+      command: restore
+      projects: ${{ parameters.TargetProjects }}
+      noCache: true
+      feedsToUse: 'select'
+      vstsFeed: 'dct-pkg'
+      includeNuGetOrg: true
+      requestTimeout: 300000
+
+  - task: MSBuild@1
+    displayName: 'Build solution src/SFA.DAS.Payments.PeriodEnd.Function/SFA.DAS.Payments.PeriodEnd.Function.csproj'
+    inputs:
+      solution: ${{ parameters.TargetProjects }}
+      msbuildVersion: latest
+      msbuildArchitecture: x64
+      platform: '$(BuildPlatform)'
+      configuration: '$(BuildConfiguration)'
+      msbuildArguments: '/p:version=$(Build.BuildNumber) /p:FileVersion=$(Build.BuildNumber) /p:OutputPath=$(build.artifactstagingdirectory)\PeriodEnd-Function'
+      clean: true
+
+  - task: PublishPipelineArtifact@1
+    displayName: 'Publish Pipeline Artifact'
+    inputs:
+      targetPath: '$(build.artifactstagingdirectory)\PeriodEnd-Function'
+      artifact: PeriodEndFunction
+      publishLocation: 'pipeline'
