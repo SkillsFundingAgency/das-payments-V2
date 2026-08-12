@@ -1,0 +1,55 @@
+parameters:
+  ServiceConnection:
+  SolutionBaseName:
+  Environment:
+  ArtifactName:
+
+jobs:
+- deployment: Deploy${{ replace(parameters.SolutionBaseName, '.', '') }}
+  pool:
+    name: DCT
+    demands:
+    - Cmd
+    - ReleaseEnvironment -equals ${{ parameters.Environment }}
+  environment: ${{ parameters.Environment }}
+  workspace:
+    clean: all
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+        - checkout: self
+          clean: true
+
+        - template: azure-pipelines-templates/deploy/step/wait-azure-devops-deployment.yml@das-platform-building-blocks
+          parameters:
+            EnvironmentId: $(Environment.Id)
+            PipelineName: $(Build.DefinitionName)
+            RunId: $(Build.BuildId)
+
+        - template: azure-pipelines-templates/deploy/step/arm-deploy.yml@das-platform-building-blocks
+          parameters:
+            ServiceConnection: ${{ parameters.ServiceConnection }}
+            SubscriptionId: $(SubscriptionId)
+            Location: $(ResourceGroupLocation)
+            Scope: 'Resource Group'
+            ResourceGroupName: $(ResourceGroupName)
+            Environment: ${{ parameters.Environment }}
+            TemplatePath: $(Build.SourcesDirectory)/das-payments-V2/Infrastructure/SFA.DAS.Payments.PeriodEnd.Function/azure/template.json
+            ParametersPath: $(Build.SourcesDirectory)/das-payments-V2/Infrastructure/SFA.DAS.Payments.PeriodEnd.Function/azure/template.parameters.json
+            IsMultiRepoCheckout: true
+            TemplateSecrets:
+              azureWebJobsStorage: $(StorageConnectionString)
+              paymentsConnectionString: $(PaymentsConnectionString)
+              dasNServiceBusLicenseKey: $(DasNServiceBusLicenseKey)
+              appInsightsInstrumentationKey: $(AppInsightsInstrumentationKey)
+              applicationInsightsInstrumentationKey: $(ApplicationInsightsInstrumentationKey)
+
+        - task: AzureFunctionApp@2
+          displayName: 'Azure Function App Deploy - $(FunctionAppName)'
+          inputs:
+            azureSubscription: ${{ parameters.ServiceConnection }}
+            appType: functionAppLinux
+            isFlexConsumption: true
+            appName: $(FunctionAppName)
+            package: $(Pipeline.Workspace)/${{ parameters.ArtifactName }}/${{ parameters.ArtifactName }}.zip
