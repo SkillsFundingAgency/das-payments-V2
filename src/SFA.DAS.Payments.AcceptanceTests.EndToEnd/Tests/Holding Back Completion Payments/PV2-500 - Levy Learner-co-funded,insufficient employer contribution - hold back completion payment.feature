@@ -1,4 +1,6 @@
-﻿Feature: Holding back completion payments - PV2-500
+﻿@ignore
+#HoldingBackCompletionPayments removed from RequiredPayments
+Feature: Holding back completion payments - PV2-500
 	As a provider,
 	I want a levy learner with co-funding, where the employer has paid less than their 10% co-investment for the on-program element, and has not yet paid the employer completion payment element
 	So that I am not paid the completion payment by SFA

@@ -1,4 +1,6 @@
-﻿Feature: Non-Levy Learner-in co-funding and planned end date is last day of month, completion payment made as enough employer contribution PV2-514
+﻿@ignore
+#HoldingBackCompletionPayments removed from RequiredPayments
+Feature: Non-Levy Learner-in co-funding and planned end date is last day of month, completion payment made as enough employer contribution PV2-514
 		As a provider,
 		I want a Non levy learner, where the planned end date is the last day of month and the employer has paid their 10% co-investment for the on-program element for the first 12 months, but has not yet paid the employer completion payment element and the 13th month on program payment
 		So that I am accurately paid the completion payment by SFA PV2-514
