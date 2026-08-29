@@ -149,7 +149,9 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.Processors
 
                             if (requiredPaymentEvent.LearningAim != null) mapper.Map(priceEpisode, requiredPaymentEvent.LearningAim);
                         }
-
+                        // TODO: move into AutoMapper config above
+                        requiredPaymentEvent.LearningStartDate = requiredPayment.LearningStartDate;
+                        // TODO: move into AutoMapper config above
                         result.Add(requiredPaymentEvent);
                     }
                 }
