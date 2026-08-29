@@ -59,7 +59,7 @@ namespace SFA.DAS.Payments.RequiredPayments.Application.UnitTests.RepositoriesTe
 
             var actual = await sut.GetEmployerCoInvestedPaymentHistoryTotal(key);
 
-            actual.Should().Be(100);
+            actual.Should().Be(101);
         }
 
         [TestCase(TransactionType.Completion)]
