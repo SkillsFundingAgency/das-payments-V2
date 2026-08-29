@@ -1552,6 +1552,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Two Non-Levy Learners Finish On Time PV2-337.feature</DependentUpon>
     </Compile>
+    <Compile Include="Tests\Non-Levy Learner - Refunds\Non-levy learner withdrawn in 42 days, clawbacks are generated for previous payments - PV2-3642.feature.cs">
+      <DependentUpon>Non-levy learner withdrawn in 42 days, clawbacks are generated for previous payments - PV2-3642.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Tests\Non-Levy Learner\Employer Change of CIrcumstances\Change employer at end of month PV2-381.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -1751,6 +1756,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Levy learner changes start date forwards in month - PV2-280.feature</DependentUpon>
+    </Compile>
+    <Compile Include="Tests\Refunds\Levy-learner withdrawn in 42 days, clawbacks are generated for previous payments - PV2-3642.feature.cs">
+      <DependentUpon>Levy-learner withdrawn in 42 days, clawbacks are generated for previous payments - PV2-3642.feature</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Tests\Refunds\PV2-252 - Levy learner insufficient levy available to cover full payments provider retrospectively notifies of a withdrawal.feature.cs">
       <AutoGen>True</AutoGen>
@@ -2751,6 +2761,10 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Two Non-Levy Learners Finish On Time PV2-337.feature.cs</LastGenOutput>
     </None>
+    <None Include="Tests\Non-Levy Learner - Refunds\Non-levy learner withdrawn in 42 days, clawbacks are generated for previous payments - PV2-3642.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Non-levy learner withdrawn in 42 days, clawbacks are generated for previous payments - PV2-3642.feature.cs</LastGenOutput>
+    </None>
     <None Include="Tests\Non-Levy Learner\Employer Change of CIrcumstances\Change employer at end of month PV2-381.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Change employer at end of month PV2-381.feature.cs</LastGenOutput>
@@ -2910,6 +2924,10 @@
     <None Include="Tests\Refunds\Levy learner changes start date forwards in month - PV2-280.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Levy learner changes start date forwards in month - PV2-280.feature.cs</LastGenOutput>
+    </None>
+    <None Include="Tests\Refunds\Levy-learner withdrawn in 42 days, clawbacks are generated for previous payments - PV2-3642.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>Levy-learner withdrawn in 42 days, clawbacks are generated for previous payments - PV2-3642.feature.cs</LastGenOutput>
     </None>
     <None Include="Tests\Refunds\PV2-252 - Levy learner insufficient levy available to cover full payments provider retrospectively notifies of a withdrawal.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>

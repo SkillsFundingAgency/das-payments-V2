@@ -51,7 +51,13 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core
             var regex = new Regex("[ ]{2,}", options);
             var cleanStr = regex.Replace(duration, " ");
 
+            
             var durationElements = cleanStr.Split(' ');
+
+            if (!durationElements.Contains("-") && Array.Exists(durationElements, x=>x.Contains("days")))
+            {
+                return startDate.ToDate().AddDays(int.Parse(durationElements[0])) - startDate.ToDate();
+            }
 
             if (Array.Exists(durationElements, x => x.Contains("month")))
             {

@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.Payments.Model.Core.Entities;
+using System;
 using TechTalk.SpecFlow.Assist.Attributes;
 
 namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
@@ -9,8 +10,8 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
         public string LearnerId { get; set; }
         public long Uln { get; set; }
         public string StartDate { get; set; }
-        public string TotalTrainingPriceEffectiveDate {  get; set; }
-        public string  TotalAssessmentPriceEffectiveDate { get; set; }
+        public string TotalTrainingPriceEffectiveDate { get; set; }
+        public string TotalAssessmentPriceEffectiveDate { get; set; }
         public string PlannedDuration { get; set; }
         public decimal TotalTrainingPrice { get; set; }
         public decimal TotalAssessmentPrice { get; set; }
@@ -21,8 +22,23 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
         public decimal? AgreedPrice => TotalTrainingPrice + TotalAssessmentPrice;
         public decimal? InstallmentAmount => (AgreedPrice * 0.8M) / NumberOfInstallments;
         public decimal? CompletionAmount => AgreedPrice * 0.2M;
-        public int NumberOfInstallments => int.Parse(PlannedDuration.Replace("months", null).Trim());
-        public int ActualInstallments => string.IsNullOrEmpty(ActualDuration) ? 0 : int.Parse(ActualDuration.Replace("months", null).Trim());
+        public int NumberOfInstallments
+        {
+            get
+            {
+                if (!PlannedDuration.Contains("days"))
+                {
+                    return int.Parse(PlannedDuration.Replace("months", null).Trim());
+                }
+
+                var days = int.Parse(PlannedDuration.Replace("days", null).Trim());
+
+                //if the planned duration is less than or equal to 42 days then 1 installment otherwise 1 installment per month
+                return days <= 42 ? 1 : Math.Max((int)Math.Ceiling(days / 30.0), 1);
+            }
+        }
+
+        public int ActualInstallments => int.Parse(ActualDuration.Replace("months", null).Trim());
         public decimal? BalancingPayment { get; set; } // TODO: populate properly
         public ContractType ContractType { get; set; }
         public int AimSequenceNumber { get; set; }
@@ -33,7 +49,7 @@ namespace SFA.DAS.Payments.AcceptanceTests.Core.Data
         public int PathwayCode { get; set; }
 
         [TableAliases("[E|e]mployer [C|c]ontribution")]
-        public int? Pmr { get; set; } 
+        public int? Pmr { get; set; }
         [TableAliases("Exemption Code")]
         public int CompletionHoldBackExemptionCode { get; set; }
 
