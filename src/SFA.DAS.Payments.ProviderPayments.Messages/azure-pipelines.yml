@@ -23,7 +23,7 @@ variables:
   BuildPlatformX64: 'x64'  
 
 pool:
-  name: DCT
+  name: DCT Build Pool
   demands:
   - IsBuildServer
   - IsBuildServerDAS
