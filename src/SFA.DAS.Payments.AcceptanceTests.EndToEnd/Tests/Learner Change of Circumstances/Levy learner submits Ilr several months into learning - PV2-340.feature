@@ -9,61 +9,61 @@ Given the employer levy account balance in collection period <Collection_Period>
 # New Commitment line
 And the following commitments exist
     | start date                | end date                     | agreed price |	 Standard Code | Programme Type |
-    | 01/Sep/Last Academic Year | 08/Sep/Current Academic Year | 15000        |	 50            | 25             |
+    | 01/Sep/2024-25 Academic Year | 08/Sep/2025-26 Academic Year | 15000        |	 50            | 25             |
 
 And the provider is providing training for the following learners
     | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |
-    | 01/Sep/Current Academic Year | 12 months        | 12000                | 01/Sep/Current Academic Year        | 3000                   | 01/Sep/Current Academic Year          |                 | continuing        | Act1          | 1                   | ZPROG001      | 50            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         |  
+    | 01/Sep/2025-26 Academic Year | 12 months        | 12000                | 01/Sep/2025-26 Academic Year        | 3000                   | 01/Sep/2025-26 Academic Year          |                 | continuing        | Act1          | 1                   | ZPROG001      | 50            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         |  
 	
 And price details as follows		
         | Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
-        | pe-1             | 12000                | 01/Sep/Current Academic Year        | 3000                   | 01/Sep/Current Academic Year          | Act1          | 1                   | 90%                         |
+        | pe-1             | 12000                | 01/Sep/2025-26 Academic Year        | 3000                   | 01/Sep/2025-26 Academic Year          | Act1          | 1                   | 90%                         |
 When the ILR file is submitted for the learners for collection period <Collection_Period>
 
 Then the following learner earnings should be generated
     | Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |
-    | Aug/Current Academic Year | 0            | 0          | 0         | pe-1                     |
-    | Sep/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-    | Oct/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-    | Nov/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-    | Dec/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-    | Jan/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-    | Feb/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-    | Mar/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-    | Apr/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-    | May/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-    | Jun/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-    | Jul/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
+    | Aug/2025-26 Academic Year | 0            | 0          | 0         | pe-1                     |
+    | Sep/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
+    | Oct/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
+    | Nov/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
+    | Dec/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
+    | Jan/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
+    | Feb/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
+    | Mar/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
+    | Apr/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
+    | May/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
+    | Jun/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
+    | Jul/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
 
 And at month end only the following payments will be calculated
     | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing |
-    | R05/Current Academic Year | Sep/Current Academic Year | 1000         | 0          | 0         |
-    | R05/Current Academic Year | Oct/Current Academic Year | 1000         | 0          | 0         |
-    | R05/Current Academic Year | Nov/Current Academic Year | 1000         | 0          | 0         |
-    | R05/Current Academic Year | Dec/Current Academic Year | 1000         | 0          | 0         |
-    | R06/Current Academic Year | Jan/Current Academic Year | 1000         | 0          | 0         |
+    | R05/2025-26 Academic Year | Sep/2025-26 Academic Year | 1000         | 0          | 0         |
+    | R05/2025-26 Academic Year | Oct/2025-26 Academic Year | 1000         | 0          | 0         |
+    | R05/2025-26 Academic Year | Nov/2025-26 Academic Year | 1000         | 0          | 0         |
+    | R05/2025-26 Academic Year | Dec/2025-26 Academic Year | 1000         | 0          | 0         |
+    | R06/2025-26 Academic Year | Jan/2025-26 Academic Year | 1000         | 0          | 0         |
 
 # Levy Payments
 And only the following provider payments will be recorded
     | Collection Period         | Delivery Period           | Levy Payments | Transaction Type |
-    | R05/Current Academic Year | Sep/Current Academic Year | 1000          | Learning         |
-    | R05/Current Academic Year | Oct/Current Academic Year | 1000          | Learning         |
-    | R05/Current Academic Year | Nov/Current Academic Year | 1000          | Learning         |
-    | R05/Current Academic Year | Dec/Current Academic Year | 1000          | Learning         |
-    | R06/Current Academic Year | Jan/Current Academic Year | 1000          | Learning         |
+    | R05/2025-26 Academic Year | Sep/2025-26 Academic Year | 1000          | Learning         |
+    | R05/2025-26 Academic Year | Oct/2025-26 Academic Year | 1000          | Learning         |
+    | R05/2025-26 Academic Year | Nov/2025-26 Academic Year | 1000          | Learning         |
+    | R05/2025-26 Academic Year | Dec/2025-26 Academic Year | 1000          | Learning         |
+    | R06/2025-26 Academic Year | Jan/2025-26 Academic Year | 1000          | Learning         |
 
 And only the following provider payments will be generated
     | Collection Period         | Delivery Period           | Levy Payments | Transaction Type |
-    | R05/Current Academic Year | Sep/Current Academic Year | 1000          | Learning         |
-    | R05/Current Academic Year | Oct/Current Academic Year | 1000          | Learning         |
-    | R05/Current Academic Year | Nov/Current Academic Year | 1000          | Learning         |
-    | R05/Current Academic Year | Dec/Current Academic Year | 1000          | Learning         |
-    | R06/Current Academic Year | Jan/Current Academic Year | 1000          | Learning         |
+    | R05/2025-26 Academic Year | Sep/2025-26 Academic Year | 1000          | Learning         |
+    | R05/2025-26 Academic Year | Oct/2025-26 Academic Year | 1000          | Learning         |
+    | R05/2025-26 Academic Year | Nov/2025-26 Academic Year | 1000          | Learning         |
+    | R05/2025-26 Academic Year | Dec/2025-26 Academic Year | 1000          | Learning         |
+    | R06/2025-26 Academic Year | Jan/2025-26 Academic Year | 1000          | Learning         |
 # Levy Balance
 Examples: 
         | Collection_Period         | Levy Balance |
-        | R05/Current Academic Year | 9000         |
-        | R06/Current Academic Year | 3500         |
+        | R05/2025-26 Academic Year | 9000         |
+        | R06/2025-26 Academic Year | 3500         |
 
 # When a provider submits an ILR several months after learning has started (but before the academic year boundary), the earnings calculation is updated retrospectively and the provider gets paid for the preceding months.
 #

@@ -12,69 +12,69 @@ Scenario Outline: Transfers - Single Levy learner paid via transfer sender insta
 
 	And the following apprenticeships exist 
 		| Identifier      | Employer   | Sending Employer | Start Date                   | End Date                     | Agreed Price | Standard Code | Programme Type | Status    | Effective From               | Effective To                 |
-		| Apprentiiship a | employer 1 | employer 2       | 01/May/Current Academic Year | 30/Jun/Current Academic Year | 15000        | 50            | 25             | withdrawn | 01/May/Current Academic Year | 30/Jun/Current Academic Year |
-		| Apprentiiship a | employer 1 | employer 2       | 01/Jul/Current Academic Year | 01/May/Next Academic Year    | 9375         | 50            | 25             | active    | 01/Jul/Current Academic Year |                              |
+		| Apprentiiship a | employer 1 | employer 2       | 01/May/2025-26 Academic Year | 30/Jun/2025-26 Academic Year | 15000        | 50            | 25             | withdrawn | 01/May/2025-26 Academic Year | 30/Jun/2025-26 Academic Year |
+		| Apprentiiship a | employer 1 | employer 2       | 01/Jul/2025-26 Academic Year | 01/May/2026-27 Academic Year    | 9375         | 50            | 25             | active    | 01/Jul/2025-26 Academic Year |                              |
 	And price details as follows
 		| Price Episode Id | Total Training Price | Total Training Price Effective Date | Contract Type | SFA Contribution Percentage |
-		| pe-1             | 15000                | 01/May/Current Academic Year        | Act1          | 90%                         |
-		| pe-2             | 9375                 | 01/Jul/Current Academic Year        | Act1          | 90%                         |
+		| pe-1             | 15000                | 01/May/2025-26 Academic Year        | Act1          | 90%                         |
+		| pe-2             | 9375                 | 01/Jul/2025-26 Academic Year        | Act1          | 90%                         |
     And the provider previously submitted the following learner details
 		| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |
-		| 06/May/Current Academic Year | 12 months        | 12000                | 06/May/Current Academic Year        | 3000                   | 06/May/Current Academic Year          |                 | continuing        | Act1          | 1                   | ZPROG001      | 50            | 25             | 19-24 Apprenticeship (From May 2017) Levy Contract | 90%                         |
+		| 06/May/2025-26 Academic Year | 12 months        | 12000                | 06/May/2025-26 Academic Year        | 3000                   | 06/May/2025-26 Academic Year          |                 | continuing        | Act1          | 1                   | ZPROG001      | 50            | 25             | 19-24 Apprenticeship (From May 2017) Levy Contract | 90%                         |
 
 	And the following earnings had been generated for the learner
 		| Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |
-		| Aug/Current Academic Year | 0            | 0          | 0         | pe-1                     |
-		| Sep/Current Academic Year | 0            | 0          | 0         | pe-1                     |
-		| Oct/Current Academic Year | 0            | 0          | 0         | pe-1                     |
-		| Nov/Current Academic Year | 0            | 0          | 0         | pe-1                     |
-		| Dec/Current Academic Year | 0            | 0          | 0         | pe-1                     |
-		| Jan/Current Academic Year | 0            | 0          | 0         | pe-1                     |
-		| Feb/Current Academic Year | 0            | 0          | 0         | pe-1                     |
-		| Mar/Current Academic Year | 0            | 0          | 0         | pe-1                     |
-		| Apr/Current Academic Year | 0            | 0          | 0         | pe-1                     |
-		| May/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-		| Jun/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-		| Jul/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
+		| Aug/2025-26 Academic Year | 0            | 0          | 0         | pe-1                     |
+		| Sep/2025-26 Academic Year | 0            | 0          | 0         | pe-1                     |
+		| Oct/2025-26 Academic Year | 0            | 0          | 0         | pe-1                     |
+		| Nov/2025-26 Academic Year | 0            | 0          | 0         | pe-1                     |
+		| Dec/2025-26 Academic Year | 0            | 0          | 0         | pe-1                     |
+		| Jan/2025-26 Academic Year | 0            | 0          | 0         | pe-1                     |
+		| Feb/2025-26 Academic Year | 0            | 0          | 0         | pe-1                     |
+		| Mar/2025-26 Academic Year | 0            | 0          | 0         | pe-1                     |
+		| Apr/2025-26 Academic Year | 0            | 0          | 0         | pe-1                     |
+		| May/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
+		| Jun/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
+		| Jul/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
 
 	And the following provider payments had been generated
 		| Collection Period         | Delivery Period           | Levy Payments | Transfer Payments | Transaction Type | Employer   | Sending Employer |
-		| R10/Current Academic Year | May/Current Academic Year | 0             | 1000              | Learning         | employer 1 | employer 2       |
-		| R11/Current Academic Year | Jun/Current Academic Year | 0             | 1000              | Learning         | employer 1 | employer 2       |
+		| R10/2025-26 Academic Year | May/2025-26 Academic Year | 0             | 1000              | Learning         | employer 1 | employer 2       |
+		| R11/2025-26 Academic Year | Jun/2025-26 Academic Year | 0             | 1000              | Learning         | employer 1 | employer 2       |
        
 	But the Provider now changes the Learner details as follows
 		| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |
-		| 06/May/Current Academic Year | 12 months        | 12000                | 06/May/Current Academic Year        | 3000                   | 06/May/Current Academic Year          | 7500                    | 01/Jul/Current Academic Year           | 1875                      | 01/Jul/Current Academic Year             |                 | continuing        | Act1          | 1                   | ZPROG001      | 50            | 25             | 19-24 Apprenticeship (From May 2017) Levy Contract | 90%                         |
+		| 06/May/2025-26 Academic Year | 12 months        | 12000                | 06/May/2025-26 Academic Year        | 3000                   | 06/May/2025-26 Academic Year          | 7500                    | 01/Jul/2025-26 Academic Year           | 1875                      | 01/Jul/2025-26 Academic Year             |                 | continuing        | Act1          | 1                   | ZPROG001      | 50            | 25             | 19-24 Apprenticeship (From May 2017) Levy Contract | 90%                         |
 
 	When the amended ILR file is re-submitted for the learners in collection period <Collection_Period>
 
 	Then the following learner earnings should be generated
 		| Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |
-		| Aug/Current Academic Year | 0            | 0          | 0         | pe-1                     |
-		| Sep/Current Academic Year | 0            | 0          | 0         | pe-1                     |
-		| Oct/Current Academic Year | 0            | 0          | 0         | pe-1                     |
-		| Nov/Current Academic Year | 0            | 0          | 0         | pe-1                     |
-		| Dec/Current Academic Year | 0            | 0          | 0         | pe-1                     |
-		| Jan/Current Academic Year | 0            | 0          | 0         | pe-1                     |
-		| Feb/Current Academic Year | 0            | 0          | 0         | pe-1                     |
-		| Mar/Current Academic Year | 0            | 0          | 0         | pe-1                     |
-		| Apr/Current Academic Year | 0            | 0          | 0         | pe-1                     |
-		| May/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-		| Jun/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-		| Jul/Current Academic Year | 750          | 0          | 0         | pe-2                     |
+		| Aug/2025-26 Academic Year | 0            | 0          | 0         | pe-1                     |
+		| Sep/2025-26 Academic Year | 0            | 0          | 0         | pe-1                     |
+		| Oct/2025-26 Academic Year | 0            | 0          | 0         | pe-1                     |
+		| Nov/2025-26 Academic Year | 0            | 0          | 0         | pe-1                     |
+		| Dec/2025-26 Academic Year | 0            | 0          | 0         | pe-1                     |
+		| Jan/2025-26 Academic Year | 0            | 0          | 0         | pe-1                     |
+		| Feb/2025-26 Academic Year | 0            | 0          | 0         | pe-1                     |
+		| Mar/2025-26 Academic Year | 0            | 0          | 0         | pe-1                     |
+		| Apr/2025-26 Academic Year | 0            | 0          | 0         | pe-1                     |
+		| May/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
+		| Jun/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
+		| Jul/2025-26 Academic Year | 750          | 0          | 0         | pe-2                     |
     And at month end only the following payments will be calculated
         | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing |
-        | R12/Current Academic Year | Jul/Current Academic Year | 750          | 0          | 0         |
+        | R12/2025-26 Academic Year | Jul/2025-26 Academic Year | 750          | 0          | 0         |
 	And only the following provider payments will be recorded
         | Collection Period         | Delivery Period           | Levy Payments | Transfer Payments | Transaction Type | Employer   | Sending Employer |
-        | R12/Current Academic Year | Jul/Current Academic Year | 0             | 750               | Learning         | employer 1 | employer 2       |
+        | R12/2025-26 Academic Year | Jul/2025-26 Academic Year | 0             | 750               | Learning         | employer 1 | employer 2       |
 	And only the following provider payments will be generated
         | Collection Period         | Delivery Period           | Levy Payments | Transfer Payments | Transaction Type | Employer   | Sending Employer |
-        | R12/Current Academic Year | Jul/Current Academic Year | 0             | 750               | Learning         | employer 1 | employer 2       |
+        | R12/2025-26 Academic Year | Jul/2025-26 Academic Year | 0             | 750               | Learning         | employer 1 | employer 2       |
 
 Examples: 
         | Collection_Period         | Levy Balance for employer 1 | Levy Balance for employer 2 | Employer 2 Remaining Transfer Allowance |
-        | R12/Current Academic Year | 0                           | 60000                       | 750                                     |
+        | R12/2025-26 Academic Year | 0                           | 60000                       | 750                                     |
 
 #Feature: Transfer
 #

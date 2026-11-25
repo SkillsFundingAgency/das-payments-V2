@@ -68,56 +68,56 @@ Scenario Outline: Levy learner with levy balance starts after 1st day of month c
 
 	And the following commitments exist
         | start date                   | end date                  | agreed price | status | Framework Code | Pathway Code | Programme Type |
-        | 03/Aug/Current Academic Year | 08/Aug/Next Academic Year | 7500         | active | 593            | 1            | 20             |
+        | 03/Aug/2025-26 Academic Year | 08/Aug/2026-27 Academic Year | 7500         | active | 593            | 1            | 20             |
 
 	And  the provider is providing training for the following learners
 		| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                                   | SFA Contribution Percentage |
-		| 03/Aug/Current Academic Year | 12 months        | 7500                 | 03/Aug/Current Academic Year        |                        |                                       |                 | continuing        | Act1          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%                         |
+		| 03/Aug/2025-26 Academic Year | 12 months        | 7500                 | 03/Aug/2025-26 Academic Year        |                        |                                       |                 | continuing        | Act1          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship (From May 2017) Non-Levy Contract (non-procured) | 90%                         |
 
 	And price details as follows		
         | Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
-        | pe-1             | 7500                 | 03/Aug/Current Academic Year        |                        | 03/Aug/Current Academic Year          | Act1          | 1                   | 90%                         |
+        | pe-1             | 7500                 | 03/Aug/2025-26 Academic Year        |                        | 03/Aug/2025-26 Academic Year          | Act1          | 1                   | 90%                         |
     When the ILR file is submitted for the learners for collection period <Collection_Period>
 
 	# New column - CareLeaverApprenticePayment
 	Then the following learner earnings should be generated
 		| Delivery Period           | On-Programme | Completion | Balancing | CareLeaverApprenticePayment | Price Episode Identifier |
-		| Aug/Current Academic Year | 500          | 0          | 0         | 0                           | pe-1                     |
-		| Sep/Current Academic Year | 500          | 0          | 0         | 0                           | pe-1                     |
-		| Oct/Current Academic Year | 500          | 0          | 0         | 1000                        | pe-1                     |
-		| Nov/Current Academic Year | 500          | 0          | 0         | 0                           | pe-1                     |
-		| Dec/Current Academic Year | 500          | 0          | 0         | 0                           | pe-1                     |
-		| Jan/Current Academic Year | 500          | 0          | 0         | 0                           | pe-1                     |
-		| Feb/Current Academic Year | 500          | 0          | 0         | 0                           | pe-1                     |
-		| Mar/Current Academic Year | 500          | 0          | 0         | 0                           | pe-1                     |
-		| Apr/Current Academic Year | 500          | 0          | 0         | 0                           | pe-1                     |
-		| May/Current Academic Year | 500          | 0          | 0         | 0                           | pe-1                     |
-		| Jun/Current Academic Year | 500          | 0          | 0         | 0                           | pe-1                     |
-		| Jul/Current Academic Year | 500          | 0          | 0         | 0                           | pe-1                     |
+		| Aug/2025-26 Academic Year | 500          | 0          | 0         | 0                           | pe-1                     |
+		| Sep/2025-26 Academic Year | 500          | 0          | 0         | 0                           | pe-1                     |
+		| Oct/2025-26 Academic Year | 500          | 0          | 0         | 1000                        | pe-1                     |
+		| Nov/2025-26 Academic Year | 500          | 0          | 0         | 0                           | pe-1                     |
+		| Dec/2025-26 Academic Year | 500          | 0          | 0         | 0                           | pe-1                     |
+		| Jan/2025-26 Academic Year | 500          | 0          | 0         | 0                           | pe-1                     |
+		| Feb/2025-26 Academic Year | 500          | 0          | 0         | 0                           | pe-1                     |
+		| Mar/2025-26 Academic Year | 500          | 0          | 0         | 0                           | pe-1                     |
+		| Apr/2025-26 Academic Year | 500          | 0          | 0         | 0                           | pe-1                     |
+		| May/2025-26 Academic Year | 500          | 0          | 0         | 0                           | pe-1                     |
+		| Jun/2025-26 Academic Year | 500          | 0          | 0         | 0                           | pe-1                     |
+		| Jul/2025-26 Academic Year | 500          | 0          | 0         | 0                           | pe-1                     |
 
 	And at month end only the following payments will be calculated
 		| Collection Period         | Delivery Period           | On-Programme | Completion | Balancing | CareLeaverApprenticePayment |
-		| R01/Current Academic Year | Aug/Current Academic Year | 500          | 0          | 0         | 0                           |
-		| R02/Current Academic Year | Sep/Current Academic Year | 500          | 0          | 0         | 0                           |
-		| R03/Current Academic Year | Oct/Current Academic Year | 500          | 0          | 0         | 1000                        |
+		| R01/2025-26 Academic Year | Aug/2025-26 Academic Year | 500          | 0          | 0         | 0                           |
+		| R02/2025-26 Academic Year | Sep/2025-26 Academic Year | 500          | 0          | 0         | 0                           |
+		| R03/2025-26 Academic Year | Oct/2025-26 Academic Year | 500          | 0          | 0         | 1000                        |
 
 	# New transaction type - CareLeaverApprenticePayment
 	And only the following provider payments will be recorded
 		| Collection Period         | Delivery Period           | Levy Payments | SFA Fully-Funded Payments | Transaction Type            |
-		| R01/Current Academic Year | Aug/Current Academic Year | 500           | 0                         | Learning                    |
-		| R02/Current Academic Year | Sep/Current Academic Year | 500           | 0                         | Learning                    |
-		| R03/Current Academic Year | Oct/Current Academic Year | 500           | 0                         | Learning                    |
-		| R03/Current Academic Year | Oct/Current Academic Year | 0             | 1000                      | CareLeaverApprenticePayment |
+		| R01/2025-26 Academic Year | Aug/2025-26 Academic Year | 500           | 0                         | Learning                    |
+		| R02/2025-26 Academic Year | Sep/2025-26 Academic Year | 500           | 0                         | Learning                    |
+		| R03/2025-26 Academic Year | Oct/2025-26 Academic Year | 500           | 0                         | Learning                    |
+		| R03/2025-26 Academic Year | Oct/2025-26 Academic Year | 0             | 1000                      | CareLeaverApprenticePayment |
 
 	And only the following provider payments will be generated
 		| Collection Period         | Delivery Period           | Levy Payments | SFA Fully-Funded Payments | Transaction Type            |
-		| R01/Current Academic Year | Aug/Current Academic Year | 500           | 0                         | Learning                    |
-		| R02/Current Academic Year | Sep/Current Academic Year | 500           | 0                         | Learning                    |
-		| R03/Current Academic Year | Oct/Current Academic Year | 500           | 0                         | Learning                    |
-		| R03/Current Academic Year | Oct/Current Academic Year | 0             | 1000                      | CareLeaverApprenticePayment |
+		| R01/2025-26 Academic Year | Aug/2025-26 Academic Year | 500           | 0                         | Learning                    |
+		| R02/2025-26 Academic Year | Sep/2025-26 Academic Year | 500           | 0                         | Learning                    |
+		| R03/2025-26 Academic Year | Oct/2025-26 Academic Year | 500           | 0                         | Learning                    |
+		| R03/2025-26 Academic Year | Oct/2025-26 Academic Year | 0             | 1000                      | CareLeaverApprenticePayment |
 
 Examples:
 		| Collection_Period         | Levy Balance |
-		| R01/Current Academic Year | 8000         |
-		| R02/Current Academic Year | 7500         |
-		| R03/Current Academic Year | 7000         |
+		| R01/2025-26 Academic Year | 8000         |
+		| R02/2025-26 Academic Year | 7500         |
+		| R03/2025-26 Academic Year | 7000         |

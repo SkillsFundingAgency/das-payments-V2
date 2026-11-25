@@ -1,11 +1,40 @@
 ﻿using System;
 using System.Configuration;
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace SFA.DAS.Payments.Tests.Core
 {
     public static class SpecDateExtensions
     {
+        private static readonly Regex FixedAcademicYearPattern = new Regex(@"^(\d{4})-(\d{2}) academic year$", RegexOptions.IgnoreCase);
+
+        private static bool TryGetFixedAcademicYearStart(string yearText, out int startYear)
+        {
+            startYear = 0;
+            var match = FixedAcademicYearPattern.Match(yearText.Trim());
+            if (!match.Success)
+            {
+                return false;
+            }
+
+            startYear = int.Parse(match.Groups[1].Value);
+            if (int.Parse(match.Groups[2].Value) != (startYear + 1) % 100)
+            {
+                throw new Exception($"Invalid academic year '{yearText}'. The second year must follow the first, e.g. 2025-26 Academic Year");
+            }
+
+            return true;
+        }
+
+        private static DateTime ParseFixedAcademicYear(string periodText, int startYear)
+        {
+            var period = periodText.StartsWith("R", StringComparison.OrdinalIgnoreCase)
+                ? int.Parse(periodText.Substring(1))
+                : periodText.ToMonthPeriod();
+            return new DateTime(startYear, 8, 1).AddMonths(period - 1);
+        }
+
         public static DateTime ToDate(this string dateText)
         {
             var parts = dateText.Split('/');
@@ -30,6 +59,12 @@ namespace SFA.DAS.Payments.Tests.Core
         }
         private static DateTime ParseTwoPartDescription(string dateText)
         {
+            var fixedYearParts = dateText.Split('/');
+            if (fixedYearParts.Length == 2 && TryGetFixedAcademicYearStart(fixedYearParts[1], out var fixedStartYear))
+            {
+                return ParseFixedAcademicYear(fixedYearParts[0], fixedStartYear);
+            }
+
             string GetAppSetting(string keyName)
             {
                 return ConfigurationManager.AppSettings[keyName] ?? throw new InvalidOperationException($"{keyName} not found in app settings.");
@@ -143,6 +178,11 @@ namespace SFA.DAS.Payments.Tests.Core
 
         public static string ToAcademicYear(this string yearName)
         {
+            if (TryGetFixedAcademicYearStart(yearName, out var fixedStartYear))
+            {
+                return string.Concat(fixedStartYear - 2000, fixedStartYear - 1999);
+            }
+
             int year;
             switch (yearName)
             {

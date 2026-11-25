@@ -12,64 +12,64 @@ Scenario Outline: Transfers - Single Levy learner partially paid via transfer - 
 
 	And the following apprenticeships exist 
 		| Employer   | Sending Employer | Start Date                   | End Date                  | Agreed Price | Standard Code | Programme Type | Status | Effective From               |
-		| employer 1 | employer 2       | 01/Aug/Current Academic Year | 06/Aug/Next Academic Year | 15000        | 50            | 25             | active | 01/Aug/Current Academic Year |
+		| employer 1 | employer 2       | 01/Aug/2025-26 Academic Year | 06/Aug/2026-27 Academic Year | 15000        | 50            | 25             | active | 01/Aug/2025-26 Academic Year |
 
     And the provider is providing training for the following learners
 		| Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |
-		| 06/Aug/Current Academic Year | 12 months        | 15000                | 06/Aug/Current Academic Year        | 0                      | 06/Aug/Current Academic Year          |                 | continuing        | Act1          | 1                   | ZPROG001      | 50            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         |
+		| 06/Aug/2025-26 Academic Year | 12 months        | 15000                | 06/Aug/2025-26 Academic Year        | 0                      | 06/Aug/2025-26 Academic Year          |                 | continuing        | Act1          | 1                   | ZPROG001      | 50            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         |
 
 	And price details as follows
 		| Price Episode Id | Total Training Price | Total Training Price Effective Date | Contract Type | SFA Contribution Percentage |
-		| pe-1             | 15000                | 01/Aug/Current Academic Year        | Act1          | 90%                         |
+		| pe-1             | 15000                | 01/Aug/2025-26 Academic Year        | Act1          | 90%                         |
 
 	When the ILR file is submitted for the learners for collection period <Collection_Period>
 	Then the following learner earnings should be generated
 		| Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |
-		| Aug/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-		| Sep/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-		| Oct/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-		| Nov/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-		| Dec/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-		| Jan/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-		| Feb/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-		| Mar/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-		| Apr/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-		| May/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-		| Jun/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-		| Jul/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
+		| Aug/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
+		| Sep/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
+		| Oct/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
+		| Nov/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
+		| Dec/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
+		| Jan/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
+		| Feb/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
+		| Mar/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
+		| Apr/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
+		| May/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
+		| Jun/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
+		| Jul/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
     And at month end only the following payments will be calculated
         | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing |
-		| R01/Current Academic Year | Aug/Current Academic Year | 1000         | 0          | 0         |
-		| R02/Current Academic Year | Sep/Current Academic Year | 1000         | 0          | 0         |
-		| R03/Current Academic Year | Oct/Current Academic Year | 1000         | 0          | 0         |
-		| R04/Current Academic Year | Nov/Current Academic Year | 1000         | 0          | 0         |
+		| R01/2025-26 Academic Year | Aug/2025-26 Academic Year | 1000         | 0          | 0         |
+		| R02/2025-26 Academic Year | Sep/2025-26 Academic Year | 1000         | 0          | 0         |
+		| R03/2025-26 Academic Year | Oct/2025-26 Academic Year | 1000         | 0          | 0         |
+		| R04/2025-26 Academic Year | Nov/2025-26 Academic Year | 1000         | 0          | 0         |
 	And only the following provider payments will be recorded
         | Collection Period         | Delivery Period           | Levy Payments | Transfer Payments | SFA Co-Funded Payments | Employer Co-Funded Payments | Transaction Type | Employer   | Sending Employer |
-        | R01/Current Academic Year | Aug/Current Academic Year | 0             | 400               | 0                      | 0                           | Learning         | employer 1 | employer 2       |
-        | R01/Current Academic Year | Aug/Current Academic Year | 0             | 0                 | 540                    | 60                          | Learning         | employer 1 |                  |
-        | R02/Current Academic Year | Sep/Current Academic Year | 0             | 400               | 0                      | 0                           | Learning         | employer 1 | employer 2       |
-        | R02/Current Academic Year | Sep/Current Academic Year | 0             | 0                 | 540                    | 60                          | Learning         | employer 1 |                  |
-        | R03/Current Academic Year | Oct/Current Academic Year | 0             | 400               | 0                      | 0                           | Learning         | employer 1 | employer 2       |
-        | R03/Current Academic Year | Oct/Current Academic Year | 0             | 0                 | 540                    | 60                          | Learning         | employer 1 |                  |
-        | R04/Current Academic Year | Nov/Current Academic Year | 0             | 400               | 0                      | 0                           | Learning         | employer 1 | employer 2       |
-        | R04/Current Academic Year | Nov/Current Academic Year | 0             | 0                 | 540                    | 60                          | Learning         | employer 1 |                  |
+        | R01/2025-26 Academic Year | Aug/2025-26 Academic Year | 0             | 400               | 0                      | 0                           | Learning         | employer 1 | employer 2       |
+        | R01/2025-26 Academic Year | Aug/2025-26 Academic Year | 0             | 0                 | 540                    | 60                          | Learning         | employer 1 |                  |
+        | R02/2025-26 Academic Year | Sep/2025-26 Academic Year | 0             | 400               | 0                      | 0                           | Learning         | employer 1 | employer 2       |
+        | R02/2025-26 Academic Year | Sep/2025-26 Academic Year | 0             | 0                 | 540                    | 60                          | Learning         | employer 1 |                  |
+        | R03/2025-26 Academic Year | Oct/2025-26 Academic Year | 0             | 400               | 0                      | 0                           | Learning         | employer 1 | employer 2       |
+        | R03/2025-26 Academic Year | Oct/2025-26 Academic Year | 0             | 0                 | 540                    | 60                          | Learning         | employer 1 |                  |
+        | R04/2025-26 Academic Year | Nov/2025-26 Academic Year | 0             | 400               | 0                      | 0                           | Learning         | employer 1 | employer 2       |
+        | R04/2025-26 Academic Year | Nov/2025-26 Academic Year | 0             | 0                 | 540                    | 60                          | Learning         | employer 1 |                  |
 	And only the following provider payments will be generated
         | Collection Period         | Delivery Period           | Levy Payments | Transfer Payments | SFA Co-Funded Payments | Employer Co-Funded Payments | Transaction Type | Employer   | Sending Employer |
-        | R01/Current Academic Year | Aug/Current Academic Year | 0             | 400               | 0                      | 0                           | Learning         | employer 1 | employer 2       |
-        | R01/Current Academic Year | Aug/Current Academic Year | 0             | 0                 | 540                    | 60                          | Learning         | employer 1 |                  |
-        | R02/Current Academic Year | Sep/Current Academic Year | 0             | 400               | 0                      | 0                           | Learning         | employer 1 | employer 2       |
-        | R02/Current Academic Year | Sep/Current Academic Year | 0             | 0                 | 540                    | 60                          | Learning         | employer 1 |                  |
-        | R03/Current Academic Year | Oct/Current Academic Year | 0             | 400               | 0                      | 0                           | Learning         | employer 1 | employer 2       |
-        | R03/Current Academic Year | Oct/Current Academic Year | 0             | 0                 | 540                    | 60                          | Learning         | employer 1 |                  |
-        | R04/Current Academic Year | Nov/Current Academic Year | 0             | 400               | 0                      | 0                           | Learning         | employer 1 | employer 2       |
-        | R04/Current Academic Year | Nov/Current Academic Year | 0             | 0                 | 540                    | 60                          | Learning         | employer 1 |                  |
+        | R01/2025-26 Academic Year | Aug/2025-26 Academic Year | 0             | 400               | 0                      | 0                           | Learning         | employer 1 | employer 2       |
+        | R01/2025-26 Academic Year | Aug/2025-26 Academic Year | 0             | 0                 | 540                    | 60                          | Learning         | employer 1 |                  |
+        | R02/2025-26 Academic Year | Sep/2025-26 Academic Year | 0             | 400               | 0                      | 0                           | Learning         | employer 1 | employer 2       |
+        | R02/2025-26 Academic Year | Sep/2025-26 Academic Year | 0             | 0                 | 540                    | 60                          | Learning         | employer 1 |                  |
+        | R03/2025-26 Academic Year | Oct/2025-26 Academic Year | 0             | 400               | 0                      | 0                           | Learning         | employer 1 | employer 2       |
+        | R03/2025-26 Academic Year | Oct/2025-26 Academic Year | 0             | 0                 | 540                    | 60                          | Learning         | employer 1 |                  |
+        | R04/2025-26 Academic Year | Nov/2025-26 Academic Year | 0             | 400               | 0                      | 0                           | Learning         | employer 1 | employer 2       |
+        | R04/2025-26 Academic Year | Nov/2025-26 Academic Year | 0             | 0                 | 540                    | 60                          | Learning         | employer 1 |                  |
 
 Examples: 
         | Collection_Period         | Levy Balance for employer 1 | Levy Balance for employer 2 | Employer 2 Remaining Transfer Allowance |
-        | R01/Current Academic Year | 0                           | 60000                       | 400                                     |
-        | R02/Current Academic Year | 0                           | 59600                       | 400                                     |
-        | R03/Current Academic Year | 0                           | 59200                       | 400                                     |
-        | R04/Current Academic Year | 0                           | 58800                       | 400                                     |
+        | R01/2025-26 Academic Year | 0                           | 60000                       | 400                                     |
+        | R02/2025-26 Academic Year | 0                           | 59600                       | 400                                     |
+        | R03/2025-26 Academic Year | 0                           | 59200                       | 400                                     |
+        | R04/2025-26 Academic Year | 0                           | 58800                       | 400                                     |
 
 #Feature: Transfers
 #
