@@ -9,163 +9,163 @@ Scenario Outline: Two providers, levy available for only one provider, spent in 
 
 	And the following commitments exist
 		 | Identifier       | Provider   | Learner ID | start date                   | end date                     | agreed price | Framework Code | Pathway Code | Programme Type |
-		 | Apprenticeship 1 | provider a | learner a  | 01/Aug/Current Academic Year | 28/Aug/Current Academic Year | 15000        | 593            | 1            | 20             |
-		 | Apprenticeship 2 | provider b | learner b  | 01/Aug/Current Academic Year | 28/Aug/Current Academic Year | 15000        | 593            | 1            | 20             |
+		 | Apprenticeship 1 | provider a | learner a  | 01/Aug/2025-26 Academic Year | 28/Aug/2025-26 Academic Year | 15000        | 593            | 1            | 20             |
+		 | Apprenticeship 2 | provider b | learner b  | 01/Aug/2025-26 Academic Year | 28/Aug/2025-26 Academic Year | 15000        | 593            | 1            | 20             |
 
 	And the provider priority order is
         | Provider   | Priority |Collection_Period         |
-        | provider a | 1        |R03/Current Academic Year |
-        | provider b | 2        |R03/Current Academic Year |
+        | provider a | 1        |R03/2025-26 Academic Year |
+        | provider b | 2        |R03/2025-26 Academic Year |
 
 	And the "provider a" is providing training for the following learners
 		| Learner ID | Start Date                   | Planned Duration | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                | SFA Contribution Percentage |
-		| learner a  | 01/Aug/Current Academic Year | 12 months        |                 | continuing        | Act1          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship (From May 2017) Levy Contract | 90%                         |
+		| learner a  | 01/Aug/2025-26 Academic Year | 12 months        |                 | continuing        | Act1          | 1                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship (From May 2017) Levy Contract | 90%                         |
 
 	And the "provider b" is providing training for the following learners
 		| Learner ID | Start Date                   | Planned Duration | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Framework Code | Pathway Code | Programme Type | Funding Line Type                                | SFA Contribution Percentage |
-		| learner b  | 01/Aug/Current Academic Year | 12 months        |                 | continuing        | Act1          | 2                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship (From May 2017) Levy Contract | 90%                         |
+		| learner b  | 01/Aug/2025-26 Academic Year | 12 months        |                 | continuing        | Act1          | 2                   | ZPROG001      | 593            | 1            | 20             | 19+ Apprenticeship (From May 2017) Levy Contract | 90%                         |
 
 	And price details as follows
 		| Learner ID | Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Residual Training Price | Residual Training Price Effective Date | Residual Assessment Price | Residual Assessment Price Effective Date | SFA Contribution Percentage | Contract Type | Aim Sequence Number |
-		| learner a  | pe-1             | 15000                | 01/Aug/Current Academic Year        | 0                      | 01/Aug/Current Academic Year          | 0                       |                                        | 0                         |                                          | 90%                         | Act1          | 1                   |
-		| learner b  | pe-2             | 15000                | 01/Aug/Current Academic Year        | 0                      | 01/Aug/Current Academic Year          | 0                       |                                        | 0                         |                                          | 90%                         | Act1          | 2                   |
+		| learner a  | pe-1             | 15000                | 01/Aug/2025-26 Academic Year        | 0                      | 01/Aug/2025-26 Academic Year          | 0                       |                                        | 0                         |                                          | 90%                         | Act1          | 1                   |
+		| learner b  | pe-2             | 15000                | 01/Aug/2025-26 Academic Year        | 0                      | 01/Aug/2025-26 Academic Year          | 0                       |                                        | 0                         |                                          | 90%                         | Act1          | 2                   |
 	
 	When the ILR file is submitted for the learners for the collection period <Collection_Period> by "provider a"
 	When the ILR file is submitted for the learners for the collection period <Collection_Period> by "provider b"
     Then the following learner earnings should be generated for "provider a"
         | Learner ID | Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |
-        | learner a  | Aug/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-        | learner a  | Sep/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-        | learner a  | Oct/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-        | learner a  | Nov/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-        | learner a  | Dec/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-        | learner a  | Jan/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-        | learner a  | Feb/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-        | learner a  | Mar/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-        | learner a  | Apr/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-        | learner a  | May/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-        | learner a  | Jun/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-        | learner a  | Jul/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
+        | learner a  | Aug/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
+        | learner a  | Sep/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
+        | learner a  | Oct/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
+        | learner a  | Nov/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
+        | learner a  | Dec/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
+        | learner a  | Jan/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
+        | learner a  | Feb/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
+        | learner a  | Mar/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
+        | learner a  | Apr/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
+        | learner a  | May/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
+        | learner a  | Jun/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
+        | learner a  | Jul/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
 
 	And the following learner earnings should be generated for "provider b"
         | Learner ID | Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |
-        | learner b  | Aug/Current Academic Year | 1000         | 0          | 0         | pe-2                     |
-        | learner b  | Sep/Current Academic Year | 1000         | 0          | 0         | pe-2                     |
-        | learner b  | Oct/Current Academic Year | 1000         | 0          | 0         | pe-2                     |
-        | learner b  | Nov/Current Academic Year | 1000         | 0          | 0         | pe-2                     |
-        | learner b  | Dec/Current Academic Year | 1000         | 0          | 0         | pe-2                     |
-        | learner b  | Jan/Current Academic Year | 1000         | 0          | 0         | pe-2                     |
-        | learner b  | Feb/Current Academic Year | 1000         | 0          | 0         | pe-2                     |
-        | learner b  | Mar/Current Academic Year | 1000         | 0          | 0         | pe-2                     |
-        | learner b  | Apr/Current Academic Year | 1000         | 0          | 0         | pe-2                     |
-        | learner b  | May/Current Academic Year | 1000         | 0          | 0         | pe-2                     |
-        | learner b  | Jun/Current Academic Year | 1000         | 0          | 0         | pe-2                     |
-        | learner b  | Jul/Current Academic Year | 1000         | 0          | 0         | pe-2                     |
+        | learner b  | Aug/2025-26 Academic Year | 1000         | 0          | 0         | pe-2                     |
+        | learner b  | Sep/2025-26 Academic Year | 1000         | 0          | 0         | pe-2                     |
+        | learner b  | Oct/2025-26 Academic Year | 1000         | 0          | 0         | pe-2                     |
+        | learner b  | Nov/2025-26 Academic Year | 1000         | 0          | 0         | pe-2                     |
+        | learner b  | Dec/2025-26 Academic Year | 1000         | 0          | 0         | pe-2                     |
+        | learner b  | Jan/2025-26 Academic Year | 1000         | 0          | 0         | pe-2                     |
+        | learner b  | Feb/2025-26 Academic Year | 1000         | 0          | 0         | pe-2                     |
+        | learner b  | Mar/2025-26 Academic Year | 1000         | 0          | 0         | pe-2                     |
+        | learner b  | Apr/2025-26 Academic Year | 1000         | 0          | 0         | pe-2                     |
+        | learner b  | May/2025-26 Academic Year | 1000         | 0          | 0         | pe-2                     |
+        | learner b  | Jun/2025-26 Academic Year | 1000         | 0          | 0         | pe-2                     |
+        | learner b  | Jul/2025-26 Academic Year | 1000         | 0          | 0         | pe-2                     |
 
 	And at month end only the following payments will be calculated for "provider a"
         | Learner ID | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing |
-        | learner a  | R03/Current Academic Year | Aug/Current Academic Year | 1000         | 0          | 0         |
-        | learner a  | R03/Current Academic Year | Sep/Current Academic Year | 1000         | 0          | 0         |
-		| learner a  | R03/Current Academic Year | Oct/Current Academic Year | 1000         | 0          | 0         |
-        | learner a  | R04/Current Academic Year | Nov/Current Academic Year | 1000         | 0          | 0         |
-        | learner a  | R05/Current Academic Year | Dec/Current Academic Year | 1000         | 0          | 0         |
-        | learner a  | R06/Current Academic Year | Jan/Current Academic Year | 1000         | 0          | 0         |
-        | learner a  | R07/Current Academic Year | Feb/Current Academic Year | 1000         | 0          | 0         |
-        | learner a  | R08/Current Academic Year | Mar/Current Academic Year | 1000         | 0          | 0         |
-        | learner a  | R09/Current Academic Year | Apr/Current Academic Year | 1000         | 0          | 0         |
-        | learner a  | R10/Current Academic Year | May/Current Academic Year | 1000         | 0          | 0         |
-        | learner a  | R11/Current Academic Year | Jun/Current Academic Year | 1000         | 0          | 0         |
-        | learner a  | R12/Current Academic Year | Jul/Current Academic Year | 1000         | 0          | 0         |
+        | learner a  | R03/2025-26 Academic Year | Aug/2025-26 Academic Year | 1000         | 0          | 0         |
+        | learner a  | R03/2025-26 Academic Year | Sep/2025-26 Academic Year | 1000         | 0          | 0         |
+		| learner a  | R03/2025-26 Academic Year | Oct/2025-26 Academic Year | 1000         | 0          | 0         |
+        | learner a  | R04/2025-26 Academic Year | Nov/2025-26 Academic Year | 1000         | 0          | 0         |
+        | learner a  | R05/2025-26 Academic Year | Dec/2025-26 Academic Year | 1000         | 0          | 0         |
+        | learner a  | R06/2025-26 Academic Year | Jan/2025-26 Academic Year | 1000         | 0          | 0         |
+        | learner a  | R07/2025-26 Academic Year | Feb/2025-26 Academic Year | 1000         | 0          | 0         |
+        | learner a  | R08/2025-26 Academic Year | Mar/2025-26 Academic Year | 1000         | 0          | 0         |
+        | learner a  | R09/2025-26 Academic Year | Apr/2025-26 Academic Year | 1000         | 0          | 0         |
+        | learner a  | R10/2025-26 Academic Year | May/2025-26 Academic Year | 1000         | 0          | 0         |
+        | learner a  | R11/2025-26 Academic Year | Jun/2025-26 Academic Year | 1000         | 0          | 0         |
+        | learner a  | R12/2025-26 Academic Year | Jul/2025-26 Academic Year | 1000         | 0          | 0         |
 
 	And at month end only the following payments will be calculated for "provider b"
         | Learner ID | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing |
-        | learner b  | R03/Current Academic Year | Aug/Current Academic Year | 1000         | 0          | 0         |
-        | learner b  | R03/Current Academic Year | Sep/Current Academic Year | 1000         | 0          | 0         |
-        | learner b  | R03/Current Academic Year | Oct/Current Academic Year | 1000         | 0          | 0         |
-        | learner b  | R04/Current Academic Year | Nov/Current Academic Year | 1000         | 0          | 0         |
-        | learner b  | R05/Current Academic Year | Dec/Current Academic Year | 1000         | 0          | 0         |
-        | learner b  | R06/Current Academic Year | Jan/Current Academic Year | 1000         | 0          | 0         |
-        | learner b  | R07/Current Academic Year | Feb/Current Academic Year | 1000         | 0          | 0         |
-        | learner b  | R08/Current Academic Year | Mar/Current Academic Year | 1000         | 0          | 0         |
-        | learner b  | R09/Current Academic Year | Apr/Current Academic Year | 1000         | 0          | 0         |
-        | learner b  | R10/Current Academic Year | May/Current Academic Year | 1000         | 0          | 0         |
-        | learner b  | R11/Current Academic Year | Jun/Current Academic Year | 1000         | 0          | 0         |
-        | learner b  | R12/Current Academic Year | Jul/Current Academic Year | 1000         | 0          | 0         |
+        | learner b  | R03/2025-26 Academic Year | Aug/2025-26 Academic Year | 1000         | 0          | 0         |
+        | learner b  | R03/2025-26 Academic Year | Sep/2025-26 Academic Year | 1000         | 0          | 0         |
+        | learner b  | R03/2025-26 Academic Year | Oct/2025-26 Academic Year | 1000         | 0          | 0         |
+        | learner b  | R04/2025-26 Academic Year | Nov/2025-26 Academic Year | 1000         | 0          | 0         |
+        | learner b  | R05/2025-26 Academic Year | Dec/2025-26 Academic Year | 1000         | 0          | 0         |
+        | learner b  | R06/2025-26 Academic Year | Jan/2025-26 Academic Year | 1000         | 0          | 0         |
+        | learner b  | R07/2025-26 Academic Year | Feb/2025-26 Academic Year | 1000         | 0          | 0         |
+        | learner b  | R08/2025-26 Academic Year | Mar/2025-26 Academic Year | 1000         | 0          | 0         |
+        | learner b  | R09/2025-26 Academic Year | Apr/2025-26 Academic Year | 1000         | 0          | 0         |
+        | learner b  | R10/2025-26 Academic Year | May/2025-26 Academic Year | 1000         | 0          | 0         |
+        | learner b  | R11/2025-26 Academic Year | Jun/2025-26 Academic Year | 1000         | 0          | 0         |
+        | learner b  | R12/2025-26 Academic Year | Jul/2025-26 Academic Year | 1000         | 0          | 0         |
 
 	And Month end is triggered
 
 	And only the following "provider a" payments will be recorded
         | Learner ID | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Levy Payments | Transaction Type |
-        | learner a  | R03/Current Academic Year | Aug/Current Academic Year | 0                      | 0                           | 1000          | Learning         |
-        | learner a  | R03/Current Academic Year | Sep/Current Academic Year | 0                      | 0                           | 1000          | Learning         |
-        | learner a  | R03/Current Academic Year | Oct/Current Academic Year | 0                      | 0                           | 1000          | Learning         |
-        | learner a  | R04/Current Academic Year | Nov/Current Academic Year | 0                      | 0                           | 1000          | Learning         |
-        | learner a  | R05/Current Academic Year | Dec/Current Academic Year | 0                      | 0                           | 1000          | Learning         |
-        | learner a  | R06/Current Academic Year | Jan/Current Academic Year | 0                      | 0                           | 1000          | Learning         |
-        | learner a  | R07/Current Academic Year | Feb/Current Academic Year | 0                      | 0                           | 1000          | Learning         |
-        | learner a  | R08/Current Academic Year | Mar/Current Academic Year | 0                      | 0                           | 1000          | Learning         |
-        | learner a  | R09/Current Academic Year | Apr/Current Academic Year | 0                      | 0                           | 1000          | Learning         |
-        | learner a  | R10/Current Academic Year | May/Current Academic Year | 0                      | 0                           | 1000          | Learning         |
-        | learner a  | R11/Current Academic Year | Jun/Current Academic Year | 0                      | 0                           | 1000          | Learning         |
-        | learner a  | R12/Current Academic Year | Jul/Current Academic Year | 0                      | 0                           | 1000          | Learning         |
+        | learner a  | R03/2025-26 Academic Year | Aug/2025-26 Academic Year | 0                      | 0                           | 1000          | Learning         |
+        | learner a  | R03/2025-26 Academic Year | Sep/2025-26 Academic Year | 0                      | 0                           | 1000          | Learning         |
+        | learner a  | R03/2025-26 Academic Year | Oct/2025-26 Academic Year | 0                      | 0                           | 1000          | Learning         |
+        | learner a  | R04/2025-26 Academic Year | Nov/2025-26 Academic Year | 0                      | 0                           | 1000          | Learning         |
+        | learner a  | R05/2025-26 Academic Year | Dec/2025-26 Academic Year | 0                      | 0                           | 1000          | Learning         |
+        | learner a  | R06/2025-26 Academic Year | Jan/2025-26 Academic Year | 0                      | 0                           | 1000          | Learning         |
+        | learner a  | R07/2025-26 Academic Year | Feb/2025-26 Academic Year | 0                      | 0                           | 1000          | Learning         |
+        | learner a  | R08/2025-26 Academic Year | Mar/2025-26 Academic Year | 0                      | 0                           | 1000          | Learning         |
+        | learner a  | R09/2025-26 Academic Year | Apr/2025-26 Academic Year | 0                      | 0                           | 1000          | Learning         |
+        | learner a  | R10/2025-26 Academic Year | May/2025-26 Academic Year | 0                      | 0                           | 1000          | Learning         |
+        | learner a  | R11/2025-26 Academic Year | Jun/2025-26 Academic Year | 0                      | 0                           | 1000          | Learning         |
+        | learner a  | R12/2025-26 Academic Year | Jul/2025-26 Academic Year | 0                      | 0                           | 1000          | Learning         |
 
 	And only the following "provider b" payments will be recorded
         | Learner ID | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Levy Payments | Transaction Type |
-        | learner b  | R03/Current Academic Year | Aug/Current Academic Year | 900                    | 100                         | 0             | Learning         |
-        | learner b  | R03/Current Academic Year | Sep/Current Academic Year | 900                    | 100                         | 0             | Learning         |
-        | learner b  | R03/Current Academic Year | Oct/Current Academic Year | 900                    | 100                         | 0             | Learning         |
-        | learner b  | R04/Current Academic Year | Nov/Current Academic Year | 900                    | 100                         | 0             | Learning         |
-        | learner b  | R05/Current Academic Year | Dec/Current Academic Year | 900                    | 100                         | 0             | Learning         |
-        | learner b  | R06/Current Academic Year | Jan/Current Academic Year | 900                    | 100                         | 0             | Learning         |
-        | learner b  | R07/Current Academic Year | Feb/Current Academic Year | 900                    | 100                         | 0             | Learning         |
-        | learner b  | R08/Current Academic Year | Mar/Current Academic Year | 900                    | 100                         | 0             | Learning         |
-        | learner b  | R09/Current Academic Year | Apr/Current Academic Year | 900                    | 100                         | 0             | Learning         |
-        | learner b  | R10/Current Academic Year | May/Current Academic Year | 900                    | 100                         | 0             | Learning         |
-        | learner b  | R11/Current Academic Year | Jun/Current Academic Year | 900                    | 100                         | 0             | Learning         |
-        | learner b  | R12/Current Academic Year | Jul/Current Academic Year | 900                    | 100                         | 0             | Learning         |
+        | learner b  | R03/2025-26 Academic Year | Aug/2025-26 Academic Year | 900                    | 100                         | 0             | Learning         |
+        | learner b  | R03/2025-26 Academic Year | Sep/2025-26 Academic Year | 900                    | 100                         | 0             | Learning         |
+        | learner b  | R03/2025-26 Academic Year | Oct/2025-26 Academic Year | 900                    | 100                         | 0             | Learning         |
+        | learner b  | R04/2025-26 Academic Year | Nov/2025-26 Academic Year | 900                    | 100                         | 0             | Learning         |
+        | learner b  | R05/2025-26 Academic Year | Dec/2025-26 Academic Year | 900                    | 100                         | 0             | Learning         |
+        | learner b  | R06/2025-26 Academic Year | Jan/2025-26 Academic Year | 900                    | 100                         | 0             | Learning         |
+        | learner b  | R07/2025-26 Academic Year | Feb/2025-26 Academic Year | 900                    | 100                         | 0             | Learning         |
+        | learner b  | R08/2025-26 Academic Year | Mar/2025-26 Academic Year | 900                    | 100                         | 0             | Learning         |
+        | learner b  | R09/2025-26 Academic Year | Apr/2025-26 Academic Year | 900                    | 100                         | 0             | Learning         |
+        | learner b  | R10/2025-26 Academic Year | May/2025-26 Academic Year | 900                    | 100                         | 0             | Learning         |
+        | learner b  | R11/2025-26 Academic Year | Jun/2025-26 Academic Year | 900                    | 100                         | 0             | Learning         |
+        | learner b  | R12/2025-26 Academic Year | Jul/2025-26 Academic Year | 900                    | 100                         | 0             | Learning         |
 
     And only the following "provider a" payments will be generated
         | Learner ID | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Levy Payments | Transaction Type |
-        | learner a  | R03/Current Academic Year | Aug/Current Academic Year | 0                      | 0                           | 1000          | Learning         |
-        | learner a  | R03/Current Academic Year | Sep/Current Academic Year | 0                      | 0                           | 1000          | Learning         |
-        | learner a  | R03/Current Academic Year | Oct/Current Academic Year | 0                      | 0                           | 1000          | Learning         |
-        | learner a  | R04/Current Academic Year | Nov/Current Academic Year | 0                      | 0                           | 1000          | Learning         |
-        | learner a  | R05/Current Academic Year | Dec/Current Academic Year | 0                      | 0                           | 1000          | Learning         |
-        | learner a  | R06/Current Academic Year | Jan/Current Academic Year | 0                      | 0                           | 1000          | Learning         |
-        | learner a  | R07/Current Academic Year | Feb/Current Academic Year | 0                      | 0                           | 1000          | Learning         |
-        | learner a  | R08/Current Academic Year | Mar/Current Academic Year | 0                      | 0                           | 1000          | Learning         |
-        | learner a  | R09/Current Academic Year | Apr/Current Academic Year | 0                      | 0                           | 1000          | Learning         |
-        | learner a  | R10/Current Academic Year | May/Current Academic Year | 0                      | 0                           | 1000          | Learning         |
-        | learner a  | R11/Current Academic Year | Jun/Current Academic Year | 0                      | 0                           | 1000          | Learning         |
-        | learner a  | R12/Current Academic Year | Jul/Current Academic Year | 0                      | 0                           | 1000          | Learning         |
+        | learner a  | R03/2025-26 Academic Year | Aug/2025-26 Academic Year | 0                      | 0                           | 1000          | Learning         |
+        | learner a  | R03/2025-26 Academic Year | Sep/2025-26 Academic Year | 0                      | 0                           | 1000          | Learning         |
+        | learner a  | R03/2025-26 Academic Year | Oct/2025-26 Academic Year | 0                      | 0                           | 1000          | Learning         |
+        | learner a  | R04/2025-26 Academic Year | Nov/2025-26 Academic Year | 0                      | 0                           | 1000          | Learning         |
+        | learner a  | R05/2025-26 Academic Year | Dec/2025-26 Academic Year | 0                      | 0                           | 1000          | Learning         |
+        | learner a  | R06/2025-26 Academic Year | Jan/2025-26 Academic Year | 0                      | 0                           | 1000          | Learning         |
+        | learner a  | R07/2025-26 Academic Year | Feb/2025-26 Academic Year | 0                      | 0                           | 1000          | Learning         |
+        | learner a  | R08/2025-26 Academic Year | Mar/2025-26 Academic Year | 0                      | 0                           | 1000          | Learning         |
+        | learner a  | R09/2025-26 Academic Year | Apr/2025-26 Academic Year | 0                      | 0                           | 1000          | Learning         |
+        | learner a  | R10/2025-26 Academic Year | May/2025-26 Academic Year | 0                      | 0                           | 1000          | Learning         |
+        | learner a  | R11/2025-26 Academic Year | Jun/2025-26 Academic Year | 0                      | 0                           | 1000          | Learning         |
+        | learner a  | R12/2025-26 Academic Year | Jul/2025-26 Academic Year | 0                      | 0                           | 1000          | Learning         |
 
 	And only the following "provider b" payments will be generated
         | Learner ID | Collection Period         | Delivery Period           | SFA Co-Funded Payments | Employer Co-Funded Payments | Levy Payments | Transaction Type |
-        | learner b  | R03/Current Academic Year | Aug/Current Academic Year | 900                    | 100                         | 0             | Learning         |
-        | learner b  | R03/Current Academic Year | Sep/Current Academic Year | 900                    | 100                         | 0             | Learning         |
-        | learner b  | R03/Current Academic Year | Oct/Current Academic Year | 900                    | 100                         | 0             | Learning         |
-        | learner b  | R04/Current Academic Year | Nov/Current Academic Year | 900                    | 100                         | 0             | Learning         |
-        | learner b  | R05/Current Academic Year | Dec/Current Academic Year | 900                    | 100                         | 0             | Learning         |
-        | learner b  | R06/Current Academic Year | Jan/Current Academic Year | 900                    | 100                         | 0             | Learning         |
-        | learner b  | R07/Current Academic Year | Feb/Current Academic Year | 900                    | 100                         | 0             | Learning         |
-        | learner b  | R08/Current Academic Year | Mar/Current Academic Year | 900                    | 100                         | 0             | Learning         |
-        | learner b  | R09/Current Academic Year | Apr/Current Academic Year | 900                    | 100                         | 0             | Learning         |
-        | learner b  | R10/Current Academic Year | May/Current Academic Year | 900                    | 100                         | 0             | Learning         |
-        | learner b  | R11/Current Academic Year | Jun/Current Academic Year | 900                    | 100                         | 0             | Learning         |
-        | learner b  | R12/Current Academic Year | Jul/Current Academic Year | 900                    | 100                         | 0             | Learning         |
+        | learner b  | R03/2025-26 Academic Year | Aug/2025-26 Academic Year | 900                    | 100                         | 0             | Learning         |
+        | learner b  | R03/2025-26 Academic Year | Sep/2025-26 Academic Year | 900                    | 100                         | 0             | Learning         |
+        | learner b  | R03/2025-26 Academic Year | Oct/2025-26 Academic Year | 900                    | 100                         | 0             | Learning         |
+        | learner b  | R04/2025-26 Academic Year | Nov/2025-26 Academic Year | 900                    | 100                         | 0             | Learning         |
+        | learner b  | R05/2025-26 Academic Year | Dec/2025-26 Academic Year | 900                    | 100                         | 0             | Learning         |
+        | learner b  | R06/2025-26 Academic Year | Jan/2025-26 Academic Year | 900                    | 100                         | 0             | Learning         |
+        | learner b  | R07/2025-26 Academic Year | Feb/2025-26 Academic Year | 900                    | 100                         | 0             | Learning         |
+        | learner b  | R08/2025-26 Academic Year | Mar/2025-26 Academic Year | 900                    | 100                         | 0             | Learning         |
+        | learner b  | R09/2025-26 Academic Year | Apr/2025-26 Academic Year | 900                    | 100                         | 0             | Learning         |
+        | learner b  | R10/2025-26 Academic Year | May/2025-26 Academic Year | 900                    | 100                         | 0             | Learning         |
+        | learner b  | R11/2025-26 Academic Year | Jun/2025-26 Academic Year | 900                    | 100                         | 0             | Learning         |
+        | learner b  | R12/2025-26 Academic Year | Jul/2025-26 Academic Year | 900                    | 100                         | 0             | Learning         |
 
 Examples: 
         | Collection_Period         | Levy Balance |
-        | R03/Current Academic Year | 3000         |
-        | R04/Current Academic Year | 1000         |
-        | R05/Current Academic Year | 1000         |
-        | R06/Current Academic Year | 1000         |
-        | R07/Current Academic Year | 1000         |
-        | R08/Current Academic Year | 1000         |
-        | R09/Current Academic Year | 1000         |
-        | R10/Current Academic Year | 1000         |
-        | R11/Current Academic Year | 1000         |
-        | R12/Current Academic Year | 1000         |
+        | R03/2025-26 Academic Year | 3000         |
+        | R04/2025-26 Academic Year | 1000         |
+        | R05/2025-26 Academic Year | 1000         |
+        | R06/2025-26 Academic Year | 1000         |
+        | R07/2025-26 Academic Year | 1000         |
+        | R08/2025-26 Academic Year | 1000         |
+        | R09/2025-26 Academic Year | 1000         |
+        | R10/2025-26 Academic Year | 1000         |
+        | R11/2025-26 Academic Year | 1000         |
+        | R12/2025-26 Academic Year | 1000         |
 
 #Feature: Payment Priority
 #

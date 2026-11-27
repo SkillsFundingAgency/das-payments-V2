@@ -36,74 +36,74 @@ Feature: PV2-428 ILR submitted for the first time for Levy Learner in R13/R14
 Scenario: One levy learner, levy available, ILR submitted for the first time in R13/R14 PV2-428
 # levy balance > agreed price for all months
 
-Given the employer levy account balance in collection period R13/Current Academic Year is 15000
+Given the employer levy account balance in collection period R13/2025-26 Academic Year is 15000
 # New Commitment line
 And the following commitments exist
     | start date                   | end date                  | agreed price | Standard Code | Programme Type | 
-    | 01/Sep/Current Academic Year | 08/Sep/Next Academic Year | 15000        | 50            | 25             | 
+    | 01/Sep/2025-26 Academic Year | 08/Sep/2026-27 Academic Year | 15000        | 50            | 25             | 
 
 And the provider is providing training for the following learners
     | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Actual Duration | Completion Status | Contract Type | Aim Sequence Number | Aim Reference | Standard Code | Programme Type | Funding Line Type                                  | SFA Contribution Percentage |
-    | 01/Sep/Current Academic Year | 12 months        | 12000                | 01/Sep/Current Academic Year        | 3000                   | 01/Sep/Current Academic Year          |                 | continuing        | Act1          | 1                   | ZPROG001      | 50            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         | 
+    | 01/Sep/2025-26 Academic Year | 12 months        | 12000                | 01/Sep/2025-26 Academic Year        | 3000                   | 01/Sep/2025-26 Academic Year          |                 | continuing        | Act1          | 1                   | ZPROG001      | 50            | 25             | 16-18 Apprenticeship (From May 2017) Levy Contract | 90%                         | 
 And price details are changed as follows        
     | Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
-    | pe-1             | 12000                | 01/Sep/Current Academic Year        | 3000                   | 01/Sep/Current Academic Year          | Act1          | 1                   | 90%                         |
+    | pe-1             | 12000                | 01/Sep/2025-26 Academic Year        | 3000                   | 01/Sep/2025-26 Academic Year          | Act1          | 1                   | 90%                         |
 		
-When the ILR file is submitted for the learners for collection period R13/Current Academic Year 
+When the ILR file is submitted for the learners for collection period R13/2025-26 Academic Year 
 
 Then the following learner earnings should be generated
     | Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |
-    | Aug/Current Academic Year | 0            | 0          | 0         | pe-1                     |
-    | Sep/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-    | Oct/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-    | Nov/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-    | Dec/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-    | Jan/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-    | Feb/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-    | Mar/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-    | Apr/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-    | May/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-    | Jun/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
-    | Jul/Current Academic Year | 1000         | 0          | 0         | pe-1                     |
+    | Aug/2025-26 Academic Year | 0            | 0          | 0         | pe-1                     |
+    | Sep/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
+    | Oct/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
+    | Nov/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
+    | Dec/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
+    | Jan/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
+    | Feb/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
+    | Mar/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
+    | Apr/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
+    | May/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
+    | Jun/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
+    | Jul/2025-26 Academic Year | 1000         | 0          | 0         | pe-1                     |
 
 And at month end only the following payments will be calculated
     | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing |
-    | R13/Current Academic Year | Sep/Current Academic Year | 1000         | 0          | 0         |
-    | R13/Current Academic Year | Oct/Current Academic Year | 1000         | 0          | 0         |
-    | R13/Current Academic Year | Nov/Current Academic Year | 1000         | 0          | 0         |
-    | R13/Current Academic Year | Dec/Current Academic Year | 1000         | 0          | 0         |
-    | R13/Current Academic Year | Jan/Current Academic Year | 1000         | 0          | 0         |
-    | R13/Current Academic Year | Feb/Current Academic Year | 1000         | 0          | 0         |
-    | R13/Current Academic Year | Mar/Current Academic Year | 1000         | 0          | 0         |
-    | R13/Current Academic Year | Apr/Current Academic Year | 1000         | 0          | 0         |
-    | R13/Current Academic Year | May/Current Academic Year | 1000         | 0          | 0         |
-    | R13/Current Academic Year | Jun/Current Academic Year | 1000         | 0          | 0         |
-    | R13/Current Academic Year | Jul/Current Academic Year | 1000         | 0          | 0         |
+    | R13/2025-26 Academic Year | Sep/2025-26 Academic Year | 1000         | 0          | 0         |
+    | R13/2025-26 Academic Year | Oct/2025-26 Academic Year | 1000         | 0          | 0         |
+    | R13/2025-26 Academic Year | Nov/2025-26 Academic Year | 1000         | 0          | 0         |
+    | R13/2025-26 Academic Year | Dec/2025-26 Academic Year | 1000         | 0          | 0         |
+    | R13/2025-26 Academic Year | Jan/2025-26 Academic Year | 1000         | 0          | 0         |
+    | R13/2025-26 Academic Year | Feb/2025-26 Academic Year | 1000         | 0          | 0         |
+    | R13/2025-26 Academic Year | Mar/2025-26 Academic Year | 1000         | 0          | 0         |
+    | R13/2025-26 Academic Year | Apr/2025-26 Academic Year | 1000         | 0          | 0         |
+    | R13/2025-26 Academic Year | May/2025-26 Academic Year | 1000         | 0          | 0         |
+    | R13/2025-26 Academic Year | Jun/2025-26 Academic Year | 1000         | 0          | 0         |
+    | R13/2025-26 Academic Year | Jul/2025-26 Academic Year | 1000         | 0          | 0         |
 # Levy Payments
 And only the following provider payments will be recorded
     | Collection Period         | Delivery Period           | Levy Payments | Transaction Type |
-    | R13/Current Academic Year | Sep/Current Academic Year | 1000          | Learning         |
-    | R13/Current Academic Year | Oct/Current Academic Year | 1000          | Learning         |
-    | R13/Current Academic Year | Nov/Current Academic Year | 1000          | Learning         |
-    | R13/Current Academic Year | Dec/Current Academic Year | 1000          | Learning         |
-    | R13/Current Academic Year | Jan/Current Academic Year | 1000          | Learning         |
-    | R13/Current Academic Year | Feb/Current Academic Year | 1000          | Learning         |
-    | R13/Current Academic Year | Mar/Current Academic Year | 1000          | Learning         |
-    | R13/Current Academic Year | Apr/Current Academic Year | 1000          | Learning         |
-    | R13/Current Academic Year | May/Current Academic Year | 1000          | Learning         |
-    | R13/Current Academic Year | Jun/Current Academic Year | 1000          | Learning         |
-    | R13/Current Academic Year | Jul/Current Academic Year | 1000          | Learning         |
+    | R13/2025-26 Academic Year | Sep/2025-26 Academic Year | 1000          | Learning         |
+    | R13/2025-26 Academic Year | Oct/2025-26 Academic Year | 1000          | Learning         |
+    | R13/2025-26 Academic Year | Nov/2025-26 Academic Year | 1000          | Learning         |
+    | R13/2025-26 Academic Year | Dec/2025-26 Academic Year | 1000          | Learning         |
+    | R13/2025-26 Academic Year | Jan/2025-26 Academic Year | 1000          | Learning         |
+    | R13/2025-26 Academic Year | Feb/2025-26 Academic Year | 1000          | Learning         |
+    | R13/2025-26 Academic Year | Mar/2025-26 Academic Year | 1000          | Learning         |
+    | R13/2025-26 Academic Year | Apr/2025-26 Academic Year | 1000          | Learning         |
+    | R13/2025-26 Academic Year | May/2025-26 Academic Year | 1000          | Learning         |
+    | R13/2025-26 Academic Year | Jun/2025-26 Academic Year | 1000          | Learning         |
+    | R13/2025-26 Academic Year | Jul/2025-26 Academic Year | 1000          | Learning         |
 
 And only the following provider payments will be generated
     | Collection Period         | Delivery Period           | Levy Payments | Transaction Type |
-    | R13/Current Academic Year | Sep/Current Academic Year | 1000          | Learning         |
-    | R13/Current Academic Year | Oct/Current Academic Year | 1000          | Learning         |
-    | R13/Current Academic Year | Nov/Current Academic Year | 1000          | Learning         |
-    | R13/Current Academic Year | Dec/Current Academic Year | 1000          | Learning         |
-    | R13/Current Academic Year | Jan/Current Academic Year | 1000          | Learning         |
-    | R13/Current Academic Year | Feb/Current Academic Year | 1000          | Learning         |
-    | R13/Current Academic Year | Mar/Current Academic Year | 1000          | Learning         |
-    | R13/Current Academic Year | Apr/Current Academic Year | 1000          | Learning         |
-    | R13/Current Academic Year | May/Current Academic Year | 1000          | Learning         |
-    | R13/Current Academic Year | Jun/Current Academic Year | 1000          | Learning         |
-    | R13/Current Academic Year | Jul/Current Academic Year | 1000          | Learning         |
+    | R13/2025-26 Academic Year | Sep/2025-26 Academic Year | 1000          | Learning         |
+    | R13/2025-26 Academic Year | Oct/2025-26 Academic Year | 1000          | Learning         |
+    | R13/2025-26 Academic Year | Nov/2025-26 Academic Year | 1000          | Learning         |
+    | R13/2025-26 Academic Year | Dec/2025-26 Academic Year | 1000          | Learning         |
+    | R13/2025-26 Academic Year | Jan/2025-26 Academic Year | 1000          | Learning         |
+    | R13/2025-26 Academic Year | Feb/2025-26 Academic Year | 1000          | Learning         |
+    | R13/2025-26 Academic Year | Mar/2025-26 Academic Year | 1000          | Learning         |
+    | R13/2025-26 Academic Year | Apr/2025-26 Academic Year | 1000          | Learning         |
+    | R13/2025-26 Academic Year | May/2025-26 Academic Year | 1000          | Learning         |
+    | R13/2025-26 Academic Year | Jun/2025-26 Academic Year | 1000          | Learning         |
+    | R13/2025-26 Academic Year | Jul/2025-26 Academic Year | 1000          | Learning         |

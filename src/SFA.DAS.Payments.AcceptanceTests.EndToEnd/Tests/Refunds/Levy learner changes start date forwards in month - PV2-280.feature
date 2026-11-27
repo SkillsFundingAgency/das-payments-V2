@@ -39,72 +39,72 @@ Feature: Levy learner changes start date forwards in month - PV2-280
 	
 Scenario:  For a DAS-Learner, the start date of apprenticeship is moved forward within a calendar month PV2-280
 
-Given the employer levy account balance in collection period R06/Current Academic Year is 15000
+Given the employer levy account balance in collection period R06/2025-26 Academic Year is 15000
 
 And the following commitments exist
 	| start date                   | end date                     | agreed price | framework code | programme type | pathway code |
-	| 01/Aug/Current Academic Year | 31/Jul/Current Academic Year | 9000         | 403            | 2              | 1            |
+	| 01/Aug/2025-26 Academic Year | 31/Jul/2025-26 Academic Year | 9000         | 403            | 2              | 1            |
 
 And the provider previously submitted the following learner details
     | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | framework code | programme type | pathway code | Funding Line Type                                  |
-    | 05/Aug/Current Academic Year | 12 months        | 9000                 | Aug/Current Academic Year           | continuing        | 90%                         | Act1          | 1                   | ZPROG001      | 403            | 2              | 1            | 16-18 Apprenticeship (From May 2017) Levy Contract |
+    | 05/Aug/2025-26 Academic Year | 12 months        | 9000                 | Aug/2025-26 Academic Year           | continuing        | 90%                         | Act1          | 1                   | ZPROG001      | 403            | 2              | 1            | 16-18 Apprenticeship (From May 2017) Levy Contract |
 And the following earnings had been generated for the learner
     | Delivery Period           | On-Programme | Completion | Balancing |
-    | Aug/Current Academic Year | 600          | 0          | 0         |
-    | Sep/Current Academic Year | 600          | 0          | 0         |
-    | Oct/Current Academic Year | 600          | 0          | 0         |
-    | Nov/Current Academic Year | 600          | 0          | 0         |
-    | Dec/Current Academic Year | 600          | 0          | 0         |
-    | Jan/Current Academic Year | 600          | 0          | 0         |
-    | Feb/Current Academic Year | 600          | 0          | 0         |
-    | Mar/Current Academic Year | 600          | 0          | 0         |
-    | Apr/Current Academic Year | 600          | 0          | 0         |
-    | May/Current Academic Year | 600          | 0          | 0         |
-    | Jun/Current Academic Year | 600          | 0          | 0         |
-    | Jul/Current Academic Year | 600          | 0          | 0         |
+    | Aug/2025-26 Academic Year | 600          | 0          | 0         |
+    | Sep/2025-26 Academic Year | 600          | 0          | 0         |
+    | Oct/2025-26 Academic Year | 600          | 0          | 0         |
+    | Nov/2025-26 Academic Year | 600          | 0          | 0         |
+    | Dec/2025-26 Academic Year | 600          | 0          | 0         |
+    | Jan/2025-26 Academic Year | 600          | 0          | 0         |
+    | Feb/2025-26 Academic Year | 600          | 0          | 0         |
+    | Mar/2025-26 Academic Year | 600          | 0          | 0         |
+    | Apr/2025-26 Academic Year | 600          | 0          | 0         |
+    | May/2025-26 Academic Year | 600          | 0          | 0         |
+    | Jun/2025-26 Academic Year | 600          | 0          | 0         |
+    | Jul/2025-26 Academic Year | 600          | 0          | 0         |
 
 And the following provider payments had been generated
     | Collection Period         | Delivery Period           | Levy Payments | Transaction Type |
-    | R01/Current Academic Year | Aug/Current Academic Year | 600           | Learning         |
-    | R02/Current Academic Year | Sep/Current Academic Year | 600           | Learning         |
-    | R03/Current Academic Year | Oct/Current Academic Year | 600           | Learning         |
-    | R04/Current Academic Year | Nov/Current Academic Year | 600           | Learning         |
-    | R05/Current Academic Year | Dec/Current Academic Year | 600           | Learning         |
+    | R01/2025-26 Academic Year | Aug/2025-26 Academic Year | 600           | Learning         |
+    | R02/2025-26 Academic Year | Sep/2025-26 Academic Year | 600           | Learning         |
+    | R03/2025-26 Academic Year | Oct/2025-26 Academic Year | 600           | Learning         |
+    | R04/2025-26 Academic Year | Nov/2025-26 Academic Year | 600           | Learning         |
+    | R05/2025-26 Academic Year | Dec/2025-26 Academic Year | 600           | Learning         |
         
 But the Provider now changes the Learner details as follows
     | Start Date                   | Planned Duration | Total Training Price | Total Training Price Effective Date | Completion Status | SFA Contribution Percentage | Contract Type | Aim Sequence Number | Aim Reference | framework code | programme type | pathway code | Funding Line Type                                  |
-    | 15/Aug/Current Academic Year | 12 months        | 9000                 | Aug/Current Academic Year           | continuing        | 90%                         | Act1          | 1                   | ZPROG001      | 403            | 2              | 1            | 16-18 Apprenticeship (From May 2017) Levy Contract |
+    | 15/Aug/2025-26 Academic Year | 12 months        | 9000                 | Aug/2025-26 Academic Year           | continuing        | 90%                         | Act1          | 1                   | ZPROG001      | 403            | 2              | 1            | 16-18 Apprenticeship (From May 2017) Levy Contract |
 
 And price details as follows
 	| Price Episode Id | Total Training Price | Total Training Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
-	| pe-1             | 9000                 | 15/Aug/Current Academic Year        | Act1          | 1                   | 90%                         |
+	| pe-1             | 9000                 | 15/Aug/2025-26 Academic Year        | Act1          | 1                   | 90%                         |
 		 
-When the amended ILR file is re-submitted for the learners in collection period R06/Current Academic Year
+When the amended ILR file is re-submitted for the learners in collection period R06/2025-26 Academic Year
 
 Then the following learner earnings should be generated
     | Delivery Period           | On-Programme | Completion | Balancing | Price Episode Identifier |
-    | Aug/Current Academic Year | 600          | 0          | 0         | pe-1                     |
-    | Sep/Current Academic Year | 600          | 0          | 0         | pe-1                     |
-    | Oct/Current Academic Year | 600          | 0          | 0         | pe-1                     |
-    | Nov/Current Academic Year | 600          | 0          | 0         | pe-1                     |
-    | Dec/Current Academic Year | 600          | 0          | 0         | pe-1                     |
-    | Jan/Current Academic Year | 600          | 0          | 0         | pe-1                     |
-    | Feb/Current Academic Year | 600          | 0          | 0         | pe-1                     |
-    | Mar/Current Academic Year | 600          | 0          | 0         | pe-1                     |
-    | Apr/Current Academic Year | 600          | 0          | 0         | pe-1                     |
-    | May/Current Academic Year | 600          | 0          | 0         | pe-1                     |
-    | Jun/Current Academic Year | 600          | 0          | 0         | pe-1                     |
-    | Jul/Current Academic Year | 600          | 0          | 0         | pe-1                     |
+    | Aug/2025-26 Academic Year | 600          | 0          | 0         | pe-1                     |
+    | Sep/2025-26 Academic Year | 600          | 0          | 0         | pe-1                     |
+    | Oct/2025-26 Academic Year | 600          | 0          | 0         | pe-1                     |
+    | Nov/2025-26 Academic Year | 600          | 0          | 0         | pe-1                     |
+    | Dec/2025-26 Academic Year | 600          | 0          | 0         | pe-1                     |
+    | Jan/2025-26 Academic Year | 600          | 0          | 0         | pe-1                     |
+    | Feb/2025-26 Academic Year | 600          | 0          | 0         | pe-1                     |
+    | Mar/2025-26 Academic Year | 600          | 0          | 0         | pe-1                     |
+    | Apr/2025-26 Academic Year | 600          | 0          | 0         | pe-1                     |
+    | May/2025-26 Academic Year | 600          | 0          | 0         | pe-1                     |
+    | Jun/2025-26 Academic Year | 600          | 0          | 0         | pe-1                     |
+    | Jul/2025-26 Academic Year | 600          | 0          | 0         | pe-1                     |
 
 And at month end only the following payments will be calculated
     | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing |
-    | R06/Current Academic Year | Jan/Current Academic Year | 600          | 0          | 0         |
+    | R06/2025-26 Academic Year | Jan/2025-26 Academic Year | 600          | 0          | 0         |
 
 And only the following provider payments will be recorded
     | Collection Period         | Delivery Period           | Levy Payments | Transaction Type |
-    | R06/Current Academic Year | Jan/Current Academic Year | 600           | Learning         |
+    | R06/2025-26 Academic Year | Jan/2025-26 Academic Year | 600           | Learning         |
 		
 And only the following provider payments will be generated
     | Collection Period         | Delivery Period           | Levy Payments | Transaction Type |
-    | R06/Current Academic Year | Jan/Current Academic Year | 600           | Learning         |
+    | R06/2025-26 Academic Year | Jan/2025-26 Academic Year | 600           | Learning         |
 

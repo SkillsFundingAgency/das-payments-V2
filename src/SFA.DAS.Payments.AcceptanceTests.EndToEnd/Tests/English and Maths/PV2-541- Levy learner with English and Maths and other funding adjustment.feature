@@ -54,126 +54,126 @@ Scenario Outline: Levy learner with English & Maths and other funding adjustment
 	Given the employer levy account balance in collection period <Collection_Period> is <Levy Balance>
 	And the following commitments exist
         | start date                   | end date                  | agreed price | status | Framework Code | Pathway Code | Programme Type |
-        | 06/Aug/Current Academic Year | 08/Aug/Next Academic Year | 15000        | active | 593            | 1            | 20             |
+        | 06/Aug/2025-26 Academic Year | 08/Aug/2026-27 Academic Year | 15000        | active | 593            | 1            | 20             |
 	And the following aims
 		| Aim Type         | Aim Reference | Start Date                   | Planned Duration | Actual Duration | Aim Sequence Number | Framework Code | Pathway Code | Programme Type | Funding Line Type         | Completion Status |
-		| Programme        | ZPROG001      | 06/Aug/Current Academic Year | 12 months        |                 | 1                   | 593            | 1            | 20             | 19-24 Apprenticeship Levy | continuing        |
-		| Maths or English | 12345         | 06/Aug/Current Academic Year | 12 months        | 12 months       | 2                   | 593            | 1            | 20             | 19-24 Apprenticeship Levy | completed         |
+		| Programme        | ZPROG001      | 06/Aug/2025-26 Academic Year | 12 months        |                 | 1                   | 593            | 1            | 20             | 19-24 Apprenticeship Levy | continuing        |
+		| Maths or English | 12345         | 06/Aug/2025-26 Academic Year | 12 months        | 12 months       | 2                   | 593            | 1            | 20             | 19-24 Apprenticeship Levy | completed         |
 	And price details as follows	
         | Price Episode Id | Total Training Price | Total Training Price Effective Date | Total Assessment Price | Total Assessment Price Effective Date | Contract Type | Aim Sequence Number | SFA Contribution Percentage |
-        | pe-1             | 15000                | 06/Aug/Current Academic Year        | 0                      | 06/Aug/Current Academic Year          | Act1          | 1                   | 90%                         |
-        |                  | 0                    | 06/Aug/Current Academic Year        | 0                      | 06/Aug/Current Academic Year          | Act1          | 2                   | 100%                        |
+        | pe-1             | 15000                | 06/Aug/2025-26 Academic Year        | 0                      | 06/Aug/2025-26 Academic Year          | Act1          | 1                   | 90%                         |
+        |                  | 0                    | 06/Aug/2025-26 Academic Year        | 0                      | 06/Aug/2025-26 Academic Year          | Act1          | 2                   | 100%                        |
 
 	When the ILR file is submitted for the learners for collection period <Collection_Period>
 	Then the following learner earnings should be generated
 		| Delivery Period           | On-Programme | Completion | Balancing | OnProgrammeMathsAndEnglish | Aim Sequence Number | Price Episode Identifier | Contract Type |
 		#p1
-		| Aug/Current Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-1                     | Act1          |
-		| Sep/Current Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-1                     | Act1          |
-		| Oct/Current Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-1                     | Act1          |
-		| Nov/Current Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-1                     | Act1          |
-		| Dec/Current Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-1                     | Act1          |
-		| Jan/Current Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-1                     | Act1          |
-		| Feb/Current Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-1                     | Act1          |
-		| Mar/Current Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-1                     | Act1          |
-		| Apr/Current Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-1                     | Act1          |
-		| May/Current Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-1                     | Act1          |
-		| Jun/Current Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-1                     | Act1          |
-		| Jul/Current Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-1                     | Act1          |
+		| Aug/2025-26 Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-1                     | Act1          |
+		| Sep/2025-26 Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-1                     | Act1          |
+		| Oct/2025-26 Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-1                     | Act1          |
+		| Nov/2025-26 Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-1                     | Act1          |
+		| Dec/2025-26 Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-1                     | Act1          |
+		| Jan/2025-26 Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-1                     | Act1          |
+		| Feb/2025-26 Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-1                     | Act1          |
+		| Mar/2025-26 Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-1                     | Act1          |
+		| Apr/2025-26 Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-1                     | Act1          |
+		| May/2025-26 Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-1                     | Act1          |
+		| Jun/2025-26 Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-1                     | Act1          |
+		| Jul/2025-26 Academic Year | 1000         | 0          | 0         | 0                          | 1                   | pe-1                     | Act1          |
 		#p2
-		| Aug/Current Academic Year | 0            | 0          | 0         | 29.44                      | 2                   |                          | Act1          |
-		| Sep/Current Academic Year | 0            | 0          | 0         | 29.44                      | 2                   |                          | Act1          |
-		| Oct/Current Academic Year | 0            | 0          | 0         | 29.44                      | 2                   |                          | Act1          |
-		| Nov/Current Academic Year | 0            | 0          | 0         | 29.44                      | 2                   |                          | Act1          |
-		| Dec/Current Academic Year | 0            | 0          | 0         | 29.44                      | 2                   |                          | Act1          |
-		| Jan/Current Academic Year | 0            | 0          | 0         | 29.44                      | 2                   |                          | Act1          |
-		| Feb/Current Academic Year | 0            | 0          | 0         | 29.44                      | 2                   |                          | Act1          |
-		| Mar/Current Academic Year | 0            | 0          | 0         | 29.44                      | 2                   |                          | Act1          |
-		| Apr/Current Academic Year | 0            | 0          | 0         | 29.44                      | 2                   |                          | Act1          |
-		| May/Current Academic Year | 0            | 0          | 0         | 29.44                      | 2                   |                          | Act1          |
-		| Jun/Current Academic Year | 0            | 0          | 0         | 29.44                      | 2                   |                          | Act1          |
-		| Jul/Current Academic Year | 0            | 0          | 0         | 29.44                      | 2                   |                          | Act1          |
+		| Aug/2025-26 Academic Year | 0            | 0          | 0         | 29.44                      | 2                   |                          | Act1          |
+		| Sep/2025-26 Academic Year | 0            | 0          | 0         | 29.44                      | 2                   |                          | Act1          |
+		| Oct/2025-26 Academic Year | 0            | 0          | 0         | 29.44                      | 2                   |                          | Act1          |
+		| Nov/2025-26 Academic Year | 0            | 0          | 0         | 29.44                      | 2                   |                          | Act1          |
+		| Dec/2025-26 Academic Year | 0            | 0          | 0         | 29.44                      | 2                   |                          | Act1          |
+		| Jan/2025-26 Academic Year | 0            | 0          | 0         | 29.44                      | 2                   |                          | Act1          |
+		| Feb/2025-26 Academic Year | 0            | 0          | 0         | 29.44                      | 2                   |                          | Act1          |
+		| Mar/2025-26 Academic Year | 0            | 0          | 0         | 29.44                      | 2                   |                          | Act1          |
+		| Apr/2025-26 Academic Year | 0            | 0          | 0         | 29.44                      | 2                   |                          | Act1          |
+		| May/2025-26 Academic Year | 0            | 0          | 0         | 29.44                      | 2                   |                          | Act1          |
+		| Jun/2025-26 Academic Year | 0            | 0          | 0         | 29.44                      | 2                   |                          | Act1          |
+		| Jul/2025-26 Academic Year | 0            | 0          | 0         | 29.44                      | 2                   |                          | Act1          |
 
     And at month end only the following payments will be calculated
         | Collection Period         | Delivery Period           | On-Programme | Completion | Balancing | OnProgrammeMathsAndEnglish |
-		| R01/Current Academic Year | Aug/Current Academic Year | 1000         | 0          | 0         | 29.44                      |
-		| R02/Current Academic Year | Sep/Current Academic Year | 1000         | 0          | 0         | 29.44                      |
-		| R03/Current Academic Year | Oct/Current Academic Year | 1000         | 0          | 0         | 29.44                      |
-        | R04/Current Academic Year | Nov/Current Academic Year | 1000         | 0          | 0         | 29.44                      |
-        | R05/Current Academic Year | Dec/Current Academic Year | 1000         | 0          | 0         | 29.44                      |
-		| R06/Current Academic Year | Jan/Current Academic Year | 1000         | 0          | 0         | 29.44                      |
-		| R07/Current Academic Year | Feb/Current Academic Year | 1000         | 0          | 0         | 29.44                      |
-		| R08/Current Academic Year | Mar/Current Academic Year | 1000         | 0          | 0         | 29.44                      |
-		| R09/Current Academic Year | Apr/Current Academic Year | 1000         | 0          | 0         | 29.44                      |
-		| R10/Current Academic Year | May/Current Academic Year | 1000         | 0          | 0         | 29.44                      |
-		| R11/Current Academic Year | Jun/Current Academic Year | 1000         | 0          | 0         | 29.44                      |
-		| R12/Current Academic Year | Jul/Current Academic Year | 1000         | 0          | 0         | 29.44                      |
+		| R01/2025-26 Academic Year | Aug/2025-26 Academic Year | 1000         | 0          | 0         | 29.44                      |
+		| R02/2025-26 Academic Year | Sep/2025-26 Academic Year | 1000         | 0          | 0         | 29.44                      |
+		| R03/2025-26 Academic Year | Oct/2025-26 Academic Year | 1000         | 0          | 0         | 29.44                      |
+        | R04/2025-26 Academic Year | Nov/2025-26 Academic Year | 1000         | 0          | 0         | 29.44                      |
+        | R05/2025-26 Academic Year | Dec/2025-26 Academic Year | 1000         | 0          | 0         | 29.44                      |
+		| R06/2025-26 Academic Year | Jan/2025-26 Academic Year | 1000         | 0          | 0         | 29.44                      |
+		| R07/2025-26 Academic Year | Feb/2025-26 Academic Year | 1000         | 0          | 0         | 29.44                      |
+		| R08/2025-26 Academic Year | Mar/2025-26 Academic Year | 1000         | 0          | 0         | 29.44                      |
+		| R09/2025-26 Academic Year | Apr/2025-26 Academic Year | 1000         | 0          | 0         | 29.44                      |
+		| R10/2025-26 Academic Year | May/2025-26 Academic Year | 1000         | 0          | 0         | 29.44                      |
+		| R11/2025-26 Academic Year | Jun/2025-26 Academic Year | 1000         | 0          | 0         | 29.44                      |
+		| R12/2025-26 Academic Year | Jul/2025-26 Academic Year | 1000         | 0          | 0         | 29.44                      |
 
 	And only the following provider payments will be recorded
         | Collection Period         | Delivery Period           | Levy Payments | SFA Fully-Funded Payments | Transaction Type           |
-        | R01/Current Academic Year | Aug/Current Academic Year | 1000          | 0                         | Learning                   |
-        | R02/Current Academic Year | Sep/Current Academic Year | 1000          | 0                         | Learning                   |
-        | R03/Current Academic Year | Oct/Current Academic Year | 1000          | 0                         | Learning                   |
-        | R04/Current Academic Year | Nov/Current Academic Year | 1000          | 0                         | Learning                   |
-        | R05/Current Academic Year | Dec/Current Academic Year | 1000          | 0                         | Learning                   |
-        | R06/Current Academic Year | Jan/Current Academic Year | 1000          | 0                         | Learning                   |
-        | R07/Current Academic Year | Feb/Current Academic Year | 1000          | 0                         | Learning                   |
-        | R08/Current Academic Year | Mar/Current Academic Year | 1000          | 0                         | Learning                   |
-        | R09/Current Academic Year | Apr/Current Academic Year | 1000          | 0                         | Learning                   |
-        | R10/Current Academic Year | May/Current Academic Year | 1000          | 0                         | Learning                   |
-        | R11/Current Academic Year | Jun/Current Academic Year | 1000          | 0                         | Learning                   |
-        | R12/Current Academic Year | Jul/Current Academic Year | 1000          | 0                         | Learning                   |
-        | R01/Current Academic Year | Aug/Current Academic Year | 0             | 29.44                     | OnProgrammeMathsAndEnglish |
-        | R02/Current Academic Year | Sep/Current Academic Year | 0             | 29.44                     | OnProgrammeMathsAndEnglish |
-        | R03/Current Academic Year | Oct/Current Academic Year | 0             | 29.44                     | OnProgrammeMathsAndEnglish |
-        | R04/Current Academic Year | Nov/Current Academic Year | 0             | 29.44                     | OnProgrammeMathsAndEnglish |
-        | R05/Current Academic Year | Dec/Current Academic Year | 0             | 29.44                     | OnProgrammeMathsAndEnglish |
-        | R06/Current Academic Year | Jan/Current Academic Year | 0             | 29.44                     | OnProgrammeMathsAndEnglish |
-        | R07/Current Academic Year | Feb/Current Academic Year | 0             | 29.44                     | OnProgrammeMathsAndEnglish |
-        | R08/Current Academic Year | Mar/Current Academic Year | 0             | 29.44                     | OnProgrammeMathsAndEnglish |
-        | R09/Current Academic Year | Apr/Current Academic Year | 0             | 29.44                     | OnProgrammeMathsAndEnglish |
-        | R10/Current Academic Year | May/Current Academic Year | 0             | 29.44                     | OnProgrammeMathsAndEnglish |
-        | R11/Current Academic Year | Jun/Current Academic Year | 0             | 29.44                     | OnProgrammeMathsAndEnglish |
-        | R12/Current Academic Year | Jul/Current Academic Year | 0             | 29.44                     | OnProgrammeMathsAndEnglish |
+        | R01/2025-26 Academic Year | Aug/2025-26 Academic Year | 1000          | 0                         | Learning                   |
+        | R02/2025-26 Academic Year | Sep/2025-26 Academic Year | 1000          | 0                         | Learning                   |
+        | R03/2025-26 Academic Year | Oct/2025-26 Academic Year | 1000          | 0                         | Learning                   |
+        | R04/2025-26 Academic Year | Nov/2025-26 Academic Year | 1000          | 0                         | Learning                   |
+        | R05/2025-26 Academic Year | Dec/2025-26 Academic Year | 1000          | 0                         | Learning                   |
+        | R06/2025-26 Academic Year | Jan/2025-26 Academic Year | 1000          | 0                         | Learning                   |
+        | R07/2025-26 Academic Year | Feb/2025-26 Academic Year | 1000          | 0                         | Learning                   |
+        | R08/2025-26 Academic Year | Mar/2025-26 Academic Year | 1000          | 0                         | Learning                   |
+        | R09/2025-26 Academic Year | Apr/2025-26 Academic Year | 1000          | 0                         | Learning                   |
+        | R10/2025-26 Academic Year | May/2025-26 Academic Year | 1000          | 0                         | Learning                   |
+        | R11/2025-26 Academic Year | Jun/2025-26 Academic Year | 1000          | 0                         | Learning                   |
+        | R12/2025-26 Academic Year | Jul/2025-26 Academic Year | 1000          | 0                         | Learning                   |
+        | R01/2025-26 Academic Year | Aug/2025-26 Academic Year | 0             | 29.44                     | OnProgrammeMathsAndEnglish |
+        | R02/2025-26 Academic Year | Sep/2025-26 Academic Year | 0             | 29.44                     | OnProgrammeMathsAndEnglish |
+        | R03/2025-26 Academic Year | Oct/2025-26 Academic Year | 0             | 29.44                     | OnProgrammeMathsAndEnglish |
+        | R04/2025-26 Academic Year | Nov/2025-26 Academic Year | 0             | 29.44                     | OnProgrammeMathsAndEnglish |
+        | R05/2025-26 Academic Year | Dec/2025-26 Academic Year | 0             | 29.44                     | OnProgrammeMathsAndEnglish |
+        | R06/2025-26 Academic Year | Jan/2025-26 Academic Year | 0             | 29.44                     | OnProgrammeMathsAndEnglish |
+        | R07/2025-26 Academic Year | Feb/2025-26 Academic Year | 0             | 29.44                     | OnProgrammeMathsAndEnglish |
+        | R08/2025-26 Academic Year | Mar/2025-26 Academic Year | 0             | 29.44                     | OnProgrammeMathsAndEnglish |
+        | R09/2025-26 Academic Year | Apr/2025-26 Academic Year | 0             | 29.44                     | OnProgrammeMathsAndEnglish |
+        | R10/2025-26 Academic Year | May/2025-26 Academic Year | 0             | 29.44                     | OnProgrammeMathsAndEnglish |
+        | R11/2025-26 Academic Year | Jun/2025-26 Academic Year | 0             | 29.44                     | OnProgrammeMathsAndEnglish |
+        | R12/2025-26 Academic Year | Jul/2025-26 Academic Year | 0             | 29.44                     | OnProgrammeMathsAndEnglish |
 
 	And only the following provider payments will be generated
         | Collection Period         | Delivery Period           | Levy Payments | SFA Fully-Funded Payments | Transaction Type           |
-        | R01/Current Academic Year | Aug/Current Academic Year | 1000          | 0                         | Learning                   |
-        | R02/Current Academic Year | Sep/Current Academic Year | 1000          | 0                         | Learning                   |
-        | R03/Current Academic Year | Oct/Current Academic Year | 1000          | 0                         | Learning                   |
-        | R04/Current Academic Year | Nov/Current Academic Year | 1000          | 0                         | Learning                   |
-        | R05/Current Academic Year | Dec/Current Academic Year | 1000          | 0                         | Learning                   |
-        | R06/Current Academic Year | Jan/Current Academic Year | 1000          | 0                         | Learning                   |
-        | R07/Current Academic Year | Feb/Current Academic Year | 1000          | 0                         | Learning                   |
-        | R08/Current Academic Year | Mar/Current Academic Year | 1000          | 0                         | Learning                   |
-        | R09/Current Academic Year | Apr/Current Academic Year | 1000          | 0                         | Learning                   |
-        | R10/Current Academic Year | May/Current Academic Year | 1000          | 0                         | Learning                   |
-        | R11/Current Academic Year | Jun/Current Academic Year | 1000          | 0                         | Learning                   |
-        | R12/Current Academic Year | Jul/Current Academic Year | 1000          | 0                         | Learning                   |
-        | R01/Current Academic Year | Aug/Current Academic Year | 0             | 29.44                     | OnProgrammeMathsAndEnglish |
-        | R02/Current Academic Year | Sep/Current Academic Year | 0             | 29.44                     | OnProgrammeMathsAndEnglish |
-        | R03/Current Academic Year | Oct/Current Academic Year | 0             | 29.44                     | OnProgrammeMathsAndEnglish |
-        | R04/Current Academic Year | Nov/Current Academic Year | 0             | 29.44                     | OnProgrammeMathsAndEnglish |
-        | R05/Current Academic Year | Dec/Current Academic Year | 0             | 29.44                     | OnProgrammeMathsAndEnglish |
-        | R06/Current Academic Year | Jan/Current Academic Year | 0             | 29.44                     | OnProgrammeMathsAndEnglish |
-        | R07/Current Academic Year | Feb/Current Academic Year | 0             | 29.44                     | OnProgrammeMathsAndEnglish |
-        | R08/Current Academic Year | Mar/Current Academic Year | 0             | 29.44                     | OnProgrammeMathsAndEnglish |
-        | R09/Current Academic Year | Apr/Current Academic Year | 0             | 29.44                     | OnProgrammeMathsAndEnglish |
-        | R10/Current Academic Year | May/Current Academic Year | 0             | 29.44                     | OnProgrammeMathsAndEnglish |
-        | R11/Current Academic Year | Jun/Current Academic Year | 0             | 29.44                     | OnProgrammeMathsAndEnglish |
-        | R12/Current Academic Year | Jul/Current Academic Year | 0             | 29.44                     | OnProgrammeMathsAndEnglish |
+        | R01/2025-26 Academic Year | Aug/2025-26 Academic Year | 1000          | 0                         | Learning                   |
+        | R02/2025-26 Academic Year | Sep/2025-26 Academic Year | 1000          | 0                         | Learning                   |
+        | R03/2025-26 Academic Year | Oct/2025-26 Academic Year | 1000          | 0                         | Learning                   |
+        | R04/2025-26 Academic Year | Nov/2025-26 Academic Year | 1000          | 0                         | Learning                   |
+        | R05/2025-26 Academic Year | Dec/2025-26 Academic Year | 1000          | 0                         | Learning                   |
+        | R06/2025-26 Academic Year | Jan/2025-26 Academic Year | 1000          | 0                         | Learning                   |
+        | R07/2025-26 Academic Year | Feb/2025-26 Academic Year | 1000          | 0                         | Learning                   |
+        | R08/2025-26 Academic Year | Mar/2025-26 Academic Year | 1000          | 0                         | Learning                   |
+        | R09/2025-26 Academic Year | Apr/2025-26 Academic Year | 1000          | 0                         | Learning                   |
+        | R10/2025-26 Academic Year | May/2025-26 Academic Year | 1000          | 0                         | Learning                   |
+        | R11/2025-26 Academic Year | Jun/2025-26 Academic Year | 1000          | 0                         | Learning                   |
+        | R12/2025-26 Academic Year | Jul/2025-26 Academic Year | 1000          | 0                         | Learning                   |
+        | R01/2025-26 Academic Year | Aug/2025-26 Academic Year | 0             | 29.44                     | OnProgrammeMathsAndEnglish |
+        | R02/2025-26 Academic Year | Sep/2025-26 Academic Year | 0             | 29.44                     | OnProgrammeMathsAndEnglish |
+        | R03/2025-26 Academic Year | Oct/2025-26 Academic Year | 0             | 29.44                     | OnProgrammeMathsAndEnglish |
+        | R04/2025-26 Academic Year | Nov/2025-26 Academic Year | 0             | 29.44                     | OnProgrammeMathsAndEnglish |
+        | R05/2025-26 Academic Year | Dec/2025-26 Academic Year | 0             | 29.44                     | OnProgrammeMathsAndEnglish |
+        | R06/2025-26 Academic Year | Jan/2025-26 Academic Year | 0             | 29.44                     | OnProgrammeMathsAndEnglish |
+        | R07/2025-26 Academic Year | Feb/2025-26 Academic Year | 0             | 29.44                     | OnProgrammeMathsAndEnglish |
+        | R08/2025-26 Academic Year | Mar/2025-26 Academic Year | 0             | 29.44                     | OnProgrammeMathsAndEnglish |
+        | R09/2025-26 Academic Year | Apr/2025-26 Academic Year | 0             | 29.44                     | OnProgrammeMathsAndEnglish |
+        | R10/2025-26 Academic Year | May/2025-26 Academic Year | 0             | 29.44                     | OnProgrammeMathsAndEnglish |
+        | R11/2025-26 Academic Year | Jun/2025-26 Academic Year | 0             | 29.44                     | OnProgrammeMathsAndEnglish |
+        | R12/2025-26 Academic Year | Jul/2025-26 Academic Year | 0             | 29.44                     | OnProgrammeMathsAndEnglish |
 
 Examples: 
         | Collection_Period         | Levy Balance |
-        | R01/Current Academic Year | 15500        |
-        | R02/Current Academic Year | 14500        |
-        | R03/Current Academic Year | 13500        |
-        | R04/Current Academic Year | 12500        |
-        | R05/Current Academic Year | 11500        |
-        | R06/Current Academic Year | 10500        |
-        | R07/Current Academic Year | 9500         |
-        | R08/Current Academic Year | 8500         |
-        | R09/Current Academic Year | 7500         |
-        | R10/Current Academic Year | 6500         |
-        | R11/Current Academic Year | 5500         |
-        | R12/Current Academic Year | 4500         |
+        | R01/2025-26 Academic Year | 15500        |
+        | R02/2025-26 Academic Year | 14500        |
+        | R03/2025-26 Academic Year | 13500        |
+        | R04/2025-26 Academic Year | 12500        |
+        | R05/2025-26 Academic Year | 11500        |
+        | R06/2025-26 Academic Year | 10500        |
+        | R07/2025-26 Academic Year | 9500         |
+        | R08/2025-26 Academic Year | 8500         |
+        | R09/2025-26 Academic Year | 7500         |
+        | R10/2025-26 Academic Year | 6500         |
+        | R11/2025-26 Academic Year | 5500         |
+        | R12/2025-26 Academic Year | 4500         |
